@@ -6,9 +6,11 @@ import companyLogo1 from "./company-logo-1.png";
 import adRegister from "./adRegister.svg"
 import Doctor from "./Doctor.svg"
 import achievement  from "./achievement.png";
+import nurse from "./nurse.svg"
 
 export {
   achievement,
+  nurse,
   Doctor,
   hamburgerMenu,
   close,

@@ -1,6 +1,6 @@
 import React from "react";
 
-const FeedbackCard = () => {
+const GaleriCard = () => {
   return (
     <div className="bg-white p-8 rounded-3xl shadow-xl my-8 mx-2">
       <div className="card">
@@ -21,4 +21,4 @@ const FeedbackCard = () => {
   );
 };
 
-export default FeedbackCard;
+export default GaleriCard;
