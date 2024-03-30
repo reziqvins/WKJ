@@ -36,8 +36,7 @@ const Footer = () => {
         <div className="maps">
           <h1 className="text-2xl font-bold">Lokasi Wisata Kesehatan Jamu</h1>
           <iframe
-            width="500"
-            height="250"
+            className="md:w-[450px] h-[250px] sm:w-[350px]"
             src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=UPTD%20Wisata%20Kesehatan%20Jamu+(UPTD%20Wisata%20Kesehatan%20Jamu)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
           >
             <a href="https://www.gps.ie/">gps vehicle tracker</a>
