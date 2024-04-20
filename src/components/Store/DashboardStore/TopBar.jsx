@@ -25,7 +25,7 @@ function TopBar() {
 
   return (
     <div className="responsive md:block hidden">
-      <div className="flex justify-between items-center p-2 bg-gray-100 text-black text-sm border-b border-gray-300">
+      <div className="flex justify-between items-center p-2  text-black text-sm ">
         <div className="space-x-4 flex items-center">
           <Link to="/" className="hover:text-blue-600">
             Tentang Kami
