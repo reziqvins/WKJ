@@ -45,8 +45,8 @@ const Galeri = () => {
   };
 
   return (
-    <div className="w-full bg-white px-32">
-      <div className="md:max-w-[1480px] m-auto max-w-[800px] px-4 md:px-0">
+    <div className="w-full bg-white md:px-32 p-4">
+      <div className="md:max-w-[1480px] m-auto max-w-[800px]  md:px-0">
         <div className="py-4">
           <h1 className="py-3 text-3xl font-bold">
             Galeri <span className="text-[#20B486]">WKJ</span>
