@@ -32,7 +32,7 @@ const HeaderBottom = () => {
   const handleProductClick = (productId) => {
     setShowSearchBar(false);
     setSearchQuery("");
-    navigate(`/product/${productId}`);
+    navigate(`/DashboardStore/product/${productId}`);
   };
 
   return (

@@ -13,7 +13,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/DashboardStore" element={<DashboardStore />} />
           <Route
-            path="/product/:id"
+            path="/DashboardStore/product/:id"
             element={<ProductDetail products={produkInovasi} />}
           />
         </Routes>

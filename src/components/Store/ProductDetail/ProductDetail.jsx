@@ -52,18 +52,6 @@ function ProductDetail({ products }) {
           </div>
         </div>
       </div>
-      {/* <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4 h-full -mt-5 xl:-mt-8 pb-10 bg-gray-100 p-4">
-        <div className="h-full xl:col-span-2">
-          <img
-            className="w-full h-full "
-            src={product.linkImg}
-            alt={product.img}
-          />
-        </div>
-        <div className="h-full w-full md:col-span-2 xl:col-span-4 xl:px-4 flex flex-col gap-6 justify-center">
-          <ProductInfo productInfo={product} />
-        </div>
-      </div> */}
       <Footer />
     </div>
   );
