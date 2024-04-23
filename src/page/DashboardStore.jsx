@@ -5,6 +5,7 @@ import ProductList from "../components/Store/DashboardStore/ProductList";
 import { produkInovasi } from ".././data/ProdukInovasi";
 import Footer from "../components/LandingPage/Footer";
 import TabNavigation from "../components/Store/DashboardStore/TabNavigation";
+import Hero from "../components/Store/DashboardStore/Hero";
 
 function DashboardStore() {
   const [activeCategory, setActiveCategory] = useState("Semua"); // Default category is "Semua"
@@ -25,6 +26,7 @@ function DashboardStore() {
     <div>
       <Navbar />
       <HeaderBottom />
+      <Hero/>
       <div className="mx-auto max-w-4xl">
         {/* Navigasi Tab */}
         <TabNavigation
