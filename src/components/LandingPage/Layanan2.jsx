@@ -3,7 +3,7 @@ import { Doctor, heroImg } from "../../assets";
 
 function Layanan2() {
   return (
-    <div className="w-full bg-blue-100 p-20">
+    <div className="w-full bg-blue-100 lg:p-20 p-7">
       <div className="md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px] ">
         <img
           src={Doctor}

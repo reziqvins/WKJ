@@ -3,7 +3,7 @@ import { nurse } from "../../assets";
 
 const Layanan = () => {
   return (
-    <div className="w-full bg-white px-20 ">
+    <div className="w-full bg-white lg:px-20 p-5 ">
       <div className="md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px] md:px-0">
         <div className="flex flex-col justify-center ">
           <h1 className="md:leading-[72px] text-3xl font-bold">
