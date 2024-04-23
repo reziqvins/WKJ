@@ -137,7 +137,6 @@ const HeaderBottom = () => {
                 </span>
               </div>
             </Link>
-            <BsSuitHeartFill />
           </div>
         </Flex>
       </div>
