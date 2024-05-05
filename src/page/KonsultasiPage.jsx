@@ -1,16 +1,22 @@
-import React from 'react'
+import React from "react";
 import Sidebar from "../components/Konsultasi/Sidebar";
 import Chat from "../components/Konsultasi/Chat";
+import Navbar from "../components/LandingPage/Navbar";
 
 function KonsultasiPage() {
   return (
-<div className='home bg-blue-200 h-screen flex items-center justify-center'>
-      <div className="container border border-white rounded-lg w-3/5 h-4/5 flex overflow-hidden">
-        <Sidebar/>
-        <Chat/>
+    <div
+      style={{ backgroundImage: "linear-gradient(115deg, #b6d7a8, #6aa84f)" }}
+    >
+      <Navbar />
+      <div className="home h-screen flex items-center justify-center mt-[-30px]">
+        <div className="container border border-white rounded-lg w-[65%] h-[80%] flex overflow-hidden">
+          <Sidebar />
+          <Chat />
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default KonsultasiPage
+export default KonsultasiPage;

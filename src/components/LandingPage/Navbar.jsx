@@ -44,7 +44,9 @@ const Navbar = () => {
             {currentUser ? (
               <li className="dropdown dropdown-hover">
                 <div tabIndex={0} role="button" className="btn bg-transparent border-none outline-none">
-                  <img className="w-6" src={currentUser.photoURL} alt="" />
+                  
+                  <img className="w-8 h-8 object-cover rounded-full" src={currentUser.photoURL} alt="" />
+
                   <span>{currentUser.displayName}</span>
                 </div>
                 <ul
