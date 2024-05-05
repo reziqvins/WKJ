@@ -1,5 +1,6 @@
 import React from "react";
 import { adRegister } from "../../assets";
+import { Link } from "react-router-dom";
 
 const IklanRegister = () => {
   return (
@@ -16,9 +17,10 @@ const IklanRegister = () => {
           <p className="py-2 text-lg text-gray-600">
             Mulai dengan Mendaftar dengan gratis
           </p>
-          <button className="max-[780px]:w-full my-4 px-8 py-5 rounded-md bg-[#20B486] text-white font-bold">
+          <Link to="/SignUp"><button  className="max-[780px]:w-full my-4 px-8 py-5 rounded-md bg-[#20B486] text-white font-bold">
             Daftar Disini
-          </button>
+          </button></Link>
+          
         </div>
       </div>
     </div>
