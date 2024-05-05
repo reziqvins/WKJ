@@ -19,7 +19,7 @@ function App() {
           <Route path="/Coba" element={<Coba />} />
           <Route path="/SignUp" element={<RegisterPage />} />
           <Route path="/SignIn" element={<LoginPage />} />
-          {/* <Route path="/Konsultasi" element={<KonsultasiPage />} /> */}
+          <Route path="/Konsultasi" element={<KonsultasiPage />} />
           <Route
             path="/DashboardStore/product/:id"
             element={<ProductDetail products={produkInovasi} />}

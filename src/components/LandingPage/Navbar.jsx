@@ -6,12 +6,26 @@ import { auth } from "../../Firebase";
 import { AuthContext } from "../../Context/AuthContext";
 import { VscSignOut } from "react-icons/vsc";
 import { CgProfile } from "react-icons/cg";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
   const { currentUser } = useContext(AuthContext);
 
   const handleClick = () => setToggle(!toggle);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      Swal.fire({
+        icon: "success",
+        title: "Logout Berhasil",
+        text: "Anda telah berhasil logout.",
+      });
+    } catch (error) {
+      console.error("Error while logging out", error);
+    }
+  };
 
   return (
     <div className="w-full h-[80px]  bg-[#E9F8F3B2] border-b py-6">
@@ -41,7 +55,7 @@ const Navbar = () => {
                     <button><CgProfile />Profil</button>
                   </li>
                   <li>
-                    <button onClick={()=>signOut(auth)}>
+                    <button onClick={handleLogout}>
                       <VscSignOut />logout
                     </button>
                   </li>
@@ -93,7 +107,7 @@ const Navbar = () => {
                   <button><CgProfile />Profil</button>
                 </li>
                 <li>
-                  <button onClick={()=>signOut(auth)}>
+                  <button onClick={handleLogout}>
                     <VscSignOut />logout
                   </button>
                 </li>

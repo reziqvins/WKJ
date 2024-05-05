@@ -73,7 +73,7 @@ const Login = () => {
               {err && <span>Something went wrong</span>}
             </form>
             <p className="mt-5">
-              Belum punya akun? <Link to="/SignUp"> Register</Link>
+              Belum punya akun? <Link className="text-[#62c1a3]" to="/SignUp"> Register</Link>
             </p>
           </div>
         </div>
