@@ -23,11 +23,8 @@ const Message = ({ message }) => {
         <span className="text-xs"> sekarang</span>
       </div>
       <div className="messageContent max-w-[80%] flex flex-col gap-[10px]">
-        <p className="bg-white py-[10px] px-[20px] rounded-r-lg ">hello</p>
-        <img
-          src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711740676/WKJ/IMG-20240330-WA0005_awdmug.jpg"
-          alt=""
-        />
+        <p className="bg-white py-[10px] px-[20px] rounded-r-lg ">{message.text}</p>
+        {message.img && <img src={message.img} alt="" className="w-1/2" />}
       </div>
     </div>
     // <div
