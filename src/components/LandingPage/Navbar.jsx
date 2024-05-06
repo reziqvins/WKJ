@@ -98,7 +98,7 @@ const Navbar = () => {
           {currentUser ? (
             <li className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn bg-transparent border-none outline-none">
-                <img className="w-6" src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png" alt="" />
+                <img className="w-6" src={currentUser.photoURL} alt="" />
                 <span>{currentUser.displayName}</span>
               </div>
               <ul

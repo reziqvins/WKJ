@@ -1,11 +1,11 @@
 import React from 'react'
 import Login from '../components/Login/Login'
-import Navbar from '../components/LandingPage/Navbar'
+import NavbarAuth from '../components/NavbarAuth'
 
 function LoginPage() {
   return (
     <div>
-      <Navbar/>
+      <NavbarAuth/>
       <Login/>
     </div>
   )

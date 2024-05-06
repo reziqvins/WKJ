@@ -77,13 +77,13 @@ const Input = () => {
   return (
     <div className="input bg-white h-16 flex items-center justify-between px-4">
       <input
-        className="w-[85%] border-none outline-none text-gray-800 text-lg"
+        className="w-[90%] border-none outline-none text-gray-800 text-lg"
         type="text"
         onChange={(e) => setText(e.target.value)}
         value={text}
         placeholder="Ceritakan keluhan anda"
       />
-      <div className="send w-[15%] flex items-center gap-4">
+      <div className="send w-[23%] flex items-center gap-4">
       <label htmlFor="file" className="cursor-pointer">
           <img src={Img} alt="" className="h-6" />
           <input type="file" style={{ display: "none" }} onChange={(e) => setImg(e.target.files[0])} id="file" />

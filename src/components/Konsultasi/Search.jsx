@@ -92,12 +92,12 @@ const Search = () => {
       {err && <span className="text-red-500">User not found!</span>}
       {user && (
         <div
-          className="userChat cursor-pointer flex items-center px-4 py-2"
+          className="userChat cursor-pointer flex items-center gap-5 px-4 py-2"
           onClick={handleSelect}
         >
-          <img src={user.photoURL} alt="" className="w-10 h-10 rounded-full" />
+          <img src={user.photoURL} alt="" className="h-9 w-9 rounded-full object-cover" />
           <div className="userChatInfo">
-            <span>{user.displayName}</span>
+            <span className="text-sm font-semibold text-yellow-200">{user.displayName}</span>
           </div>
         </div>
       )}

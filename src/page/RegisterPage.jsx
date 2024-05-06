@@ -1,11 +1,11 @@
 import React from 'react';
-import Navbar from '../components/LandingPage/Navbar';
 import Register from '../components/Register/Register';
+import NavbarAuth from '../components/NavbarAuth';
 
 const RegisterPage = () => {
   return (
     <div>
-        <Navbar/>
+        <NavbarAuth/>
         <Register/>
     </div>
   );
