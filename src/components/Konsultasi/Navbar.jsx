@@ -9,9 +9,9 @@ const Navbar = () => {
   return (
     <div className='navbar flex items-center justify-between bg-[#32584c] p-2 text-white'>
       <span className="logo font-bold">Konsultasi</span>
-      <div className="user flex items-center gap-2">
-        <img src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png" alt="" className="h-6 w-6 rounded-full" />
-        <span>John cena</span>
+      <div className="user flex items-center gap-2 px-4">
+        <img src={currentUser.photoURL} alt="" className="h-9 w-9 rounded-full object-cover" />
+        <span>{currentUser.displayName}</span>
         
         {/* <img src={currentUser.photoURL} alt="" className="h-6 w-6 rounded-full" />
         <span>{currentUser.displayName}</span>

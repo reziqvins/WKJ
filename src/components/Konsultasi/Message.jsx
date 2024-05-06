@@ -13,37 +13,20 @@ const Message = ({ message }) => {
   }, [message]);
 
   return (
-    <div className="message flex gap-[20px] mb-[20px]">
-      <div className="messageInfo flex flex-col text-gray-500">
+    <div className={`flex ${message.senderId === currentUser.uid ? 'flex-row-reverse' : ''} gap-4 mb-4`}>
+      <div className="flex flex-col items-center justify-center text-gray-500">
         <img
-          className="w-[40px] h-[40px] rounded-full object-cover"
+          className="w-10 h-10 rounded-full object-cover"
           src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
           alt=""
         />
-        <span className="text-xs"> sekarang</span>
+        <span className="text-xs">sekarang</span>
       </div>
-      <div className="messageContent max-w-[80%] flex flex-col gap-[10px]">
-        <p className="bg-white py-[10px] px-[20px] rounded-r-lg ">{message.text}</p>
+      <div className={`flex flex-col gap-2 max-w-[80%] ${message.senderId === currentUser.uid ? 'items-end' : 'items-start'}`}>
+        <p className={`bg-white py-2 px-4 rounded-lg ${message.senderId === currentUser.uid ? 'rounded-l-none' : 'rounded-r-none'}`}>{message.text}</p>
         {message.img && <img src={message.img} alt="" className="w-1/2" />}
       </div>
     </div>
-    // <div
-    //   ref={ref}
-    //   className={`message ${message.senderId === currentUser.uid ? "owner" : ""}`}
-    // >
-    //   <div className="messageInfo flex flex-col text-gray-500">
-    //     <img
-    //       src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
-    //       alt=""
-    //       className="w-10 h-10 rounded-full object-cover"
-    //     />
-    //     <span>just now</span>
-    //   </div>
-    //   <div className="messageContent max-w-80 flex flex-col gap-2">
-    //     <p className={`${message.senderId === currentUser.uid ? "bg-blue-600 text-white rounded-r-lg" : "bg-gray-100 text-gray-800 rounded-l-lg"} p-4 max-w-max-content`}>{message.text}</p>
-    //     {message.img && <img src={message.img} alt="" className="w-1/2" />}
-    //   </div>
-    // </div>
   );
 };
 
