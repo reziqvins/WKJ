@@ -77,41 +77,31 @@ const Search = () => {
     setUser(null);
     setUsername("")
   };
-
   return (
     <div className="search border-b border-gray-400">
-    <div className="searchForm px-4 py-2">
-      <input type="text" placeholder="Find a user" className="bg-transparent border-none text-white outline-none placeholder-lightgray" />
-    </div>
-    <div className="userChat cursor-pointer flex items-center p-[10px] gap-[10px]">
-      <img className="w-10 h-10 rounded-full" src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png" alt="" />
-      <div className="userChatInfo">
-      <span className="text-yellow-200 text-sm">Jhon Cena</span>
+      <div className="searchForm px-4 py-2">
+        <input
+        type="text"
+        placeholder="Find a user"
+        onKeyDown={handleKey}
+        onChange={(e) => setUsername(e.target.value)}
+        value={username}
+          className="bg-transparent border-none text-white outline-none placeholder-lightgray"
+        />
       </div>
+      {err && <span className="text-red-500">User not found!</span>}
+      {user && (
+        <div
+          className="userChat cursor-pointer flex items-center px-4 py-2"
+          onClick={handleSelect}
+        >
+          <img src={user.photoURL} alt="" className="w-10 h-10 rounded-full" />
+          <div className="userChatInfo">
+            <span>{user.displayName}</span>
+          </div>
+        </div>
+      )}
     </div>
-
-  </div>
-    // <div className="search border-b border-gray-400">
-    //   <div className="searchForm px-4 py-2">
-    //     <input
-    //       type="text"
-    //       placeholder="Find a user"
-    //       onKeyDown={handleKey}
-    //       onChange={(e) => setUsername(e.target.value)}
-    //       value={username}
-    //       className="bg-transparent border-none text-white outline-none placeholder-lightgray"
-    //     />
-    //   </div>
-    //   {err && <span className="text-red-500">User not found!</span>}
-    //   {user && (
-    //     <div className="userChat cursor-pointer flex items-center px-4 py-2" onClick={handleSelect}>
-    //       <img src={user.photoURL} alt="" className="w-10 h-10 rounded-full" />
-    //       <div className="userChatInfo">
-    //         <span>{user.displayName}</span>
-    //       </div>
-    //     </div>
-    //   )}
-    // </div>
   );
 };
 

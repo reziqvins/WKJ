@@ -3,31 +3,31 @@ import { AuthContext } from "../../Context/AuthContext";
 import { ChatContext } from "../../Context/ChatContext";
 
 const Message = ({ message }) => {
-  // const { currentUser } = useContext(AuthContext);
-  // const { data } = useContext(ChatContext);
+  const { currentUser } = useContext(AuthContext);
+  const { data } = useContext(ChatContext);
 
-  // const ref = useRef();
+  const ref = useRef();
 
-  // useEffect(() => {
-  //   ref.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [message]);
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
 
   return (
     <div className="message flex gap-[20px] mb-[20px]">
       <div className="messageInfo flex flex-col text-gray-500">
         <img
           className="w-[40px] h-[40px] rounded-full object-cover"
-          src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png"
+          src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
           alt=""
         />
         <span className="text-xs"> sekarang</span>
       </div>
       <div className="messageContent max-w-[80%] flex flex-col gap-[10px]">
         <p className="bg-white py-[10px] px-[20px] rounded-r-lg ">hello</p>
-        {/* <img
+        <img
           src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711740676/WKJ/IMG-20240330-WA0005_awdmug.jpg"
           alt=""
-        /> */}
+        />
       </div>
     </div>
     // <div
