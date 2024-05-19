@@ -1,32 +1,6 @@
-import React, { useContext, useState } from "react";
-import { icons, hamburgerMenu, close } from "../../assets";
-import { Link } from "react-router-dom";
-import { signOut } from "firebase/auth";
-import { auth } from "../../Firebase";
-import { AuthContext } from "../../Context/AuthContext";
-import { VscSignOut } from "react-icons/vsc";
-import { CgProfile } from "react-icons/cg";
-import Swal from "sweetalert2";
+import React from 'react'
 
-const Navbar = () => {
-  const [toggle, setToggle] = useState(false);
-  const { currentUser } = useContext(AuthContext);
-
-  const handleClick = () => setToggle(!toggle);
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      Swal.fire({
-        icon: "success",
-        title: "Logout Berhasil",
-        text: "Anda telah berhasil logout.",
-      });
-    } catch (error) {
-      console.error("Error while logging out", error);
-    }
-  };
-
+function NavbarRegister() {
   return (
     <div className="w-full h-[80px]  bg-[#E9F8F3B2] border-b py-6">
       <div className="md:max-w-[1480px] max-w-[600px] m-auto w-full h-full flex justify-between items-center md:px-0 px-4">
@@ -98,7 +72,7 @@ const Navbar = () => {
           {currentUser ? (
             <li className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn bg-transparent border-none outline-none">
-                <img className="w-8 h-8 object-cover rounded-full" src={currentUser.photoURL} alt="" />
+                <img className="w-6" src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png" alt="" />
                 <span>{currentUser.displayName}</span>
               </div>
               <ul
@@ -127,7 +101,7 @@ const Navbar = () => {
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default NavbarRegister

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../Firebase";
+import { auth } from "../../../Firebase";
 import Swal from "sweetalert2";
 import { onAuthStateChanged } from "firebase/auth"; // tambahkan ini
 
@@ -64,6 +64,9 @@ const Login = () => {
                   placeholder="Password"
                   className="border border-b-gray-100 rounded-md py-1 px-2 w-full"
                 />
+              </div>
+              <div className="mt-5">
+                <Link to="/ResetPassword"><p >Lupa Password??</p></Link>
               </div>
               <button
                 className="w-full rounded-md mt-5 bg-[#20B486] py-3 text-center text-white"

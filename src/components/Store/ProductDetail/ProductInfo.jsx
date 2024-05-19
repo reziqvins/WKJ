@@ -1,6 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../../redux/WkjSlice";
+// import { useDispatch } from "react-redux";
+// import { addToCart } from "../../../redux/WkjSlice";
 const ProductInfo = ({ productInfo }) => {
   const highlightStyle = {
     color: "#d0121a", // Change this to the desired color

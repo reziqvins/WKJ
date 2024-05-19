@@ -9,8 +9,9 @@ import Coba from "./components/Coba";
 import LoginPage from "./page/LoginPage";
 import KonsultasiPage from "./page/KonsultasiPage";
 import { AuthContext } from "./Context/AuthContext";
-import LoginPrompt from "./components/Login/LoginPrompt";
+import LoginPrompt from "./components/Auth/Login/LoginPrompt";
 import { useContext } from "react";
+import ForgotPassword from "./page/ForgotPasswordPage";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -23,6 +24,7 @@ function App() {
           <Route path="/Coba" element={<Coba />} />
           <Route path="/SignUp" element={<RegisterPage />} />
           <Route path="/SignIn" element={<LoginPage />} />
+          <Route path="/ResetPassword" element={<ForgotPassword />} />
           <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} />
           <Route
             path="/DashboardStore/product/:id"

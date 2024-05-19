@@ -1,5 +1,6 @@
 import React from 'react';
-import Register from '../components/Register/Register';
+import Navbar from '../components/LandingPage/Navbar';
+import Register from '../components/Auth/Register/Register';
 import NavbarAuth from '../components/NavbarAuth';
 
 const RegisterPage = () => {
