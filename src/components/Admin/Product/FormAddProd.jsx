@@ -87,7 +87,6 @@ function FormAddProd() {
 
   return (
     <div className="mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl mb-4 font-semibold">Add Product</h2>
       <form onSubmit={addProduct}>
         <div className="mb-4">
           <label

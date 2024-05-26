@@ -105,7 +105,7 @@ function ProductTable() {
                 <td className="px-4 py-2">{product.name}</td>
                 <td className="px-4 py-2">{product.price}</td>
                 <td className="px-4 py-2">{product.stock}</td>
-                <td className="px-4 py-2 ">{product.desc}</td>
+                <td className="px-4 py-2 max-w-xs truncate">{product.desc}</td>
                 <td className="px-4 py-2">
                     <div className="flex gap-2">
                       <Link to={`/editProduct/${product.id}`}><button className="bg-blue-500 text-white px-2 py-1 rounded-md"><MdEdit /></button></Link>

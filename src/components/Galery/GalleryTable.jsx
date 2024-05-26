@@ -87,7 +87,7 @@ function GalleryTable() {
                 )}
               </td>
               <td className="py-2 px-4 border-b border-gray-200">{item.title}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{item.desc}</td>
+              <td className="py-2 px-4 border-b border-gray-200 max-w-xs truncate">{item.desc}</td>
               <td className="py-2 px-4 border-b border-gray-200">{item.mediaType}</td>
               <td className="px-4 py-2">
                 <div className="flex gap-2">

@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../Sidebar"; // Ensure this path is correct
+import Sidebar from "../../Coba";
 
 function Layout() {
+  // bg-[#166534]
   return (
     <div className="flex bg-[#166534]">
       <Sidebar />

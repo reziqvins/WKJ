@@ -18,13 +18,9 @@ const TopBar = ({ title }) => {
   };
 
   return (
-    <div className="">
-      <div className="flex md:hidden justify-around">
-        <img
-          src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png"
-          className="h-[50px] ml-12"
-          alt=""
-        />
+    <div className="p-4">
+      <div className="flex md:hidden justify-end">
+        
         <button>
           <VscSignOut className="hover:text-yellow-400" size={25} />
         </button>
