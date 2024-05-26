@@ -1,8 +1,9 @@
-import React from "react";
+import React from 'react'
 
-function Coba() {
+function Profil() {
   return (
-    <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen">
+    <div>
+      <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen">
       <div className="w-full md:w-1/3 bg-white p-6 flex flex-col items-center shadow-md">
         <div className="relative">
           <img
@@ -128,7 +129,8 @@ function Coba() {
         </form>
       </div>
     </div>
-  );
+    </div>
+  )
 }
 
-export default Coba;
+export default Profil

@@ -22,7 +22,9 @@ import GalleryPage from "./page/Admin/Gallery/GalleryPage";
 import FormAddGallery from "./components/Galery/FormAddGallery";
 import EditGallery from "./page/Admin/Gallery/EditGallery";
 import UserPage from "./page/Admin/User/UserPage";
-import profil from "./components/Profile/profile"
+import profil from "./components/Profile/profil"
+import Profil from "./components/Profile/profil";
+import UserProfilePage from "./page/UserProfilePage";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -36,7 +38,7 @@ function App() {
         <Route path="/SignUp" element={<RegisterPage />} />
         <Route path="/SignIn" element={<LoginPage />} />
         <Route path="/ResetPassword" element={<ForgotPassword />} />
-        <Route path="/UserProfile" element={<profil/>} />
+        <Route path="/UserProfile" element={<UserProfilePage/>} />
         <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} />
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />
 

@@ -66,10 +66,12 @@ const Navbar = () => {
                   className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-28 left-[-10px]"
                 >
                   <li>
-                    <button>
-                      <CgProfile />
-                      Profil
-                    </button>
+                    <Link to="/UserProfile">
+                      <button className="flex gap-3">
+                        <CgProfile />
+                        Profil
+                      </button>
+                    </Link>
                   </li>
                   <li>
                     <button onClick={handleLogout}>
@@ -136,10 +138,12 @@ const Navbar = () => {
                 className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 left-[-10px]"
               >
                 <li>
-                  <button>
-                    <CgProfile />
-                    Profil
-                  </button>
+                  <Link to="/UserProfile">
+                    <button>
+                      <CgProfile />
+                      Profil
+                    </button>
+                  </Link>
                 </li>
                 <li>
                   <button onClick={handleLogout}>
