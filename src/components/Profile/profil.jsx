@@ -2,9 +2,9 @@ import React from 'react'
 
 function Profil() {
   return (
-    <div>
-      <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen">
-      <div className="w-full md:w-1/3 bg-white p-6 flex flex-col items-center shadow-md">
+    <div className='p-4'>
+      <div className="flex flex-col md:flex-row bg-gray-100 min-h-screen rounded-lg">
+      <div className="w-full md:w-1/3 bg-green-400 p-6 flex flex-col items-center shadow-md rounded-l-lg">
         <div className="relative">
           <img
             src="https://via.placeholder.com/150"

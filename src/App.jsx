@@ -5,7 +5,7 @@ import "./App.css";
 import ProductDetail from "./components/Store/ProductDetail/ProductDetail";
 import { produkInovasi } from "./data/ProdukInovasi";
 import RegisterPage from "./page/RegisterPage";
-import Coba from "./components/Coba";
+// import Coba from "./components/Coba";
 import LoginPage from "./page/LoginPage";
 import KonsultasiPage from "./page/KonsultasiPage";
 import { AuthContext } from "./Context/AuthContext";
@@ -22,23 +22,25 @@ import GalleryPage from "./page/Admin/Gallery/GalleryPage";
 import FormAddGallery from "./components/Galery/FormAddGallery";
 import EditGallery from "./page/Admin/Gallery/EditGallery";
 import UserPage from "./page/Admin/User/UserPage";
-import profil from "./components/Profile/profil"
-import Profil from "./components/Profile/profil";
 import UserProfilePage from "./page/UserProfilePage";
-
+import CartPage from "./page/CartPage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const { currentUser } = useContext(AuthContext);
 
   return (
     <Router>
+      <ToastContainer/>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/DashboardStore" element={<DashboardStore />} />
-        <Route path="/Coba" element={<Coba />} />
+        {/* <Route path="/Coba" element={<Coba />} /> */}
         <Route path="/SignUp" element={<RegisterPage />} />
         <Route path="/SignIn" element={<LoginPage />} />
         <Route path="/ResetPassword" element={<ForgotPassword />} />
         <Route path="/UserProfile" element={<UserProfilePage/>} />
+        <Route path="/Cart" element={<CartPage/>} />
         <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} />
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />
 

@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../../Coba";
+import Sidebar from "../Sidebar";
 
 function Layout() {
   // bg-[#166534]
