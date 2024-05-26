@@ -37,15 +37,27 @@ const Navbar = () => {
             <li>
               <Link to="/">Beranda</Link>
             </li>
-            <li><Link to="/Konsultasi">Konsultasi</Link></li>
+            <li>
+              <Link to="/Admin">Admin</Link>
+            </li>
+            <li>
+              <Link to="/Konsultasi">Konsultasi</Link>
+            </li>
             <li>
               <Link to="/DashboardStore">Toko</Link>
             </li>
             {currentUser ? (
               <li className="dropdown dropdown-hover">
-                <div tabIndex={0} role="button" className="btn bg-transparent border-none outline-none">
-                  
-                  <img className="w-8 h-8 object-cover rounded-full" src={currentUser.photoURL} alt="" />
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn bg-transparent border-none outline-none"
+                >
+                  <img
+                    className="w-8 h-8 object-cover rounded-full"
+                    src={currentUser.photoURL}
+                    alt=""
+                  />
 
                   <span>{currentUser.displayName}</span>
                 </div>
@@ -54,11 +66,15 @@ const Navbar = () => {
                   className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-28 left-[-10px]"
                 >
                   <li>
-                    <button><CgProfile />Profil</button>
+                    <button>
+                      <CgProfile />
+                      Profil
+                    </button>
                   </li>
                   <li>
                     <button onClick={handleLogout}>
-                      <VscSignOut />logout
+                      <VscSignOut />
+                      logout
                     </button>
                   </li>
                 </ul>
@@ -91,14 +107,28 @@ const Navbar = () => {
           <li className="p-4 hover:bg-gray-100">
             <Link to="/">Beranda</Link>
           </li>
+          <li>
+            <Link to="/Admin">Admin</Link>
+          </li>
+
+          <li className="p-4 hover:bg-gray-100">
+            <Link to="/Konsultasi">Konsultasi</Link>
+          </li>
           <li className="p-4 hover:bg-gray-100">
             <Link to="/DashboardStore">Toko</Link>
           </li>
-          <li  className="p-4 hover:bg-gray-100"><Link to="/Konsultasi">Konsultasi</Link></li>
           {currentUser ? (
             <li className="dropdown dropdown-end">
-              <div tabIndex={0} role="button" className="btn bg-transparent border-none outline-none">
-                <img className="w-8 h-8 object-cover rounded-full" src={currentUser.photoURL} alt="" />
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn bg-transparent border-none outline-none"
+              >
+                <img
+                  className="w-8 h-8 object-cover rounded-full"
+                  src={currentUser.photoURL}
+                  alt=""
+                />
                 <span>{currentUser.displayName}</span>
               </div>
               <ul
@@ -106,11 +136,15 @@ const Navbar = () => {
                 className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 left-[-10px]"
               >
                 <li>
-                  <button><CgProfile />Profil</button>
+                  <button>
+                    <CgProfile />
+                    Profil
+                  </button>
                 </li>
                 <li>
                   <button onClick={handleLogout}>
-                    <VscSignOut />logout
+                    <VscSignOut />
+                    logout
                   </button>
                 </li>
               </ul>

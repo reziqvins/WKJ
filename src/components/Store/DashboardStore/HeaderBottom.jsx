@@ -1,36 +1,48 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { FaSearch, FaUser, FaCaretDown, FaShoppingCart } from "react-icons/fa";
-import Flex from "./Flex";
 import { Link, useNavigate } from "react-router-dom";
-import { produkInovasi } from "../../../data/ProdukInovasi";
-import { BsSuitHeartFill } from "react-icons/bs";
+import { db } from "../../../Firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const HeaderBottom = () => {
-  const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [products, setProducts] = useState([]);
   const navigate = useNavigate();
-  const ref = useRef();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        const productsArray = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProducts(productsArray);
+      } catch (error) {
+        console.error("Error fetching products: ", error);
+      }
+    };
+
+    fetchProducts();
+  }, []); // Empty dependency array to run only once on component mount
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
 
   useEffect(() => {
-    const filtered = produkInovasi.filter(
+    const filtered = products.filter(
       (item) =>
-        item.title &&
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+        item.name &&
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredProducts(filtered);
-  }, [searchQuery]);
+  }, [searchQuery, products]);
 
   const handleProductClick = (productId) => {
-    setShowSearchBar(false);
     setSearchQuery("");
     navigate(`/DashboardStore/product/${productId}`);
   };
@@ -38,9 +50,9 @@ const HeaderBottom = () => {
   return (
     <div className="w-full bg-[#F5F5F3] relative">
       <div className="max-w-container mx-auto">
-        <Flex className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full px-4 pb-4 lg:pb-0 h-full lg:h-24">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between w-full px-4 pb-4 lg:pb-0 h-full lg:h-24">
           <h1 className="font-bold">
-            <Link to="/DashboardStore"></Link>Toko WKJ
+            <Link to="/DashboardStore">Toko WKJ</Link>
           </h1>
 
           <div className="relative w-full lg:w-[600px] h-[50px] text-base text-primeColor bg-white flex items-center gap-2 justify-between px-6 rounded-xl">
@@ -71,11 +83,11 @@ const HeaderBottom = () => {
                     >
                       <img
                         className="w-24 h-28"
-                        src={item.linkImg}
+                        src={item.img}
                         alt="productImg"
                       />
                       <div className="flex flex-col gap-1">
-                        <p className="font-semibold text-lg">{item.title}</p>
+                        <p className="font-semibold text-lg">{item.name}</p>
                         <p className="text-xs">
                           {item.des && item.des.length > 100
                             ? `${item.des.slice(0, 100)}...`
@@ -138,7 +150,7 @@ const HeaderBottom = () => {
               </div>
             </Link>
           </div>
-        </Flex>
+        </div>
       </div>
     </div>
   );

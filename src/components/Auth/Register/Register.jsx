@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { BiSolidImageAdd } from "react-icons/bi";
 import Swal from "sweetalert2";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db, storage } from "../../../Firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { auth, db } from "../../../Firebase"; // Menghapus import storage dan fungsi terkait
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -18,49 +17,46 @@ const Register = () => {
     const displayName = e.target[0].value;
     const email = e.target[1].value;
     const password = e.target[2].value;
-    const file = e.target[3].files[0];
+    // Hapus baris berikut yang mengambil file gambar dari input
+    // const file = e.target[3].files[0];
 
     try {
       //Create user
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      //Create a unique image name
-      const date = new Date().getTime();
-      const storageRef = ref(storage, `${displayName + date}`);
+      // Setel foto profil default
+      const photoURL = "https://res.cloudinary.com/dap6ohre8/image/upload/v1716714913/WKJ/Frame_349_q3utva.png";
 
-      await uploadBytesResumable(storageRef, file).then(() => {
-        getDownloadURL(storageRef).then(async (downloadURL) => {
-          try {
-            //Update profile
-            await updateProfile(res.user, {
-              displayName,
-              photoURL: downloadURL,
-            });
-            //create user on firestore
-            await setDoc(doc(db, "users", res.user.uid), {
-              uid: res.user.uid,
-              displayName,
-              email,
-              photoURL: downloadURL,
-            });
-
-            //create empty user chats on firestore
-            await setDoc(doc(db, "userChats", res.user.uid), {});
-            Swal.fire({
-              icon: "success",
-              title: "Register berhasil",
-              text: "Anda berhasil mendaftar!",
-            });
-
-            // Redirect ke halaman utama
-            navigate("/SignIn");
-          } catch (err) {
-            console.log(err);
-            setErr(true);
-            setLoading(false);
-          }
+      try {
+        //Update profile
+        await updateProfile(res.user, {
+          displayName,
+          photoURL,
         });
-      });
+
+        //create user on firestore
+        await setDoc(doc(db, "users", res.user.uid), {
+          uid: res.user.uid,
+          displayName,
+          email,
+          photoURL,
+        });
+
+        //create empty user chats on firestore
+        await setDoc(doc(db, "userChats", res.user.uid), {});
+        Swal.fire({
+          icon: "success",
+          title: "Register berhasil",
+          text: "Anda berhasil mendaftar!",
+        });
+
+        // Redirect ke halaman utama
+        navigate("/SignIn");
+      } catch (err) {
+        console.log(err);
+        setErr(true);
+        setLoading(false);
+      }
     } catch (err) {
       setErr(true);
       setLoading(false);
@@ -107,14 +103,15 @@ const Register = () => {
                   className="border border-b-gray-100 rounded-md py-1 px-2 w-full"
                 />
               </div>
-              <div className="mt-5">
-              <input required
-                type="file"
-                id="file"
-                className="file-input file-input-bordered file-input-[#20B486] w-full h-9 max-w-xs" />
-              
-              </div>
-             
+              {/* Hapus input gambar */}
+              {/* <div className="mt-5">
+                <input
+                  required
+                  type="file"
+                  id="file"
+                  className="file-input file-input-bordered file-input-[#20B486] w-full h-9 max-w-xs"
+                />
+              </div> */}
               <button
                 disabled={loading}
                 className="w-full mt-3 rounded-md bg-[#20B486] py-3 text-center text-white"

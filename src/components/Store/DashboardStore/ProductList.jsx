@@ -8,10 +8,9 @@ function ProductList({ products }) {
         <ProductCard
           key={product.id}
           id={product.id}
-          title={product.title}
-          rating={product.rating}
+          name={product.name}
           price={product.price}
-          linkImg={product.linkImg}
+          img={product.img}
         />
       ))}
     </div>

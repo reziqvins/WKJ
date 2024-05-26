@@ -1,9 +1,33 @@
-import React from "react";
-import Card from "./Card";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import GaleriCard from "./GaleriCard";
+import { db } from "../../Firebase"; // Sesuaikan path jika perlu
+import { collection, getDocs } from "firebase/firestore";
 
 const Galeri = () => {
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchGalleryItems = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'gallery'));
+        const items = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setGalleryItems(items);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchGalleryItems();
+  }, []);
+
   var settings = {
     dots: true,
     infinite: false,
@@ -38,15 +62,15 @@ const Galeri = () => {
           dots: true,
         },
       },
-      // You can unslick at a given breakpoint now by adding:
-      // settings: "unslick"
-      // instead of a settings object
     ],
   };
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div className="w-full bg-white md:px-32 p-4">
-      <div className="md:max-w-[1480px] m-auto max-w-[800px]  md:px-0">
+      <div className="md:max-w-[1480px] m-auto max-w-[800px] md:px-0">
         <div className="py-4">
           <h1 className="py-3 text-3xl font-bold">
             Galeri <span className="text-[#20B486]">WKJ</span>
@@ -57,9 +81,9 @@ const Galeri = () => {
         </div>
 
         <Slider {...settings}>
-          <GaleriCard />
-          <GaleriCard />
-          <GaleriCard />
+          {galleryItems.map(item => (
+            <GaleriCard key={item.id} item={item} />
+          ))}
         </Slider>
       </div>
     </div>

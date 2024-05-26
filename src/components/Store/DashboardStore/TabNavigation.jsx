@@ -2,7 +2,7 @@ import React from "react";
 
 function TabNavigation({ categories, activeCategory, setActiveCategory }) {
   return (
-    <div className="flex justify-center mb-4 mt-10 ">
+    <div className="flex justify-center mb-4 mt-10">
       {categories.map((category) => (
         <button
           key={category}
