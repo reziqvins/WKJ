@@ -21,6 +21,9 @@ function ProductList({ products }) {
           <SkeletonProductCard />
           <SkeletonProductCard />
           <SkeletonProductCard />
+          <SkeletonProductCard />
+          <SkeletonProductCard />
+          <SkeletonProductCard />
         </>
       ) : (
         // Tampilkan data aktual jika loading adalah false

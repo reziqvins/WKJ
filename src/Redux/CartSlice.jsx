@@ -7,6 +7,7 @@ const initialState = {
     : [],
   cartTotalQuantity: 0,
   cartTotalAmount: 0,
+  shippingMethod: 'JNE', // default shipping method
 };
 
 const cartSlice = createSlice({
@@ -62,23 +63,15 @@ const cartSlice = createSlice({
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
     },
     removeFromCart(state, action) {
-      state.cartItems.map((cartItem) => {
-        if (cartItem.id === action.payload.id) {
-          const nextCartItems = state.cartItems.filter(
-            (item) => item.id !== cartItem.id
-          );
-
-          state.cartItems = nextCartItems;
-
-          toast.error("Product removed from cart", {
-            position: "bottom-left",
-          });
-        }
-        localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
-        return state;
+      state.cartItems = state.cartItems.filter(
+        (item) => item.id !== action.payload.id
+      );
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+      toast.error("Product removed from cart", {
+        position: "bottom-left",
       });
     },
-    getTotals(state, action) {
+    getTotals(state) {
       let { total, quantity } = state.cartItems.reduce(
         (cartTotal, cartItem) => {
           const { price, cartQuantity } = cartItem;
@@ -94,19 +87,33 @@ const cartSlice = createSlice({
           quantity: 0,
         }
       );
+      const shippingCost = state.shippingMethod === 'JNE' ? 20000 : 25000;
+      total += shippingCost;
       total = parseFloat(total.toFixed(2));
       state.cartTotalQuantity = quantity;
       state.cartTotalAmount = total;
     },
-    clearCart(state, action) {
+    clearCart(state) {
       state.cartItems = [];
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
       toast.error("Cart cleared", { position: "bottom-left" });
     },
+    setShippingMethod(state, action) {
+      state.shippingMethod = action.payload;
+      toast.info(`Shipping method set to ${action.payload}`, {
+        position: "bottom-left",
+      });
+    },
   },
 });
 
-export const { addToCart, decreaseCart, removeFromCart, getTotals, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  decreaseCart,
+  removeFromCart,
+  getTotals,
+  clearCart,
+  setShippingMethod,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

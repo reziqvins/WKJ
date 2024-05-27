@@ -46,7 +46,7 @@ function Profil() {
               <img
                 src={currentUser.photoURL || "/default-profile.png"}
                 alt="Profile"
-                className="w-24 h-24 rounded-full"
+                className="w-24 h-24 rounded-full object-cover"
               />
               <div className="absolute bottom-0 right-0 bg-blue-500 rounded-full p-1">
                 <svg
