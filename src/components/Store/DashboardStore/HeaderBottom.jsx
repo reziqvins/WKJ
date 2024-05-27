@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { db } from "../../../Firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useSelector } from "react-redux";
+import { TiShoppingCart } from "react-icons/ti";
 
 const HeaderBottom = () => {
   const [showUser, setShowUser] = useState(false);
@@ -39,8 +40,7 @@ const HeaderBottom = () => {
   useEffect(() => {
     const filtered = products.filter(
       (item) =>
-        item.name &&
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredProducts(filtered);
   }, [searchQuery, products]);
@@ -113,18 +113,19 @@ const HeaderBottom = () => {
           {/* User and Cart */}
           <div className=" z-20">
             {/* User dropdown */}
-            
-           
 
             {/* Cart */}
-            
-              <div className="relative cursor-pointer">
-              <Link to="/cart">
-                <FaShoppingCart className="text-3xl opacity-80" />
-                <div className="absolute h-4 w-4 rounded-full z-10 right-[-3px] bottom-[-3px] items-center justify-center text-[10px] bg-black text-white">{cartTotalQuantity}</div>
-                </Link>
-              </div>
 
+            <div className="relative cursor-pointer">
+              <Link to="/cart" className="flex items-center justify-center">
+                <TiShoppingCart className="text-3xl opacity-80" />
+                {cartTotalQuantity > 0 && (
+                  <div className="absolute h-4 w-4 rounded-full z-10 top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white flex items-center justify-center text-xs">
+                    {cartTotalQuantity}
+                  </div>
+                )}
+              </Link>
+            </div>
           </div>
         </div>
       </div>

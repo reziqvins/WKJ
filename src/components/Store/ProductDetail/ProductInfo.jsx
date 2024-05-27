@@ -1,17 +1,15 @@
-// ProductInfo.jsx
 import React from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../../Redux/CartSlice"; // Perubahan di sini
+import { addToCart } from "../../../Redux/CartSlice"; 
 
 const ProductInfo = ({ productInfo }) => {
   const dispatch = useDispatch();
 
-
   const handleAddToCart = (product) => {
-    const { createdAt, updatedAt, ...productWithoutTimestamps } = product; // Menghapus properti `createdAt` dan `updatedAt` sebelum menambahkan produk ke keranjang
+    const { createdAt, updatedAt, ...productWithoutTimestamps } = product;
   
-    if (productWithoutTimestamps.stock > 0) { // Pastikan produk tersedia
-      dispatch(addToCart(productWithoutTimestamps));
+    if (productWithoutTimestamps.stock > 0) {
+      dispatch(addToCart(productWithoutTimestamps)); // Panggil aksi addToCart dari Redux
     } else {
       alert("Product is out of stock");
     }
@@ -28,7 +26,7 @@ const ProductInfo = ({ productInfo }) => {
         <span className="font-normal">Kategori:</span> {productInfo.categ}
       </p>
       <button
-        onClick={() => handleAddToCart(productInfo)} // Aktifkan onClick handler
+        onClick={() => handleAddToCart(productInfo)}
         className="w-full py-4 bg-blue-500 hover:bg-blue-600 duration-300 text-white text-lg font-titleFont"
       >
         Add to Cart
