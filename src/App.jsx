@@ -13,7 +13,7 @@ import LoginPrompt from "./components/Auth/Login/LoginPrompt";
 import { useContext } from "react";
 import ForgotPassword from "./page/ForgotPasswordPage";
 import Layout from "./components/Admin/Layout/Layout"; // Correct import here
-
+import Coba from "./components/Coba";
 import AdminDashboard from "./page/Admin/AdminDashboard";
 import AddProduct from "./page/Admin/Product/AddProduct";
 import ProductPage from "./page/Admin/Product/ProductPage";
@@ -35,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/DashboardStore" element={<DashboardStore />} />
-        {/* <Route path="/Coba" element={<Coba />} /> */}
+        <Route path="/Coba" element={<Coba />} />
         <Route path="/SignUp" element={<RegisterPage />} />
         <Route path="/SignIn" element={<LoginPage />} />
         <Route path="/ResetPassword" element={<ForgotPassword />} />

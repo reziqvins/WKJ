@@ -40,6 +40,10 @@ const Register = () => {
           displayName,
           email,
           photoURL,
+          phoneNumber: "", 
+          address: "", 
+          postalCode: "", 
+          role: "Member",
         });
 
         //create empty user chats on firestore
