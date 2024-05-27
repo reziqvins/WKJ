@@ -21,9 +21,9 @@ const TopBar = ({ title }) => {
     <div className="p-4">
       <div className="flex md:hidden justify-end">
         
-        <button>
+        <Link to={"/DashboardStore"}>
           <VscSignOut className="hover:text-yellow-400" size={25} />
-        </button>
+        </Link>
       </div>
       <div className="sm:flex items-center justify-between p-3 hidden sm:block text-base-300">
         <h1 className="text-[20px] font-bold text-black">{title}</h1>
