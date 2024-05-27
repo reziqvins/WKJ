@@ -89,6 +89,7 @@ function UserTable() {
               <th className="px-4 py-2">Foto</th>
               <th className="px-4 py-2">Nama</th>
               <th className="px-4 py-2">Email</th>
+              <th className="px-4 py-2">Role</th>
               <th className="px-4 py-2">Aksi</th>
             </tr>
           </thead>
@@ -108,13 +109,14 @@ function UserTable() {
                 </td>
                 <td className="px-4 py-2">{user.displayName}</td>
                 <td className="px-4 py-2">{user.email}</td>
+                <td className="px-4 py-2">{user.role}</td>
                 <td className="px-4 py-2">
                   <div className="flex gap-2">
-                    {/* <Link to={`/editUser/${user.id}`}>
+                    <Link to={`/editUser/${user.id}`}>
                       <button className="bg-blue-500 text-white px-2 py-1 rounded-md">
                         <MdEdit />
                       </button>
-                    </Link> */}
+                    </Link>
                     <button
                       onClick={() => handleDeleteUser(user.id)}
                       className="bg-red-500 text-white px-2 py-1 rounded-md"
