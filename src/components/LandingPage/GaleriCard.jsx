@@ -2,7 +2,7 @@ import React from "react";
 
 const GaleriCard = ({ item }) => {
   return (
-    <div className="bg-white p-8 rounded-3xl shadow-xl my-8 mx-2">
+    <div className="bg-white md:p-8 rounded-3xl shadow-xl my-8 mx-2">
       <div className="card">
         <div className="card-body">
           <h5 className="card-title text-xl font-bold mb-2">{item.title}</h5>
