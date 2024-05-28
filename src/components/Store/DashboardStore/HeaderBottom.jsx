@@ -116,9 +116,9 @@ const HeaderBottom = () => {
 
             {/* Cart */}
 
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer mt-4 md:mt-0 ">
               <Link to="/cart" className="flex items-center justify-center">
-                <TiShoppingCart className="text-3xl opacity-80" />
+                <TiShoppingCart className="text-3xl opacity-80 " />
                 {cartTotalQuantity > 0 && (
                   <div className="absolute h-4 w-4 rounded-full z-10 top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white flex items-center justify-center text-xs">
                     {cartTotalQuantity}

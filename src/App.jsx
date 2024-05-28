@@ -30,6 +30,7 @@ import EditUserPage from "./page/Admin/User/EditUserPage";
 import SettingPage from "./page/SettingPage";
 import Inbox from "./page/Admin/Inbox";
 import OrderPage from "./page/Admin/OrderPage";
+import AdminKonsultasi from "./page/Admin/AdminKonsultasi";
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -56,7 +57,7 @@ function App() {
         <Route path="/admin/gallery" element={<GalleryPage />} />
         <Route path="/admin/AddGallery" element={<FormAddGallery />} />
         <Route path="/admin/editUser/:id" element={<EditUserPage/>}/>
-        <Route path="/admin/konsultasi" element={<Inbox />} />
+        <Route path="/admin/konsultasi" element={<AdminKonsultasi />} />
         <Route path="/admin/setting" element={<SettingPage />} />
         <Route path="/admin/user" element={<UserPage />} />
         <Route path="/admin/orders" element={<OrderPage />} />

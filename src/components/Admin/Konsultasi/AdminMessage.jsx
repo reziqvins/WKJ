@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { AuthContext } from "../../Context/AuthContext";
-import { ChatContext } from "../../Context/ChatContext";
+import { AuthContext } from "../../../Context/AuthContext";
+import { ChatContext } from "../../../Context/ChatContext";
 
-const Message = ({ message }) => {
+const AdminMessage = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
@@ -36,7 +36,7 @@ const Message = ({ message }) => {
         alt=""
       />
       <div className="flex flex-col gap-1">
-        <div className={`flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-white ${message.senderId === currentUser.uid? 'rounded-br-xl rounded-tl-xl rounded-bl-xl':'rounded-br-xl rounded-tr-xl rounded-bl-xl'}`}>
+        <div className="flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-white rounded-e-xl rounded-es-xl ">
           <div className="flex items-center space-x-2 rtl:space-x-reverse mb-2">
             <span className="text-sm font-semibold text-gray-900">
               {message.senderId === currentUser.uid ? currentUser.displayName : data.user.displayName}
@@ -88,4 +88,4 @@ const Message = ({ message }) => {
   );
 };
 
-export default Message;
+export default AdminMessage;
