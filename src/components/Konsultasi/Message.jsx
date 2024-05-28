@@ -27,6 +27,7 @@ const Message = ({ message }) => {
     a.download = "image";
     window.open(message.img, "_blank");
   };
+  
 
   return (
     <div className={`flex ${message.senderId === currentUser.uid ? 'flex-row-reverse' : ''} items-start gap-2.5 mb-4`} ref={ref}>
