@@ -36,7 +36,7 @@ const AdminMessage = ({ message }) => {
         alt=""
       />
       <div className="flex flex-col gap-1">
-        <div className="flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-white rounded-e-xl rounded-es-xl ">
+        <div className={`flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-white ${message.senderId === currentUser.uid ? 'rounded-bl-xl rounded-br-xl rounded-tl-xl' : 'rounded-bl-xl rounded-br-xl rounded-tr-xl'}`}>
           <div className="flex items-center space-x-2 rtl:space-x-reverse mb-2">
             <span className="text-sm font-semibold text-gray-900">
               {message.senderId === currentUser.uid ? currentUser.displayName : data.user.displayName}

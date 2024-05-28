@@ -16,6 +16,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 const AdminInput = () => {
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
+  const [imgPreview, setImgPreview] = useState(null);
 
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
@@ -71,52 +72,59 @@ const AdminInput = () => {
 
     setText("");
     setImg(null);
+    setImgPreview(null);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImg(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImgPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
-    <div className="input bg-white h-16 flex items-center justify-between px-4">
-      <input
-        className="w-[90%] border-none outline-none text-gray-800 text-lg"
-        type="text"
-        onChange={(e) => setText(e.target.value)}
-        value={text}
-        placeholder="Ceritakan keluhan anda"
-      />
-      <div className="send w-[23%] flex items-center gap-4">
-      <label htmlFor="file" className="cursor-pointer">
-          <img src={Img} alt="" className="h-6" />
-          <input type="file" style={{ display: "none" }} onChange={(e) => setImg(e.target.files[0])} id="file" />
-        </label>
-        <button onClick={handleSend} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer">Kirim</button>
+    <div className="bg-white p-4 flex flex-col">
+      <div className="flex items-center justify-between mb-2">
+        <input
+          className="w-[90%] border-none outline-none text-gray-800 text-lg"
+          type="text"
+          onChange={(e) => setText(e.target.value)}
+          value={text}
+          placeholder="Ceritakan keluhan anda"
+        />
+        <div className="send w-[23%] flex items-center gap-4">
+          <label htmlFor="file" className="cursor-pointer">
+            <img src={Img} alt="" className="h-6" />
+            <input
+              type="file"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+              id="file"
+            />
+          </label>
+          <button
+            onClick={handleSend}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
+          >
+            Kirim
+          </button>
+        </div>
       </div>
+      {imgPreview && (
+        <div className="image-preview mb-2">
+          <img
+            src={imgPreview}
+            alt="Selected preview"
+            className="max-h-48 object-contain"
+          />
+        </div>
+      )}
     </div>
-    // <div className="input bg-white h-16 flex items-center justify-between px-4">
-    //   <input
-    //     type="text"
-    //     placeholder="Type something..."
-    //     onChange={(e) => setText(e.target.value)}
-    //     value={text}
-    //     className="w-full border-none outline-none text-gray-800 text-lg"
-    //   />
-    //   <div className="send flex items-center gap-4">
-    //     <img src={Attach} alt="" className="h-6 cursor-pointer" />
-    //     <label htmlFor="file" className="cursor-pointer">
-    //       <img src={Img} alt="" className="h-6" />
-    //       <input
-    //         type="file"
-    //         style={{ display: "none" }}
-    //         id="file"
-    //         onChange={(e) => setImg(e.target.files[0])}
-    //       />
-    //     </label>
-    //     <button
-    //       onClick={handleSend}
-    //       className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
-    //     >
-    //       Send
-    //     </button>
-    //   </div>
-    // </div>
   );
 };
 

@@ -11,8 +11,7 @@ const AdminNavbar = () => {
       {currentUser ? (
           <>
             <img src={currentUser.photoURL} alt="User Avatar" className="h-9 w-9 rounded-full object-cover" />
-            <span>{currentUser.displayName}</span>
-            <button onClick={() => signOut(auth)} className="bg-purple-700 text-white text-xs py-1 px-2 rounded cursor-pointer">Logout</button>
+           
           </>
         ) : (
           <span>Loading...</span>
