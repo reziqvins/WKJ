@@ -4,6 +4,7 @@ import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { Link } from 'react-router-dom';
 import { MdEdit, MdDelete } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import { PropagateLoader } from 'react-spinners';
 
 function GalleryTable() {
   const [galleryItems, setGalleryItems] = useState([]);
@@ -55,15 +56,28 @@ function GalleryTable() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <PropagateLoader color="#2dd4bf" loading={loading} size={15} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: {error}</p>;
+  }
 
   return (
     <div className="mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
-      <div className="flex justify-end">
-      <button className="bg-[#2dd4bf] flex justify-between p-2 h-[2.5rem] w-full md:w-auto rounded-lg  md:mt-0 mb-5"><Link to="/AddGallery">Tambah Media</Link></button>
-
-        </div>      <table className="min-w-full bg-white">
+      <div className="flex justify-end mb-5">
+        <Link to="/admin/AddGallery">
+          <button className="bg-[#2dd4bf] flex justify-between p-2 h-[2.5rem] w-full md:w-auto rounded-lg md:mt-0">
+            Tambah Media
+          </button>
+        </Link>
+      </div>
+      <table className="min-w-full bg-white">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b border-gray-200 bg-gray-100">Media</th>
@@ -91,7 +105,7 @@ function GalleryTable() {
               <td className="py-2 px-4 border-b border-gray-200">{item.mediaType}</td>
               <td className="px-4 py-2">
                 <div className="flex gap-2">
-                  <Link to={`/editGallery/${item.id}`}>
+                  <Link to={`/admin/editGallery/${item.id}`}>
                     <button className="bg-blue-500 text-white px-2 py-1 rounded-md">
                       <MdEdit />
                     </button>

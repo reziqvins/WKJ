@@ -28,6 +28,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditUserPage from "./page/Admin/User/EditUserPage";
 import SettingPage from "./page/SettingPage";
+import Inbox from "./page/Admin/Inbox";
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -49,15 +50,16 @@ function App() {
         {/* Nesting admin routes under Layout */}
         <Route element={<Layout />}>
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/addProduct" element={<AddProduct />} />
-          <Route path="/Products" element={<ProductPage />} />
-        <Route path="/Gallery" element={<GalleryPage />} />
-        <Route path="/AddGallery" element={<FormAddGallery />} />
-        <Route path="/editUser/:id" element={<EditUserPage/>}/>
-        <Route path="/User" element={<UserPage />} />
-        <Route path="/setting" element={<SettingPage />} />
-        <Route path="/editGallery/:id" element={<EditGallery/>} />
-          <Route exact path="/editProduct/:id" element={<EditProduct />} />
+          <Route path="/admin/addProduct" element={<AddProduct />} />
+          <Route path="/admin/products" element={<ProductPage />} />
+        <Route path="/admin/gallery" element={<GalleryPage />} />
+        <Route path="/admin/AddGallery" element={<FormAddGallery />} />
+        <Route path="/admin/editUser/:id" element={<EditUserPage/>}/>
+        <Route path="/admin/user" element={<UserPage />} />
+        <Route path="/admin/konsultasi" element={<Inbox />} />
+        <Route path="/admin/setting" element={<SettingPage />} />
+        <Route path="/admin/editGallery/:id" element={<EditGallery/>} />
+          <Route exact path="/admin/editProduct/:id" element={<EditProduct />} />
 
         </Route>
       </Routes>

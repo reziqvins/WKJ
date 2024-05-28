@@ -72,12 +72,12 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link
-            to="/inbox"
+            to="/admin/konsultasi"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/inbox" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/konsultasi" ? "text-[#F0B608]  " : ""
               }`}
             >
               <MdInbox className="text-2xl" />
@@ -87,12 +87,12 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link
-            to="/Products"
+            to="/admin/products"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-9"
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/Products" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/products" ? "text-[#F0B608]  " : ""
               }`}
             >
               <FaBox className="text-2xl" />
@@ -102,12 +102,12 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link
-            to="/Orders"
+            to="/admin/orders"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/Orders" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/orders" ? "text-[#F0B608]  " : ""
               }`}
             >
               <FaCartArrowDown className="text-2xl" />
@@ -119,12 +119,12 @@ const Sidebar = () => {
           </Link>
 
           <Link
-            to="/Gallery"
+            to="/admin/gallery"
             className=" flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/Gallery" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/gallery" ? "text-[#F0B608]  " : ""
               }`}
             >
               <GrGallery className="text-2xl" />
@@ -134,12 +134,12 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link
-            to="/User"
+            to="/admin/user"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-9"
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/User" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/user" ? "text-[#F0B608]  " : ""
               }`}
             >
               <MdAccountCircle className="text-2xl" />
@@ -149,7 +149,7 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link
-            to="/setting"
+            to="/admin/setting"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
           >
             <li

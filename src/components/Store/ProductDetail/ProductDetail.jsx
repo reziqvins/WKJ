@@ -6,6 +6,7 @@ import Navbar from "../../LandingPage/Navbar";
 import Footer from "../../LandingPage/Footer";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../Firebase";
+import { PropagateLoader } from "react-spinners";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -48,8 +49,8 @@ function ProductDetail() {
   if (loading) {
     return (
       <div className="container mx-auto">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <h2>Loading...</h2>
+        <div className="max-w-4xl min-h-screen flex justify-center items-center mx-auto px-4 py-8">
+        <PropagateLoader color="#36d7b7" />
         </div>
       </div>
     );

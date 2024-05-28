@@ -6,10 +6,12 @@ import Search from "../Search"; // Sesuaikan path jika diperlukan
 import { TbReload } from "react-icons/tb";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Swal from "sweetalert2";
+import { PropagateLoader } from "react-spinners";
 
 function ProductTable() {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Fungsi untuk mengambil data produk dari Firestore
   const fetchProducts = async () => {
@@ -20,6 +22,7 @@ function ProductTable() {
         ...doc.data(),
       }));
       setProducts(productsArray);
+      setLoading(false);
     } catch (error) {
       setError(error.message);
     }
@@ -65,6 +68,17 @@ function ProductTable() {
       setError(error.message);
     }
   };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <PropagateLoader color="#2dd4bf" loading={loading} size={15} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: {error}</p>;
+  }
 
   return (
     <div className="container mx-auto p-4 rounded-md bg-white">
@@ -75,7 +89,7 @@ function ProductTable() {
             <TbReload className="text-lg mt-1" />
             Reload
           </button>
-          <Link to="/addProduct">
+          <Link to="/admin/addProduct">
             <button className="bg-[#2dd4bf] flex justify-between p-2 h-[2.5rem] w-full md:w-[6rem] rounded-lg  md:mt-0">
               <TbReload className="text-lg mt-1" />
               Create
@@ -108,7 +122,7 @@ function ProductTable() {
                 <td className="px-4 py-2 max-w-xs truncate">{product.desc}</td>
                 <td className="px-4 py-2">
                     <div className="flex gap-2">
-                      <Link to={`/editProduct/${product.id}`}><button className="bg-blue-500 text-white px-2 py-1 rounded-md"><MdEdit /></button></Link>
+                      <Link to={`/admin/editProduct/${product.id}`}><button className="bg-blue-500 text-white px-2 py-1 rounded-md"><MdEdit /></button></Link>
                       <button onClick={() => handleDeleteProduct(product.id)} className="bg-red-500 text-white px-2 py-1 rounded-md"><MdDelete /></button>
                     </div>
                 </td>

@@ -6,9 +6,11 @@ import { MdEdit, MdDelete } from "react-icons/md";
 import Search from "../Search"; // Import komponen Search
 import { TbReload } from "react-icons/tb";
 import Swal from "sweetalert2";
+import { PropagateLoader } from "react-spinners"; // Import spinner
 
 function UserTable() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true); // State untuk loading
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -20,9 +22,10 @@ function UserTable() {
         ...doc.data(),
       }));
       setUsers(usersArray);
+      setLoading(false);
     } catch (error) {
       setError(error.message);
-    }
+    } 
   };
 
   const handleDeleteUser = async (userId) => {
@@ -39,7 +42,7 @@ function UserTable() {
     if (confirm.isConfirmed) {
       try {
         await deleteDoc(doc(db, "users", userId));
-      setUsers(users.filter((user) => user.id !== userId));
+        setUsers(users.filter((user) => user.id !== userId));
         Swal.fire(
           'Deleted!',
           'Your file has been deleted.',
@@ -50,7 +53,6 @@ function UserTable() {
       }
     }
   };
-
 
   // Ambil data pengguna saat komponen dimuat pertama kali
   useEffect(() => {
@@ -67,13 +69,24 @@ function UserTable() {
     user.displayName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <PropagateLoader color="#2dd4bf" loading={loading} size={15} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: {error}</p>;
+  }
+
   return (
     <div className="container mx-auto p-4 rounded-md bg-white">
       <div className="flex justify-between">
         <Search onSearch={handleSearch} />
         <div className="action flex gap-8">
-          
-          <Link to="/User">
+          <Link to="/admin/ser">
             <button className="bg-[#2dd4bf] flex justify-between p-2 h-[2.5rem] w-full md:w-[6rem] rounded-lg  md:mt-0">
               <TbReload className="text-lg mt-1" />
               Reload
@@ -81,7 +94,6 @@ function UserTable() {
           </Link>
         </div>
       </div>
-      {error && <span className="text-red-500">{error}</span>}
       <div className="overflow-x-auto bg-white p-4 mt-4">
         <table className="w-full table-auto border-collapse">
           <thead>
@@ -112,7 +124,7 @@ function UserTable() {
                 <td className="px-4 py-2">{user.role}</td>
                 <td className="px-4 py-2">
                   <div className="flex gap-2">
-                    <Link to={`/editUser/${user.id}`}>
+                    <Link to={`/admin/editUser/${user.id}`}>
                       <button className="bg-blue-500 text-white px-2 py-1 rounded-md">
                         <MdEdit />
                       </button>
