@@ -6,7 +6,7 @@ import TopBar from '../components/Admin/TopBar'
 function SettingPage() {
   return (
     <div>
-        <TopBar title="Setting"/>
+        <TopBar title="Halaman Setting"/>
       <Profil/>
     </div>
   )

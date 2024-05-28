@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../../Firebase"; // Sesuaikan dengan lokasi Firebase Anda
 import { Link } from "react-router-dom";
@@ -7,12 +7,15 @@ import Search from "../Search"; // Import komponen Search
 import { TbReload } from "react-icons/tb";
 import Swal from "sweetalert2";
 import { PropagateLoader } from "react-spinners"; // Import spinner
+import { AuthContext } from "../../../Context/AuthContext"; // Misal context untuk auth
 
 function UserTable() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true); // State untuk loading
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const { currentUser } = useContext(AuthContext); // Misal mendapatkan user yang sedang login dari context
 
   const fetchUsers = async () => {
     try {
@@ -106,38 +109,56 @@ function UserTable() {
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="border-b border-gray-200">
+            {currentUser && (
+              <tr key={currentUser.id} className="bg-yellow-100 border-b border-gray-200">
                 <td className="px-4 py-2">
-                  {user.photoURL ? (
+                  {currentUser.photoURL ? (
                     <img
-                      src={user.photoURL}
-                      alt={user.displayName}
+                      src={currentUser.photoURL}
+                      alt={currentUser.displayName}
                       className="w-10 h-10 rounded-full"
                     />
                   ) : (
                     <span className="inline-block w-10 h-10 bg-gray-200 rounded-full"></span>
                   )}
                 </td>
-                <td className="px-4 py-2">{user.displayName}</td>
-                <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2">{user.role}</td>
-                <td className="px-4 py-2">
-                  <div className="flex gap-2">
-                    <Link to={`/admin/editUser/${user.id}`}>
-                      <button className="bg-blue-500 text-white px-2 py-1 rounded-md">
-                        <MdEdit />
-                      </button>
-                    </Link>
-                    <button
-                      onClick={() => handleDeleteUser(user.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded-md"
-                    >
-                      <MdDelete />
-                    </button>
-                  </div>
-                </td>
+                <td className="px-4 py-2">{currentUser.displayName}</td>
+                <td className="px-4 py-2">{currentUser.email}</td>
+                <td className="px-4 py-2">{currentUser.role}</td>
+                <td className="px-4 py-2"></td> 
               </tr>
+            )}
+            {filteredUsers.map((user) => (
+              user.id !== currentUser.id && (
+                <tr key={user.id} className="border-b border-gray-200">
+                  <td className="px-4 py-2">
+                    
+                      <img
+                        src={user.photoURL}
+                        alt={user.displayName}
+                        className="w-10 h-10 rounded-full"
+                      />
+                  </td>
+                  <td className="px-4 py-2">{user.displayName}</td>
+                  <td className="px-4 py-2">{user.email}</td>
+                  <td className="px-4 py-2">{user.role}</td>
+                  <td className="px-4 py-2">
+                    <div className="flex gap-2">
+                      <Link to={`/admin/editUser/${user.id}`}>
+                        <button className="bg-blue-500 text-white px-2 py-1 rounded-md">
+                          <MdEdit />
+                        </button>
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="bg-red-500 text-white px-2 py-1 rounded-md"
+                      >
+                        <MdDelete />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )
             ))}
           </tbody>
         </table>

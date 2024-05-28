@@ -20,7 +20,7 @@ const StatusComponent = ({ title, value, icon, onClick }) => {
   };
 
   return (
-    <div className="flex  md:flex-row justify-betweensti gap-6 items-center space-y-2 md:space-y-0 md:space-x-2 rounded-lg shadow-lg bg-white p-4"onClick={onClick}>
+    <div className="flex cursor-pointer md:flex-row justify-betweensti gap-6 items-center space-y-2 md:space-y-0 md:space-x-2 rounded-lg shadow-lg bg-white p-4"onClick={onClick}>
       <div className="text-xl md:text-3xl">
         {getIcon(icon)}
       </div>

@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
-import { auth, db } from "../Firebase";
+import { auth, db, storage } from "../Firebase"; // Ensure storage is imported
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const AuthContext = createContext();
 
@@ -33,7 +34,10 @@ export const AuthContextProvider = ({ children }) => {
   const updateUserProfile = async (updates) => {
     if (currentUser) {
       try {
-        await updateProfile(auth.currentUser, updates);
+        // Handle profile picture update if exists
+        if (updates.photoURL) {
+          await updateProfile(auth.currentUser, { photoURL: updates.photoURL });
+        }
 
         const userDocRef = doc(db, "users", currentUser.uid);
         await setDoc(userDocRef, {
@@ -41,6 +45,7 @@ export const AuthContextProvider = ({ children }) => {
           phoneNumber: updates.phoneNumber,
           address: updates.address,
           postalCode: updates.postalCode,
+          photoURL: updates.photoURL,
           email: currentUser.email,
         }, { merge: true });
 
