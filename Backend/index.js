@@ -8,10 +8,9 @@ const PORT = 3000;
 
 // Middleware
 app.use(cors({
-    origin: '*', // Allow all origins
+    origin: 'http://localhost:5173', // Allow only the frontend origin
     methods: 'GET,POST,PUT,DELETE', // Allow specific methods
-    allowedHeaders: 'Content-Type,Authorization', // Allow specific headers
-    optionsSuccessStatus: 200 // Response status for successful OPTIONS request
+    allowedHeaders: 'Content-Type,Authorization' // Allow specific headers
 }));
 app.use(bodyParser.json());
 
@@ -31,11 +30,11 @@ mongoose.connect('mongodb+srv://reziqvins:Rez1qdarusman@wkj.esjs1kv.mongodb.net/
 const orderSchema = new mongoose.Schema({
     transaction_details: {
         Order_id: { type: String, required: true },
-        gross_amount: { type: Number, required: true },
-        payment_status: { type: String, required: true },
-        order_Status: { type: String, required: true },
-        shipping_method: { type: String, required: true },
-        resi: { type: String, required: true }
+        gross_amount: { type: Number },
+        payment_status: { type: String },
+        order_Status: { type: String },
+        shipping_method: { type: String },
+        resi: { type: String }
     },
     item_details: [
         {
