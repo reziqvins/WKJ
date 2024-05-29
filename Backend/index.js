@@ -7,7 +7,12 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all origins
+    methods: 'GET,POST,PUT,DELETE', // Allow specific methods
+    allowedHeaders: 'Content-Type,Authorization', // Allow specific headers
+    optionsSuccessStatus: 200 // Response status for successful OPTIONS request
+}));
 app.use(bodyParser.json());
 
 
