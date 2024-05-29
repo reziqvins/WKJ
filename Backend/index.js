@@ -7,11 +7,7 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors({
-    origin: '*', 
-    methods: 'GET,POST,PUT,DELETE', 
-    allowedHeaders: 'Content-Type,Authorization' 
-}));
+app.use(cors());
 app.use(bodyParser.json());
 
 // Connect to MongoDB
