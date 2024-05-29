@@ -29,8 +29,10 @@ import "react-toastify/dist/ReactToastify.css";
 import EditUserPage from "./page/Admin/User/EditUserPage";
 import SettingPage from "./page/SettingPage";
 import Inbox from "./page/Admin/Inbox";
-import OrderPage from "./page/Admin/OrderPage";
+import OrderPage from "./page/Admin/Order/OrderPage";
 import AdminKonsultasi from "./page/Admin/AdminKonsultasi";
+import OrderDetailPage from "./page/Admin/Order/OrderDetailPage";
+
 function App() {
   const { currentUser } = useContext(AuthContext);
 
@@ -62,6 +64,7 @@ function App() {
         <Route path="/admin/user" element={<UserPage />} />
         <Route path="/admin/orders" element={<OrderPage />} />
         <Route path="/admin/editGallery/:id" element={<EditGallery/>} />
+        <Route path="/admin/orders/:id" element={<OrderDetailPage/>} />
           <Route exact path="/admin/editProduct/:id" element={<EditProduct />} />
 
         </Route>

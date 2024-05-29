@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import {
   addToCart,
   clearCart,
@@ -9,111 +10,137 @@ import {
   setShippingMethod,
 } from "../../Redux/CartSlice";
 import { Link } from "react-router-dom";
-import { db } from "../../Firebase";
+import { toast } from "react-toastify";
+import uploadFile from "../helpers/uploadFile";
 
 const Cart = () => {
-    const cart = useSelector((state) => state.cart);
-    const dispatch = useDispatch();
-    const [shipping, setShipping] = useState(cart.shippingMethod);
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [address, setAddress] = useState("");
-  
-    useEffect(() => {
-      dispatch(getTotals());
-      console.log(db);
-    }, [cart, dispatch]);
-  
-    const handleAddToCart = (product) => {
-      dispatch(addToCart(product));
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const [shipping, setShipping] = useState(cart.shippingMethod);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [imgCheck, setImgCheck] = useState(null);
+  const [file, setFile] = useState(null);
+
+  useEffect(() => {
+    dispatch(getTotals());
+  }, [cart, dispatch]);
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+  };
+
+  const handleDecreaseCart = (product) => {
+    dispatch(decreaseCart(product));
+  };
+
+  const handleRemoveFromCart = (product) => {
+    dispatch(removeFromCart(product));
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
+
+  const handleShippingChange = (event) => {
+    setShipping(event.target.value);
+    dispatch(setShippingMethod(event.target.value));
+  };
+
+  const generateTransactionID = () => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const prefix = "WKJ";
+    const length = 10;
+    let transactionID = prefix;
+    for (let i = 0; i < length - prefix.length; i++) {
+      transactionID += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return transactionID;
+  };
+
+  const sendOrderToApi = (orderData) => {
+    const formData = new FormData();
+    formData.append("orderData", JSON.stringify(orderData));
+    if (imgCheck) {
+      formData.append("imgCheck", imgCheck);
+    }
+
+    return axios.post("http://localhost:3000/orders", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+  };
+
+  const handleUploadPhoto = async () => {
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+    console.log("Uploading file:", file);
+    const uploadPhoto = await uploadFile(file);
+    console.log("Uploaded file URL:", uploadPhoto?.url);
+    setImgCheck(uploadPhoto?.url);
+    return uploadPhoto?.url;
+  };
+
+  const handleCheckout = async () => {
+    let imgUrl = null;
+    if (file) {
+      imgUrl = await handleUploadPhoto();
+    }
+
+    const orderData = {
+      transaction_details: {
+        Order_id: generateTransactionID(),
+        gross_amount: cart.cartTotalAmount,
+        payment_status: "Pending",
+        order_Status: "Pending",
+        shipping_method: shipping,
+        resi: "",
+      },
+      item_details: cart.cartItems.map((item) => ({
+        id: item.id,
+        price: item.price,
+        img: item.img,
+        isCheck: item.isCheck,
+        quantity: item.cartQuantity,
+        name: item.name,
+      })),
+      customer_details: {
+        name: name,
+        email: email,
+        alamat: address,
+        imgCheck: imgUrl,
+      },
     };
-    const handleDecreaseCart = (product) => {
-      dispatch(decreaseCart(product));
-    };
-    const handleRemoveFromCart = (product) => {
-      dispatch(removeFromCart(product));
-    };
-    const handleClearCart = () => {
-      dispatch(clearCart());
-    };
-    const handleShippingChange = (event) => {
-      setShipping(event.target.value);
-      dispatch(setShippingMethod(event.target.value));
-    };
-    const generateTransactionID = () => {
-        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        const prefix = "WKJ"; // Awalan untuk ID transaksi
-        const length = 10; // Panjang ID transaksi
-        let transactionID = prefix;
-        for (let i = 0; i < length - prefix.length; i++) {
-          transactionID += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return transactionID;
-      };
-      const sendOrderToFirebase = (transaction_id, gross_amount, payment_status, order_Status, shipping_method, customerDetails, cartItems) => {
-        // Menyiapkan data order
-        const orderData = {
-          transaction_details: {
-            Order_id: transaction_id,
-            gross_amount: gross_amount,
-            payment_status: payment_status,
-            order_Status: order_Status,
-            shipping_method: shipping_method,
-            resi: "", // Kosongkan resi karena belum dikirim
-          },
-          item_details: cartItems && cartItems.map((item) => ({
-            id: item.id,
-            price: item.price,
-            quantity: item.cartQuantity,
-            name: item.name,
-          })),
-          customer_details: customerDetails && {
-            name: customerDetails.name,
-            email: customerDetails.email,
-            alamat: customerDetails.address,
-          },
-        };
-      
-        // Mengirim data ke Firebase
-        return db.collection('orders').add(orderData);
-      };
-      
-  
-    // Fungsi untuk checkout dan mengirim data ke Firebase
-    const handleCheckout = () => {
-      const orderData = {
-        transaction_details: {
-          Order_id: generateTransactionID(), // Anda perlu mengganti ini dengan cara yang sesuai untuk menghasilkan ID transaksi
-          gross_amount: cart.cartTotalAmount,
-          payment_status: "Pending",
-          order_Status: "Pending",
-          shipping_method: shipping,
-          resi: "", // Anda bisa menambahkan logika untuk menangani nomor resi di sini
-        },
-        item_details: cart.cartItems.map((item) => ({
-          id: item.id,
-          price: item.price,
-          quantity: item.cartQuantity,
-          name: item.name,
-        })),
-        customer_details: {
-          name: name, // Isi dengan nama pelanggan dari formulir
-          email: email, // Isi dengan email pelanggan dari formulir
-          alamat: address, // Isi dengan alamat pelanggan dari formulir
-        },
-      };
-  
-      // Kirim data pesanan ke Firebase
-      sendOrderToFirebase(orderData)
-        .then(() => {
-          // Jika pengiriman berhasil, bersihkan keranjang belanja
+
+    console.log("Order Data: ", JSON.stringify(orderData, null, 2));
+
+    sendOrderToApi(orderData)
+      .then((response) => {
+        console.log("Response:", response.data);
+        if (response.data.message === 'Order berhasil dibuat') {
           dispatch(clearCart());
-        })
-        .catch((error) => {
-          console.error("Error sending order to Firebase:", error);
-          // Tindakan jika terjadi kesalahan, seperti menampilkan pesan kepada pengguna
-        });
-    };
+          toast.success("Order was successfully created");
+        } else {
+          console.error("Error:", response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error sending order to API:", error);
+        if (error.response && error.response.data) {
+          console.error("Server response:", error.response.data);
+        }
+      });
+  };
+
   return (
     <div className="p-8">
       <h2 className="font-medium text-2xl text-center">Keranjang Belanja</h2>
@@ -238,6 +265,18 @@ const Cart = () => {
                   className="border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
                 />
               </div>
+              {cart.cartItems.some((item) => item.isCheck === "1") && (
+                <div className="mb-4 flex flex-col">
+                  <label htmlFor="image" className="mb-2 font-medium">
+                    Upload Image
+                  </label>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              )}
             </form>
             <div className="w-full md:w-1/2 mt-8 md:mt-0">
               <h1 className="font-bold text-xl mb-4">Metode Pengiriman</h1>
@@ -266,11 +305,11 @@ const Cart = () => {
               <div className="text-sm">
                 <div className="flex justify-between mb-4">
                   <span>Subtotal</span>
-                  <span className="font-medium">Rp. {cart.cartTotalAmount - (shipping === 'JNE' ? 20000 : 25000)}</span>
+                  <span className="font-medium">Rp. {cart.cartTotalAmount - (shipping === "JNE" ? 20000 : 25000)}</span>
                 </div>
                 <div className="flex justify-between mb-4">
                   <span>Shipping</span>
-                  <span className="font-medium">Rp. {shipping === 'JNE' ? 20000 : 25000}</span>
+                  <span className="font-medium">Rp. {shipping === "JNE" ? 20000 : 25000}</span>
                 </div>
                 <div className="flex justify-between mb-4">
                   <span>Total</span>
@@ -313,5 +352,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
-

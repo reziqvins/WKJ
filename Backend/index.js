@@ -40,6 +40,9 @@ const orderSchema = new mongoose.Schema({
     item_details: [
         {
             id: { type: String  },
+            img:{ type: String},
+            isCheck:{ type: Number },
+            totalAmount:{ type: Number },
             price: { type: Number  },
             quantity: { type: Number  },
             name: { type: String  }
@@ -48,7 +51,8 @@ const orderSchema = new mongoose.Schema({
     customer_details: {
         name: { type: String  },
         email: { type: String  },
-        alamat: { type: String  }
+        alamat: { type: String  },
+        imgCheck: { type: String  }
     }
 });
 
