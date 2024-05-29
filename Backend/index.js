@@ -23,25 +23,25 @@ mongoose.connect('mongodb+srv://reziqvins:Rez1qdarusman@wkj.esjs1kv.mongodb.net/
 // Order Schema
 const orderSchema = new mongoose.Schema({
     transaction_details: {
-        Order_id: String,
-        gross_amount: Number,
-        payment_status: String,
-        order_Status: String,
-        shipping_method: String,
-        resi: String
+        Order_id: { type: String, required: true },
+        gross_amount: { type: Number, required: true },
+        payment_status: { type: String, required: true },
+        order_Status: { type: String, required: true },
+        shipping_method: { type: String, required: true },
+        resi: { type: String, required: true }
     },
     item_details: [
         {
-            id: String,
-            price: Number,
-            quantity: Number,
-            name: String
+            id: { type: String, required: true },
+            price: { type: Number, required: true },
+            quantity: { type: Number, required: true },
+            name: { type: String, required: true }
         }
     ],
     customer_details: {
-        name: String,
-        email: String,
-        alamat: String
+        name: { type: String, required: true },
+        email: { type: String, required: true },
+        alamat: { type: String, required: true }
     }
 });
 
@@ -49,6 +49,8 @@ const Order = mongoose.model('Order', orderSchema);
 
 // Create an order
 app.post('/orders', async (req, res) => {
+    console.log('Received payload:', req.body);  // Logging the payload for debugging purposes
+
     const order = new Order({
         transaction_details: req.body.transaction_details,
         item_details: req.body.item_details,
