@@ -30,7 +30,7 @@ mongoose.connect('mongodb+srv://reziqvins:Rez1qdarusman@wkj.esjs1kv.mongodb.net/
 // Order Schema
 const orderSchema = new mongoose.Schema({
     transaction_details: {
-        Order_id: { type: String, required: true },
+        Order_id: { type: String  },
         gross_amount: { type: Number },
         payment_status: { type: String },
         order_Status: { type: String },
@@ -39,16 +39,16 @@ const orderSchema = new mongoose.Schema({
     },
     item_details: [
         {
-            id: { type: String, required: true },
-            price: { type: Number, required: true },
-            quantity: { type: Number, required: true },
-            name: { type: String, required: true }
+            id: { type: String  },
+            price: { type: Number  },
+            quantity: { type: Number  },
+            name: { type: String  }
         }
     ],
     customer_details: {
-        name: { type: String, required: true },
-        email: { type: String, required: true },
-        alamat: { type: String, required: true }
+        name: { type: String  },
+        email: { type: String  },
+        alamat: { type: String  }
     }
 });
 
