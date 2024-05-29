@@ -7,7 +7,18 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Change this to your front-end URL
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+}));
+
+app.options('*', cors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+}));
+
 app.use(bodyParser.json());
 
 // Connect to MongoDB
@@ -51,7 +62,7 @@ const Order = mongoose.model('Order', orderSchema);
 
 // Create an order
 app.post('/orders', async (req, res) => {
-    console.log('Received payload:', req.body);  // Logging the payload for debugging purposes
+    console.log('Received payload:', req.body);
 
     const order = new Order({
         transaction_details: req.body.transaction_details,
