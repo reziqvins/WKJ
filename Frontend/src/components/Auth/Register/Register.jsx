@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BiSolidImageAdd } from "react-icons/bi";
 import Swal from "sweetalert2";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import { auth, db } from "../../../Firebase"; // Menghapus import storage dan fungsi terkait
 import { doc, setDoc } from "firebase/firestore";
 import { useNavigate, Link } from "react-router-dom";
@@ -33,15 +33,18 @@ const Register = () => {
           photoURL,
         });
 
+        // Send verification email
+        await sendEmailVerification(res.user);
+
         // Create user on Firestore
         await setDoc(doc(db, "users", res.user.uid), {
           uid: res.user.uid,
           displayName,
           email,
           photoURL,
-          phoneNumber: "", 
-          address: "", 
-          postalCode: "", 
+          phoneNumber: "",
+          address: "",
+          postalCode: "",
           role: "Member",
         });
 
@@ -50,7 +53,7 @@ const Register = () => {
         Swal.fire({
           icon: "success",
           title: "Register berhasil",
-          text: "Anda berhasil mendaftar!",
+          text: "Anda berhasil mendaftar! Silakan verifikasi email Anda sebelum login.",
         });
 
         // Redirect ke halaman utama

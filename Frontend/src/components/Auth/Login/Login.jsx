@@ -1,34 +1,41 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../Firebase";
+import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { onAuthStateChanged } from "firebase/auth"; // tambahkan ini
+import { PropagateLoader } from "react-spinners";
 
 const Login = () => {
   const [err, setErr] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const email = e.target[0].value;
     const password = e.target[1].value;
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      
-      // Tampilkan sweetalert login berhasil
-      Swal.fire({
-        icon: "success",
-        title: "Login berhasil",
-        text: "Anda berhasil masuk!",
-      });
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      console.log(res.user)
 
-      // Navigasi ke halaman utama
+      if (!res.user.emailVerified) {
+        setErr(true);
+        Swal.fire({
+          icon: "error",
+          title: "Email belum terverifikasi",
+          text: "Silakan verifikasi email Anda sebelum login.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      // User is verified and can be logged in
       navigate("/");
-
     } catch (err) {
       setErr(true);
+      setLoading(false);
     }
   };
 
@@ -39,16 +46,16 @@ const Login = () => {
     >
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row w-10/12 lg:w-8/12  bg-[#E9F8F3B2] rounded-xl mx-auto shadow-lg overflow-hidden">
-          <div className="w-full lg:w-1/2 hidden lg:block flex-col items-center justify-center p-12 ">
+          <div className="w-full lg:w-1/2 hidden lg:block  flex-col items-center justify-center p-12 ">
             <img
-              src="https://res.cloudinary.com/dap6ohre8/image/upload/v1714911314/Account-bro_1_xy3i06.png"
+              src="https://res.cloudinary.com/dap6ohre8/image/upload/v1714874462/Sign_up-pana_h1joxb.png"
               alt=""
             />
           </div>
           <div className="w-full lg:w-1/2 py-16 px-12">
             <h2 className="text-3xl mb-4">Sign In</h2>
             <p className="mb-4">
-              Masuk ke akun anda lalu Konsultasikan Keluhan anda.
+              Masuk ke akun anda dan nikmati layanan kami
             </p>
             <form onSubmit={handleSubmit}>
               <div className="mt-5">
@@ -65,24 +72,29 @@ const Login = () => {
                   className="border border-b-gray-100 rounded-md py-1 px-2 w-full"
                 />
               </div>
-              <div className="mt-5">
-                <Link to="/ResetPassword"><p >Lupa Password??</p></Link>
-              </div>
+              <Link  to="/ResetPassword"><span className="mt-5">Lupa Password Anda???</span> </Link>
               <button
-                className="w-full rounded-md mt-5 bg-[#20B486] py-3 text-center text-white"
+                disabled={loading}
+                className="w-full mt-3 rounded-md bg-[#20B486] py-3 text-center text-white flex justify-center items-center"
               >
-                Sign In
+                {loading ? (
+                  <PropagateLoader className="p-3" color="#ffffff" size={10} />
+                ) : (
+                  "Sign In"
+                )}
               </button>
-              {err && <span>Something went wrong</span>}
+              {err && (
+                <span className="text-red-500">Something went wrong</span>
+              )}
             </form>
-            <p className="mt-5">
-              Belum punya akun? <Link className="text-[#62c1a3]" to="/SignUp"> Register</Link>
+            <p className="mt-5 text-sm">
+              Belum memiliki akun? <Link className="text-[#62c1a3]" to="/SignUp">Register</Link>
             </p>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Login;
