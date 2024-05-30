@@ -59,15 +59,6 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.model('Order', orderSchema);
 
-app.post('/midtrans-proxy', async (req, res) => {
-    try {
-        const result = await snap.createTransaction(req.body);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
 // Create an order
 app.post('/orders', async (req, res) => {
     // Your order creation logic here
