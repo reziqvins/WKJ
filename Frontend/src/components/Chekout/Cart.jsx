@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
@@ -10,13 +10,6 @@ import {
 } from "../../Redux/CartSlice";
 import { Link } from "react-router-dom";
 import uploadFile from "../helpers/uploadFile";
-import midtransClient from 'midtrans-client';
-
-const snap = new midtransClient.Snap({
-  isProduction: false,
-  serverKey: 'SB-Mid-server-PUUdoGz-9cLzYr1JcTc_qZS-',
-  clientKey: 'SB-Mid-client-jEtvZoEqwphlbnRo'
-});
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -81,74 +74,68 @@ const Cart = () => {
     return uploadPhoto?.url;
   };
 
-  const createMidtransTransaction = async (orderData) => {
-    const parameters = {
-      transaction_details: {
-        order_id: orderData.transaction_details.Order_id,
-        gross_amount: orderData.transaction_details.gross_amount,
-      },
-      credit_card: {
-        secure: true,
-      },
-      customer_details: {
-        first_name: orderData.customer_details.name,
-        email: orderData.customer_details.email,
-        address: orderData.customer_details.alamat,
-      },
-      item_details: orderData.item_details,
-    };
-
-    try {
-      const transaction = await snap.createTransaction(parameters);
-      return transaction;
-    } catch (error) {
-      console.error("Error creating Midtrans transaction:", error);
-      throw error;
-    }
-  };
-
   const handleCheckout = async () => {
     let imgUrl = null;
     if (file) {
       imgUrl = await handleUploadPhoto();
     }
 
-    const orderData = {
-      transaction_details: {
-        Order_id: generateTransactionID(),
-        gross_amount: cart.cartTotalAmount,
-        payment_status: "Pending",
-        order_Status: "Pending",
-        shipping_method: shipping,
-        resi: "",
-      },
-      item_details: cart.cartItems.map((item) => ({
-        id: item.id,
-        price: item.price,
-        quantity: item.cartQuantity,
-        name: item.name,
-      })),
-      customer_details: {
-        name: name,
-        email: email,
-        alamat: address,
-        imgCheck: imgUrl,
-      },
+    const order_id = generateTransactionID();
+    const gross_amount = cart.cartTotalAmount;
+    const item_details = cart.cartItems.map((item) => ({
+      id: item.id,
+      price: item.price,
+      quantity: item.cartQuantity,
+      name: item.name,
+    }));
+    const customer_details = {
+      name: name,
+      email: email,
+      address: address,
+      imgCheck: imgUrl,
     };
 
-    console.log("Order data before sending:", orderData);
+    const orderData = {
+      order_id,
+      gross_amount,
+      item_details,
+      customer_details,
+    };
 
     try {
-      const midtransTransaction = await createMidtransTransaction(orderData);
-      console.log("Midtrans transaction:", midtransTransaction);
+      const response = await fetch('/createTransaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
 
-      // Clear cart if Midtrans transaction is successful
-      dispatch(clearCart());
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
 
-      // Redirect user to the payment page
-      window.location.href = midtransTransaction.redirect_url;
+      const data = await response.json();
+      console.log("Transaction token:", data.token);
+
+      // Redirect to payment page
+      window.snap.pay(data.token, {
+        onSuccess: function (result) {
+          console.log('success', result);
+          dispatch(clearCart());
+        },
+        onPending: function (result) {
+          console.log('pending', result);
+        },
+        onError: function (result) {
+          console.log('error', result);
+        },
+        onClose: function () {
+          console.log('customer closed the popup without finishing the payment');
+        }
+      });
     } catch (error) {
-      console.error("Error during checkout:", error);
+      console.error("Error creating transaction:", error);
     }
   };
 
