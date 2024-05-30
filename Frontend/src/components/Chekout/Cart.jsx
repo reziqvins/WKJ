@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
@@ -74,69 +74,75 @@ const Cart = () => {
     return uploadPhoto?.url;
   };
 
+  const sendOrderToApi = async (orderData) => {
+    console.log("Sending order to API:", orderData);
+  
+    try {
+      const response = await fetch("https://wkj.vercel.app/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Response from API:", data);
+      return data;
+    } catch (error) {
+      console.error("Error sending order to API:", error);
+      throw error;
+    }
+  };
+  
+
   const handleCheckout = async () => {
     let imgUrl = null;
     if (file) {
       imgUrl = await handleUploadPhoto();
     }
 
-    const order_id = generateTransactionID();
-    const gross_amount = cart.cartTotalAmount;
-    const item_details = cart.cartItems.map((item) => ({
-      id: item.id,
-      price: item.price,
-      quantity: item.cartQuantity,
-      name: item.name,
-    }));
-    const customer_details = {
-      name: name,
-      email: email,
-      address: address,
-      imgCheck: imgUrl,
-    };
-
     const orderData = {
-      order_id,
-      gross_amount,
-      item_details,
-      customer_details,
+      transaction_details: {
+        Order_id: generateTransactionID(),
+        gross_amount: cart.cartTotalAmount,
+        payment_status: "Pending",
+        order_Status: "Pending",
+        shipping_method: shipping,
+        resi: "",
+      },
+      item_details: cart.cartItems.map((item) => ({
+        id: item.id,
+        price: item.price,
+        img: item.img,
+        quantity: item.cartQuantity,
+        name: item.name,
+      })),
+      customer_details: {
+        name: name,
+        email: email,
+        alamat: address,
+        imgCheck: imgUrl,
+      },
     };
 
-    try {
-      const response = await fetch('/createTransaction', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
+    console.log("Order data before sending:", orderData);
 
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Transaction token:", data.token);
-
-      // Redirect to payment page
-      window.snap.pay(data.token, {
-        onSuccess: function (result) {
-          console.log('success', result);
+    sendOrderToApi(orderData)
+      .then((data) => {
+        if (data.message === 'Order berhasil dibuat') {
           dispatch(clearCart());
-        },
-        onPending: function (result) {
-          console.log('pending', result);
-        },
-        onError: function (result) {
-          console.log('error', result);
-        },
-        onClose: function () {
-          console.log('customer closed the popup without finishing the payment');
+        } else {
+          console.error("Error:", data.message);
         }
+      })
+      .catch((error) => {
+        console.error("Error sending order to API:", error);
       });
-    } catch (error) {
-      console.error("Error creating transaction:", error);
-    }
   };
 
   return (
@@ -350,3 +356,5 @@ const Cart = () => {
 };
 
 export default Cart;
+
+
