@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const snap = require('./midtrans');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -67,15 +68,87 @@ app.post('/orders', async (req, res) => {
         item_details: req.body.item_details,
         customer_details: req.body.customer_details
     });
+
     try {
         const savedOrder = await order.save();
-        res.status(201).json({
-            message: 'Order berhasil dibuat',
-            data: savedOrder
-        });
+
+        // Create Midtrans transaction parameters
+        let parameter = {
+            transaction_details: {
+                order_id: savedOrder._id.toString(),
+                gross_amount: req.body.transaction_details.gross_amount
+            },
+            credit_card: {
+                secure: true
+            },
+            customer_details: req.body.customer_details
+        };
+
+        // Create transaction in Midtrans
+        snap.createTransaction(parameter)
+            .then((transaction) => {
+                // Transaction token
+                let transactionToken = transaction.token;
+                res.status(201).json({
+                    message: 'Order berhasil dibuat',
+                    data: savedOrder,
+                    token: transactionToken
+                });
+            })
+            .catch((error) => {
+                res.status(500).json({
+                    message: 'Gagal membuat transaksi di Midtrans',
+                    error: error.message
+                });
+            });
     } catch (error) {
         res.status(400).json({
             message: 'Gagal membuat order',
+            error: error.message
+        });
+    }
+});
+app.post('/midtrans-notification', async (req, res) => {
+    try {
+        let statusResponse = await snap.transaction.notification(req.body);
+        let orderId = statusResponse.order_id;
+        let transactionStatus = statusResponse.transaction_status;
+        let fraudStatus = statusResponse.fraud_status;
+
+        console.log(`Transaction notification received. Order ID: ${orderId}, Transaction Status: ${transactionStatus}, Fraud Status: ${fraudStatus}`);
+
+        // Find order by ID and update its status
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({
+                message: 'Order tidak ditemukan'
+            });
+        }
+
+        if (transactionStatus === 'capture') {
+            if (fraudStatus === 'challenge') {
+                order.transaction_details.payment_status = 'challenge';
+            } else if (fraudStatus === 'accept') {
+                order.transaction_details.payment_status = 'success';
+            }
+        } else if (transactionStatus === 'settlement') {
+            order.transaction_details.payment_status = 'success';
+        } else if (transactionStatus === 'deny') {
+            order.transaction_details.payment_status = 'denied';
+        } else if (transactionStatus === 'cancel' || transactionStatus === 'expire') {
+            order.transaction_details.payment_status = 'failed';
+        } else if (transactionStatus === 'pending') {
+            order.transaction_details.payment_status = 'pending';
+        }
+
+        await order.save();
+
+        res.status(200).json({
+            message: 'Notification handled successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to handle notification',
             error: error.message
         });
     }
@@ -162,6 +235,53 @@ app.delete('/orders/:id', async (req, res) => {
         });
     }
 });
+
+app.post('/midtrans-notification', async (req, res) => {
+    try {
+        let statusResponse = await snap.transaction.notification(req.body);
+        let orderId = statusResponse.order_id;
+        let transactionStatus = statusResponse.transaction_status;
+        let fraudStatus = statusResponse.fraud_status;
+
+        console.log(`Transaction notification received. Order ID: ${orderId}, Transaction Status: ${transactionStatus}, Fraud Status: ${fraudStatus}`);
+
+        // Find order by ID and update its status
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({
+                message: 'Order tidak ditemukan'
+            });
+        }
+
+        if (transactionStatus === 'capture') {
+            if (fraudStatus === 'challenge') {
+                order.transaction_details.payment_status = 'challenge';
+            } else if (fraudStatus === 'accept') {
+                order.transaction_details.payment_status = 'success';
+            }
+        } else if (transactionStatus === 'settlement') {
+            order.transaction_details.payment_status = 'success';
+        } else if (transactionStatus === 'deny') {
+            order.transaction_details.payment_status = 'denied';
+        } else if (transactionStatus === 'cancel' || transactionStatus === 'expire') {
+            order.transaction_details.payment_status = 'failed';
+        } else if (transactionStatus === 'pending') {
+            order.transaction_details.payment_status = 'pending';
+        }
+
+        await order.save();
+
+        res.status(200).json({
+            message: 'Notification handled successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Failed to handle notification',
+            error: error.message
+        });
+    }
+});
+
 
 // Start server
 app.listen(PORT, () => {

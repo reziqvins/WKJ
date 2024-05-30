@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import {
   addToCart,
   clearCart,
@@ -10,18 +9,17 @@ import {
   setShippingMethod,
 } from "../../Redux/CartSlice";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import uploadFile from "../helpers/uploadFile";
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-  const [shipping, setShipping] = useState(cart.shippingMethod);
+  const [shipping, setShipping] = useState(cart.shippingMethod || "JNE");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [imgCheck, setImgCheck] = useState(null);
   const [file, setFile] = useState(null);
+  const [imgCheck, setImgCheck] = useState(null);
 
   useEffect(() => {
     dispatch(getTotals());
@@ -59,20 +57,6 @@ const Cart = () => {
     return transactionID;
   };
 
-  const sendOrderToApi = (orderData) => {
-    const formData = new FormData();
-    formData.append("orderData", JSON.stringify(orderData));
-    if (imgCheck) {
-      formData.append("imgCheck", imgCheck);
-    }
-
-    return axios.post("https://wkj.vercel.app/orders", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-  };
-
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -81,7 +65,7 @@ const Cart = () => {
   const handleUploadPhoto = async () => {
     if (!file) {
       console.error("No file selected");
-      return;
+      return null;
     }
     console.log("Uploading file:", file);
     const uploadPhoto = await uploadFile(file);
@@ -89,6 +73,32 @@ const Cart = () => {
     setImgCheck(uploadPhoto?.url);
     return uploadPhoto?.url;
   };
+
+  const sendOrderToApi = async (orderData) => {
+    console.log("Sending order to API:", orderData);
+  
+    try {
+      const response = await fetch("https://wkj.vercel.app/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Response from API:", data);
+      return data;
+    } catch (error) {
+      console.error("Error sending order to API:", error);
+      throw error;
+    }
+  };
+  
 
   const handleCheckout = async () => {
     let imgUrl = null;
@@ -108,8 +118,6 @@ const Cart = () => {
       item_details: cart.cartItems.map((item) => ({
         id: item.id,
         price: item.price,
-        img: item.img,
-        isCheck: item.isCheck,
         quantity: item.cartQuantity,
         name: item.name,
       })),
@@ -121,23 +129,18 @@ const Cart = () => {
       },
     };
 
-    console.log("Order Data: ", JSON.stringify(orderData, null, 2));
+    console.log("Order data before sending:", orderData);
 
     sendOrderToApi(orderData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        if (response.data.message === 'Order berhasil dibuat') {
+      .then((data) => {
+        if (data.message === 'Order berhasil dibuat') {
           dispatch(clearCart());
-          toast.success("Order was successfully created");
         } else {
-          console.error("Error:", response.data.message);
+          console.error("Error:", data.message);
         }
       })
       .catch((error) => {
         console.error("Error sending order to API:", error);
-        if (error.response && error.response.data) {
-          console.error("Server response:", error.response.data);
-        }
       });
   };
 
@@ -305,11 +308,11 @@ const Cart = () => {
               <div className="text-sm">
                 <div className="flex justify-between mb-4">
                   <span>Subtotal</span>
-                  <span className="font-medium">Rp. {cart.cartTotalAmount - (shipping === "JNE" ? 20000 : 25000)}</span>
+                  <span className="font-medium">Rp. {cart.cartTotalAmount - (shipping === 'JNE' ? 20000 : 25000)}</span>
                 </div>
                 <div className="flex justify-between mb-4">
                   <span>Shipping</span>
-                  <span className="font-medium">Rp. {shipping === "JNE" ? 20000 : 25000}</span>
+                  <span className="font-medium">Rp. {shipping === 'JNE' ? 20000 : 25000}</span>
                 </div>
                 <div className="flex justify-between mb-4">
                   <span>Total</span>
