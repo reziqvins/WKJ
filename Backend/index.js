@@ -81,6 +81,26 @@ app.post('/orders', async (req, res) => {
     }
 });
 
+app.post('/createTransaction', async (req, res) => {
+    const { order_id, gross_amount, customer_details, item_details } = req.body;
+  
+    const parameter = {
+      transaction_details: {
+        order_id,
+        gross_amount
+      },
+      customer_details,
+      item_details
+    };
+  
+    try {
+      const transaction = await snap.createTransaction(parameter);
+      res.json(transaction);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
 // Read all orders
 app.get('/orders', async (req, res) => {
     try {
