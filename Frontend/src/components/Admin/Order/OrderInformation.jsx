@@ -16,7 +16,7 @@ const OrderInformation = () => {
   useEffect(() => {
     const fetchOrderById = async () => {
       try {
-        const response = await axios.get(`http://wkj.vercel.app/orders/${id}`);
+        const response = await axios.get(`https://wkj.vercel.app/orders/${id}`);
         setOrder(response.data.data);
         setLoading(false);
       } catch (error) {

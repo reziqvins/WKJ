@@ -25,7 +25,7 @@ function AdminDashboard() {
 
     const fetchOrderCount = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/orders");
+        const response = await axios.get("https://wkj.vercel.app/orders");
         setOrderCount(response.data.length);
       } catch (error) {
         console.error("Error fetching orders:", error);

@@ -66,7 +66,7 @@ const Cart = () => {
       formData.append("imgCheck", imgCheck);
     }
 
-    return axios.post("http://localhost:3000/orders", formData, {
+    return axios.post("https://wkj.vercel.app/orders", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
