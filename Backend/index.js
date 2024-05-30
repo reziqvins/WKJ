@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const snap = require('./midtrans');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -96,6 +97,7 @@ app.post('/createTransaction', async (req, res) => {
     try {
       const transaction = await snap.createTransaction(parameter);
       res.json(transaction);
+      res.json({ token: 'generated-token' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
