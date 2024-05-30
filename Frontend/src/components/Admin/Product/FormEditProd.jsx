@@ -16,6 +16,7 @@ function FormEditProd() {
   const [imgPreview, setImgPreview] = useState(null); // State untuk pratinjau gambar
   const [stock, setStock] = useState('');
   const [error, setError] = useState('');
+  
 
   useEffect(() => {
     const getProduct = async () => {
@@ -81,6 +82,7 @@ function FormEditProd() {
         img: imgUrl,
         stock
       });
+
   
       // Tampilkan SweetAlert success setelah produk berhasil diperbarui
       Swal.fire({

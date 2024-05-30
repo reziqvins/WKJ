@@ -4,6 +4,7 @@ import axios from "axios";
 import { GrCompliance } from "react-icons/gr";
 import { FaShippingFast } from "react-icons/fa";
 import UpdateOrderStatus from "./UpdateOrderStatus"; // Assuming the file is named UpdateOrderStatus.jsx
+import { PropagateLoader } from "react-spinners";
 
 const OrderInformation = () => {
   const { id } = useParams();
@@ -36,11 +37,15 @@ const OrderInformation = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <PropagateLoader color="#2dd4bf" loading={loading} size={15} />
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <p className="text-red-500">Error: {error}</p>;
   }
 
   return (
@@ -54,7 +59,7 @@ const OrderInformation = () => {
           {order?.transaction_details?.order_Status}
         </p>
       </div>
-      <div className="orders flex gap-3 p-4">
+      <div className="orders flex  gap-3 p-4">
         {order?.item_details.map((item) => (
           <div key={item.id} className="flex gap-3">
             <img className="h-10 w-10 border" src={item.img} alt={item.name} />

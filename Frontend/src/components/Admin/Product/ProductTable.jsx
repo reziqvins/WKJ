@@ -4,7 +4,7 @@ import { db } from "../../../Firebase"; // Sesuaikan path jika diperlukan
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import Search from "../Search"; // Sesuaikan path jika diperlukan
 import { TbReload } from "react-icons/tb";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdOutlineCreateNewFolder } from "react-icons/md";
 import Swal from "sweetalert2";
 import { PropagateLoader } from "react-spinners";
 
@@ -91,7 +91,7 @@ function ProductTable() {
           </button>
           <Link to="/admin/addProduct">
             <button className="bg-[#2dd4bf] flex justify-between p-2 h-[2.5rem] w-full md:w-[6rem] rounded-lg  md:mt-0">
-              <TbReload className="text-lg mt-1" />
+              <MdOutlineCreateNewFolder  className="text-lg mt-1" />
               Create
             </button>
           </Link>

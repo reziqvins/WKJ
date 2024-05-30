@@ -4,7 +4,7 @@ import OrderTable from '../../../components/Admin/Order/OrderTable'
 
 const OrderPage = () => {
   return (
-    <div>
+    <div className='px-4'>
       <TopBar title="Halaman Orders"/>
       <OrderTable/>
     </div>
