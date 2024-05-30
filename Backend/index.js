@@ -61,27 +61,13 @@ const Order = mongoose.model('Order', orderSchema);
 
 // Create an order
 app.post('/orders', async (req, res) => {
-    console.log('Received payload:', req.body);
-
-    const order = new Order({
-        transaction_details: req.body.transaction_details,
-        item_details: req.body.item_details,
-        customer_details: req.body.customer_details
-    });
-
+    // Your order creation logic here
     try {
         const savedOrder = await order.save();
 
         // Create Midtrans transaction parameters
         let parameter = {
-            transaction_details: {
-                order_id: savedOrder._id.toString(),
-                gross_amount: req.body.transaction_details.gross_amount
-            },
-            credit_card: {
-                secure: true
-            },
-            customer_details: req.body.customer_details
+            // Construct your transaction details
         };
 
         // Create transaction in Midtrans
@@ -108,6 +94,7 @@ app.post('/orders', async (req, res) => {
         });
     }
 });
+
 app.post('/midtrans-notification', async (req, res) => {
     try {
         let statusResponse = await snap.transaction.notification(req.body);
