@@ -10,6 +10,13 @@ import {
 } from "../../Redux/CartSlice";
 import { Link } from "react-router-dom";
 import uploadFile from "../helpers/uploadFile";
+import midtransClient from 'midtrans-client';
+
+const snap = new midtransClient.Snap({
+  isProduction: false,
+  serverKey: 'SB-Mid-server-PUUdoGz-9cLzYr1JcTc_qZS-',
+  clientKey: 'SB-Mid-client-jEtvZoEqwphlbnRo'
+});
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -74,31 +81,31 @@ const Cart = () => {
     return uploadPhoto?.url;
   };
 
-  const sendOrderToApi = async (orderData) => {
-    console.log("Sending order to API:", orderData);
-  
+  const createMidtransTransaction = async (orderData) => {
+    const parameters = {
+      transaction_details: {
+        order_id: orderData.transaction_details.Order_id,
+        gross_amount: orderData.transaction_details.gross_amount,
+      },
+      credit_card: {
+        secure: true,
+      },
+      customer_details: {
+        first_name: orderData.customer_details.name,
+        email: orderData.customer_details.email,
+        address: orderData.customer_details.alamat,
+      },
+      item_details: orderData.item_details,
+    };
+
     try {
-      const response = await fetch("https://wkj.vercel.app/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log("Response from API:", data);
-      return data;
+      const transaction = await snap.createTransaction(parameters);
+      return transaction;
     } catch (error) {
-      console.error("Error sending order to API:", error);
+      console.error("Error creating Midtrans transaction:", error);
       throw error;
     }
   };
-  
 
   const handleCheckout = async () => {
     let imgUrl = null;
@@ -131,17 +138,18 @@ const Cart = () => {
 
     console.log("Order data before sending:", orderData);
 
-    sendOrderToApi(orderData)
-      .then((data) => {
-        if (data.message === 'Order berhasil dibuat') {
-          dispatch(clearCart());
-        } else {
-          console.error("Error:", data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending order to API:", error);
-      });
+    try {
+      const midtransTransaction = await createMidtransTransaction(orderData);
+      console.log("Midtrans transaction:", midtransTransaction);
+
+      // Clear cart if Midtrans transaction is successful
+      dispatch(clearCart());
+
+      // Redirect user to the payment page
+      window.location.href = midtransTransaction.redirect_url;
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
   };
 
   return (
