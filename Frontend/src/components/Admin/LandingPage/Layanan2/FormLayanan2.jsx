@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { db, storage } from '../../../../Firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import Swal from 'sweetalert2';
+// import React, { useState, useEffect } from 'react';
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import { db, storage } from '../../../../Firebase';
+// import { doc, getDoc, updateDoc } from 'firebase/firestore';
+// import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+// import Swal from 'sweetalert2';
 
 const FormLayanan2 = () => {
   const [editor, setEditor] = useState();
@@ -102,22 +101,23 @@ const FormLayanan2 = () => {
   };
 
   return (
-    <div className="mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl mb-4 font-semibold">Edit Layanan</h2>
-      <div className="mb-4">
-        <label htmlFor="file" className="block text-gray-700 font-bold mb-2">Upload Gambar</label>
-        <input type="file" id="file" onChange={handleImageChange} className="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500" />
-        {error && <span style={{ color: "red" }}>{error}</span>}
-      </div>
-      <CKEditor
-        editor={ClassicEditor}
-        onReady={(editor) => {
-          console.log('Editor is ready to use!', editor);
-          setEditor(editor);
-        }}
-      />
-      <button onClick={handleEdit} className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 mt-4">Simpan</button>
-    </div>
+    <div></div>
+    // <div className="mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
+    //   <h2 className="text-xl mb-4 font-semibold">Edit Layanan</h2>
+    //   <div className="mb-4">
+    //     <label htmlFor="file" className="block text-gray-700 font-bold mb-2">Upload Gambar</label>
+    //     <input type="file" id="file" onChange={handleImageChange} className="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500" />
+    //     {error && <span style={{ color: "red" }}>{error}</span>}
+    //   </div>
+    //   <CKEditor
+    //     editor={ClassicEditor}
+    //     onReady={(editor) => {
+    //       console.log('Editor is ready to use!', editor);
+    //       setEditor(editor);
+    //     }}
+    //   />
+    //   <button onClick={handleEdit} className="bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 mt-4">Simpan</button>
+    // </div>
   );
 };
 
