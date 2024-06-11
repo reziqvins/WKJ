@@ -14,7 +14,6 @@ export default defineConfig({
   build: {
     rollupOptions: {
       external: [
-        '@ckeditor/ckeditor5-react',
         '@ckeditor/ckeditor5-build-classic', // Add CKEditor classic build as an external dependency
       ],
     },
