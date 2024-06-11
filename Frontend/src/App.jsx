@@ -18,9 +18,6 @@ import AdminDashboard from "./page/Admin/AdminDashboard";
 import AddProduct from "./page/Admin/Product/AddProduct";
 import ProductPage from "./page/Admin/Product/ProductPage";
 import EditProduct from "./page/Admin/Product/EditProduct";
-import GalleryPage from "./page/Admin/Gallery/GalleryPage";
-import FormAddGallery from "./components/Galery/FormAddGallery";
-import EditGallery from "./page/Admin/Gallery/EditGallery";
 import UserPage from "./page/Admin/User/UserPage";
 import UserProfilePage from "./page/UserProfilePage";
 import CartPage from "./page/CartPage";
@@ -32,6 +29,11 @@ import Inbox from "./page/Admin/Inbox";
 import OrderPage from "./page/Admin/Order/OrderPage";
 import AdminKonsultasi from "./page/Admin/AdminKonsultasi";
 import OrderDetailPage from "./page/Admin/Order/OrderDetailPage";
+import CheckOutSucces from "./components/Chekout/CheckOutSucces";
+import EditGallery from "./page/Admin/LandingPage/Gallery/EditGallery";
+import GalleryPage from "./page/Admin/LandingPage/Gallery/GalleryPage";
+import Layanan2Page from "./page/Admin/LandingPage/Layanan2/Layanan2Page";
+import FormAddGallery from "./components/Admin/LandingPage/Galery/FormAddGallery";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -48,6 +50,7 @@ function App() {
         <Route path="/ResetPassword" element={<ForgotPassword />} />
         <Route path="/UserProfile" element={<UserProfilePage/>} />
         <Route path="/Cart" element={<CartPage/>} />
+        <Route path="/Succes" element={<CheckOutSucces/>} />
         <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} />
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />
 
@@ -56,14 +59,15 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/addProduct" element={<AddProduct />} />
           <Route path="/admin/products" element={<ProductPage />} />
-        <Route path="/admin/gallery" element={<GalleryPage />} />
+        <Route path="/admin/landingPage/gallery" element={<GalleryPage />} />
         <Route path="/admin/AddGallery" element={<FormAddGallery />} />
+        <Route path="/admin/editGallery/:id" element={<EditGallery/>} />
+        <Route path="/admin/landingPage/layanan2" element={<Layanan2Page />} />
         <Route path="/admin/editUser/:id" element={<EditUserPage/>}/>
         <Route path="/admin/konsultasi" element={<AdminKonsultasi />} />
         <Route path="/admin/setting" element={<SettingPage />} />
         <Route path="/admin/user" element={<UserPage />} />
         <Route path="/admin/orders" element={<OrderPage />} />
-        <Route path="/admin/editGallery/:id" element={<EditGallery/>} />
         <Route path="/admin/orders/:id" element={<OrderDetailPage/>} />
           <Route exact path="/admin/editProduct/:id" element={<EditProduct />} />
 

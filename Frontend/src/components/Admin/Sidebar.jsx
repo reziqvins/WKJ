@@ -4,18 +4,16 @@ import {
   MdDashboard,
   MdInbox,
   MdAccountCircle,
-  MdSchedule,
-  MdSearch,
-  MdAnalytics,
-  MdFolder,
   MdSettings,
-} from "react-icons/md"; // Mengimpor ikon dari react-icons
+} from "react-icons/md";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { FaBox, FaCartArrowDown } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
+import { MdHomeRepairService } from "react-icons/md";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
+  const [landingPageOpen, setLandingPageOpen] = useState(false);
   const { pathname } = useLocation();
 
   return (
@@ -32,12 +30,6 @@ const Sidebar = () => {
         >
           <IoIosArrowDropleftCircle />
         </button>
-        {/* <img
-          src="./src/assets/control.png"
-          className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
-          onClick={() => setOpen(!open)}
-        /> */}
         <div className="flex gap-x-4 items-center">
           <img
             src="https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png"
@@ -56,12 +48,12 @@ const Sidebar = () => {
         <ul className="pt-6">
           <Link
             to="/admin"
-            className=" flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608]  text-gray-300 text-sm items-center gap-x-4 mt-2"
+            className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
           >
             <li
               className={`flex items-center gap-x-4 ${
                 pathname === "/admin"
-                  ? "text-[#F0B608] border-r-[2px] "
+                  ? "text-[#F0B608] border-r-[2px]"
                   : ""
               }`}
             >
@@ -77,7 +69,7 @@ const Sidebar = () => {
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/admin/konsultasi" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/konsultasi" ? "text-[#F0B608]" : ""
               }`}
             >
               <MdInbox className="text-2xl" />
@@ -92,7 +84,7 @@ const Sidebar = () => {
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/admin/products" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/products" ? "text-[#F0B608]" : ""
               }`}
             >
               <FaBox className="text-2xl" />
@@ -107,39 +99,71 @@ const Sidebar = () => {
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/admin/orders" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/orders" ? "text-[#F0B608]" : ""
               }`}
             >
               <FaCartArrowDown className="text-2xl" />
-
               <span className={`${!open && "hidden"} origin-left duration-200`}>
                 Orders
               </span>
             </li>
           </Link>
 
-          <Link
-            to="/admin/gallery"
-            className=" flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
-          >
+          <div className="flex flex-col">
             <li
-              className={`flex items-center gap-x-4 ${
-                pathname === "/admin/gallery" ? "text-[#F0B608]  " : ""
+              className={`flex items-center gap-x-4 p-2 cursor-pointer rounded-md hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm mt-2 ${
+                pathname === "/admin/landingpage" ? "text-[#F0B608]" : ""
               }`}
+              onClick={() => setLandingPageOpen(!landingPageOpen)}
             >
-              <GrGallery className="text-2xl" />
+              <MdDashboard className="text-2xl" />
               <span className={`${!open && "hidden"} origin-left duration-200`}>
-                Galeri
+                Landing Page
               </span>
             </li>
-          </Link>
+            {landingPageOpen && (
+              <ul className="pl-8">
+                <Link
+                  to="/admin/landingPage/gallery"
+                  className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
+                >
+                  <li
+                    className={`flex items-center gap-x-4 ${
+                      pathname === "/admin/gallery" ? "text-[#F0B608]" : ""
+                    }`}
+                  >
+                    <GrGallery className="text-2xl" />
+                    <span className={`${!open && "hidden"} origin-left duration-200`}>
+                      Gallery
+                    </span>
+                  </li>
+                </Link>
+                <Link
+                  to="/admin/landingPage/layanan2"
+                  className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
+                >
+                  <li
+                    className={`flex items-center gap-x-4 ${
+                      pathname === "/admin/services" ? "text-[#F0B608]" : ""
+                    }`}
+                  >
+                    <MdHomeRepairService className="text-2xl" />
+                    <span className={`${!open && "hidden"} origin-left duration-200`}>
+                      Services
+                    </span>
+                  </li>
+                </Link>
+              </ul>
+            )}
+          </div>
+
           <Link
             to="/admin/user"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-9"
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/admin/user" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/user" ? "text-[#F0B608]" : ""
               }`}
             >
               <MdAccountCircle className="text-2xl" />
@@ -154,7 +178,7 @@ const Sidebar = () => {
           >
             <li
               className={`flex items-center gap-x-4 ${
-                pathname === "/setting" ? "text-[#F0B608]  " : ""
+                pathname === "/admin/setting" ? "text-[#F0B608]" : ""
               }`}
             >
               <MdSettings className="text-2xl" />

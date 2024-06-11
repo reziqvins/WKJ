@@ -1,32 +1,51 @@
-import React from "react";
-import { Doctor, heroImg } from "../../assets";
+import React, { useState, useEffect } from "react";
+import { db } from "../../Firebase"; // Sesuaikan dengan path ke file firebase.js Anda
+import { collection, getDocs } from "firebase/firestore"; // Impor fungsi collection dan getDocs
 
 function Layanan2() {
+  const [layananData, setLayananData] = useState(null);
+  const [loading, setLoading] = useState(true); // Tambahkan state loading
+
+  useEffect(() => {
+    const fetchLayananData = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "layanan2"));
+        const layananArray = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setLayananData(layananArray);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching layanan data:", error);
+        // Handle error here
+      }
+    };
+
+    fetchLayananData();
+  }, []);
+
+  // Tambahkan penanganan jika loading
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="w-full bg-blue-100 lg:p-20 p-7">
-      <div className="md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px] ">
-        <img
-          src={Doctor}
-          className="md:order-first order-last w-[350px] mx-auto"
-        />
-        <div className="flex flex-col justify-start">
-          <p className="font-">What is Lorem Ipsum?</p>
-          <h1 className="text-[32px]">
-            Lorem Ipsum is simply dummy text of the printing
-          </h1>
-          <p className="leading-7">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages,
-            and more recently with desktop publishing software like Aldus
-            PageMaker including versions of Lorem Ipsum.
-          </p>
-        </div>
-      </div>
+      {layananData &&
+        layananData.map((item) => (
+          <div key={item.id} className="md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px] ">
+            <img
+              src={item.imageUrl}
+              className="md:order-first order-last w-80 h-80 object-cover mx-auto"
+              alt="Layanan Image"
+            />
+            <div className="content flex flex-col justify-start">
+              {/* Gunakan dangerouslySetInnerHTML untuk merender HTML */}
+              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+            </div>
+          </div>
+        ))}
     </div>
   );
 }

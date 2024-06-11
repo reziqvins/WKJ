@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { storage, db, ref } from "../../Firebase"; // Sesuaikan path jika perlu
+import { storage, db, ref } from "../../../../Firebase"; // Sesuaikan path jika perlu
 import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import Swal from "sweetalert2";

@@ -64,7 +64,7 @@ const HeaderBottom = () => {
               type="text"
               onChange={handleSearch}
               value={searchQuery}
-              placeholder="Search your products here"
+              placeholder="Cari Produk Yang Anda Inginkan"
             />
             <FaSearch className="w-5 h-5" />
 

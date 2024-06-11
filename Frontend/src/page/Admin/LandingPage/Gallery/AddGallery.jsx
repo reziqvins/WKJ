@@ -1,6 +1,6 @@
 import React from 'react'
-import FormAddGallery from '../../../components/Galery/FormAddGallery'
-import TopBar from '../../../components/Admin/TopBar'
+import TopBar from '../../../../components/Admin/TopBar'
+import FormAddGallery from '../../../../components/Admin/LandingPage/Galery/FormAddGallery'
 
 function AddGallery() {
   return (

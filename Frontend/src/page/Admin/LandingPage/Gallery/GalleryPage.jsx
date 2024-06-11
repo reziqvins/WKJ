@@ -1,6 +1,6 @@
 import React from 'react'
-import GalleryTable from '../../../components/Galery/GalleryTable'
-import TopBar from '../../../components/Admin/TopBar'
+import TopBar from '../../../../components/Admin/TopBar'
+import GalleryTable from '../../../../components/Admin/LandingPage/Galery/GalleryTable'
 
 function GalleryPage() {
   return (

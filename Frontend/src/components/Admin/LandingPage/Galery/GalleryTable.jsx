@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db } from "../../Firebase";
+import { db } from "../../../../Firebase";
 import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 import { Link } from 'react-router-dom';
 import { MdEdit, MdDelete } from 'react-icons/md';
