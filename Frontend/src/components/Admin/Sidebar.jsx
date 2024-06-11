@@ -6,7 +6,7 @@ import {
   MdAccountCircle,
   MdSettings,
 } from "react-icons/md";
-import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { IoIosArrowDropleftCircle, IoMdArrowDropdown } from "react-icons/io";
 import { FaBox, FaCartArrowDown } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
 import { MdHomeRepairService } from "react-icons/md";
@@ -129,7 +129,7 @@ const Sidebar = () => {
                 >
                   <li
                     className={`flex items-center gap-x-4 ${
-                      pathname === "/admin/gallery" ? "text-[#F0B608]" : ""
+                      pathname === "/admin/landingPage/gallery" ? "text-[#F0B608]" : ""
                     }`}
                   >
                     <GrGallery className="text-2xl" />
@@ -144,12 +144,12 @@ const Sidebar = () => {
                 >
                   <li
                     className={`flex items-center gap-x-4 ${
-                      pathname === "/admin/services" ? "text-[#F0B608]" : ""
+                      pathname === "/admin/landingPage/layanan2" ? "text-[#F0B608]" : ""
                     }`}
                   >
                     <MdHomeRepairService className="text-2xl" />
                     <span className={`${!open && "hidden"} origin-left duration-200`}>
-                      Services
+                      Layanan 2
                     </span>
                   </li>
                 </Link>
