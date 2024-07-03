@@ -12,7 +12,7 @@ const Pemesanan = () => {
 
   useEffect(() => {
     if (currentUser) {
-      axios.get('http://localhost:3000/orders')
+      axios.get('https://wkj.vercel.app/orders')
         .then(response => {
           console.log(response.data);
           setOrders(response.data.data);

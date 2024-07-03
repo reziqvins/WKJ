@@ -84,7 +84,7 @@ const Cart = () => {
 const onPressPay = async () => {
   console.log(orderData);
   try {
-    const data = await axios.post('http://localhost:3000/orders', orderData);
+    const data = await axios.post('https://wkj.vercel.app/orders', orderData);
     const res = await data.data;
     const snapToken = res.token;
     console.log(res);
@@ -93,7 +93,7 @@ const onPressPay = async () => {
       onSuccess: async (result) => {
         console.log('success', result);
         try {
-          await axios.put(`http://localhost:3000/orders/${orderData.transaction_details.order_id}`, {
+          await axios.put(`https://wkj.vercel.app/orders/${orderData.transaction_details.order_id}`, {
             payment_status: "Berhasil",
             transaction_status: "settlement"
           });

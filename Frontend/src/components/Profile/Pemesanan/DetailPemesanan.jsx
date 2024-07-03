@@ -11,7 +11,7 @@ const TransactionDetail = () => {
 
   useEffect(() => {
     if (currentUser) {
-      axios.get(`http://localhost:3000/orders/${id}`)
+      axios.get(`https://wkj.vercel.app/orders/${id}`)
         .then(response => {
           setTransaction(response.data.data);
         })
