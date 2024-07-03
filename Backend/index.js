@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,63 +17,94 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://reziqvins:Rez1qdarusman@wkj.esjs1kv.mongodb.net/?retryWrites=true&w=majority&appName=Wkj', {
+mongoose.connect('mongodb+srv://reziqvins:akjjyglc@cluster0.piaayve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-.then(() => {
-    console.log('Koneksi ke database MongoDB berhasil');
-})
-.catch((error) => {
-    console.error('Koneksi ke database MongoDB gagal:', error.message);
-});
+    .then(() => {
+        console.log('Koneksi ke database MongoDB berhasil');
+    })
+    .catch((error) => {
+        console.error('Koneksi ke database MongoDB gagal:', error.message);
+    });
 
 // Order Schema
 const orderSchema = new mongoose.Schema({
     transaction_details: {
-        Order_id: { type: String  },
+        Order_id: { type: String },
         gross_amount: { type: Number },
         payment_status: { type: String },
         order_Status: { type: String },
         shipping_method: { type: String },
-        resi: { type: String }
-    },
-    item_details: [
-        {
-            id: { type: String  },
-            img:{ type: String},
-            isCheck:{ type: Number },
-            totalAmount:{ type: Number },
-            price: { type: Number  },
-            quantity: { type: Number  },
-            name: { type: String  }
+        resi: { type: String },
+        item_details: [
+            {
+                id: { type: String },
+                img: { type: String },
+                isCheck: { type: Number },
+                totalAmount: { type: Number },
+                price: { type: Number },
+                quantity: { type: Number },
+                name: { type: String }
+            }
+        ],
+        customer_details: {
+            id: { type: String },
+            first_name: { type: String },
+            email: { type: String },
+            alamat: { type: String },
+            imgCheck: { type: String }
         }
-    ],
-    customer_details: {
-        name: { type: String  },
-        email: { type: String  },
-        alamat: { type: String  },
-        imgCheck: { type: String  }
-    }
+    },
 });
 
 const Order = mongoose.model('Order', orderSchema);
 
 // Create an order
 app.post('/orders', async (req, res) => {
-    console.log('Received payload:', req.body);
-
+    
     const order = new Order({
         transaction_details: req.body.transaction_details,
-        item_details: req.body.item_details,
-        customer_details: req.body.customer_details
+        item_details: req.body.transaction_details.item_details,
+        customer_details: req.body.transaction_details.customer_details
     });
     try {
-        const savedOrder = await order.save();
-        res.status(201).json({
-            message: 'Order berhasil dibuat',
-            data: savedOrder
-        });
+        try {
+            const requestPaymentToken = await axios({
+                // Below is the API URL endpoint
+                url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                    Authorization:
+                        "Basic " +
+                        Buffer.from(`SB-Mid-server-PUUdoGz-9cLzYr1JcTc_qZS-`).toString("base64"),
+                    // Above is API server key for the Midtrans account, encoded to base64
+                },
+                data: req.body,
+            });
+
+            if (requestPaymentToken) {
+                if (requestPaymentToken.status ===  201) {
+                    await order.save()
+                }
+                return res.status(200).json({
+                    status: "ok",
+                    token: requestPaymentToken.data.token,
+                });
+            }
+        } catch (error) {
+            res.status(500).json({
+                status: "failed",
+                message: error.response,
+            });
+            console.log(error.response);
+        }
+        // res.status(201).json({
+        //     message: 'Order berhasil dibuat',
+        //     data: savedOrder
+        // });
     } catch (error) {
         res.status(400).json({
             message: 'Gagal membuat order',

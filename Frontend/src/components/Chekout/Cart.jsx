@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
@@ -10,6 +10,10 @@ import {
 } from "../../Redux/CartSlice";
 import { Link } from "react-router-dom";
 import uploadFile from "../helpers/uploadFile";
+import axios from "axios";
+import { AuthContext } from "../../Context/AuthContext";
+
+const CLIENT_KEY = 'SB-Mid-client-jEtvZoEqwphlbnRo';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -20,6 +24,7 @@ const Cart = () => {
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
   const [imgCheck, setImgCheck] = useState(null);
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     dispatch(getTotals());
@@ -75,30 +80,65 @@ const Cart = () => {
   };
 
   const sendOrderToApi = async (orderData) => {
-    console.log("Sending order to API:", orderData);
-  
     try {
-      const response = await fetch("https://wkj.vercel.app/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.statusText}`);
-      }
-  
-      const data = await response.json();
-      console.log("Response from API:", data);
-      return data;
+const onPressPay = async () => {
+  console.log(orderData);
+  try {
+    const data = await axios.post('http://localhost:3000/orders', orderData);
+    const res = await data.data;
+    const snapToken = res.token;
+    console.log(res);
+
+    window.snap.pay(snapToken, {
+      onSuccess: async (result) => {
+        console.log('success', result);
+        try {
+          await axios.put(`http://localhost:3000/orders/${orderData.transaction_details.order_id}`, {
+            payment_status: "Berhasil",
+            transaction_status: "settlement"
+          });
+          console.log("Order updated to settlement");
+        } catch (updateError) {
+          console.error("Error updating order to settlement:", updateError);
+        }
+      },
+      onPending: (result) => {
+        console.log('pending transaction', result);
+      },
+      onError: (result) => {
+        console.log('error transaction', result);
+      },
+      onClose: () => {
+        console.log('customer close the popup window without finishing the payment');
+      },
+    });
+  } catch (error) {
+    console.error("Error creating order:", error);
+  }
+};
+
+
+      onPressPay();
+      // const response = await fetch("https://wkj.vercel.app/orders", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(orderData),
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error(`Server error: ${response.statusText}`);
+      // }
+
+      // const data = await response.json();
+      // console.log("Response from API:", data);
+      // return data;
     } catch (error) {
-      console.error("Error sending order to API:", error);
+      console.error("Error sending order to API:", error.message);
       throw error;
     }
   };
-  
 
   const handleCheckout = async () => {
     let imgUrl = null;
@@ -106,27 +146,37 @@ const Cart = () => {
       imgUrl = await handleUploadPhoto();
     }
 
+    const itemData = cart.cartItems.map((item) => ({
+      id: item.id,
+      price: item.price,
+      img: item.img,
+      quantity: item.cartQuantity,
+      name: item.name,
+    }));
+
+    itemData.push({
+      id: "shipping" + Date.now(),
+      price: 20000,
+      quantity: 1,
+      name: "Fee shipping",
+    })
+
     const orderData = {
       transaction_details: {
-        Order_id: generateTransactionID(),
+        order_id: generateTransactionID(),
         gross_amount: cart.cartTotalAmount,
         payment_status: "Pending",
         order_Status: "Pending",
         shipping_method: shipping,
         resi: "",
-      },
-      item_details: cart.cartItems.map((item) => ({
-        id: item.id,
-        price: item.price,
-        img: item.img,
-        quantity: item.cartQuantity,
-        name: item.name,
-      })),
-      customer_details: {
-        name: name,
-        email: email,
-        alamat: address,
-        imgCheck: imgUrl,
+        item_details: itemData,
+        customer_details: {
+          id: currentUser.uid,
+          first_name: currentUser.displayName,
+          email: email,
+          alamat: address,
+          imgCheck: imgUrl,
+        },
       },
     };
 
@@ -137,13 +187,28 @@ const Cart = () => {
         if (data.message === 'Order berhasil dibuat') {
           dispatch(clearCart());
         } else {
-          console.error("Error:", data.message);
+          console.error("Error:", data);
         }
       })
       .catch((error) => {
         console.error("Error sending order to API:", error);
       });
   };
+
+  useEffect(() => {
+    const snapSrcUrl = 'https://app.sandbox.midtrans.com/snap/snap.js'
+    const myMidtransClientKey = `${CLIENT_KEY}`
+    const script = document.createElement('script')
+    script.src = snapSrcUrl
+    script.setAttribute('data-client-key', myMidtransClientKey)
+    script.async = true
+
+    document.body.appendChild(script)
+
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, []);
 
   return (
     <div className="p-8">
