@@ -4,6 +4,8 @@ import { db } from "../../Firebase";
 import axios from "axios";
 import TopBar from "../../components/Admin/TopBar";
 import StatusComponent from "../../components/Admin/Dashboard/StatusComponent";
+import RecentOrder from "../../components/Admin/Dashboard/RecentOrder";
+import RecentProduct from "../../components/Admin/Dashboard/RecentProduct";
 
 function AdminDashboard() {
   const [productCount, setProductCount] = useState(0);
@@ -12,21 +14,36 @@ function AdminDashboard() {
 
   useEffect(() => {
     const fetchProductCount = async () => {
-      const productCollection = collection(db, "products");
-      const productSnapshot = await getDocs(productCollection);
-      setProductCount(productSnapshot.size);
+      try {
+        const productCollection = collection(db, "products");
+        const productSnapshot = await getDocs(productCollection);
+        console.log("Product count:", productSnapshot.size);
+        setProductCount(productSnapshot.size);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
     };
 
     const fetchUserCount = async () => {
-      const userCollection = collection(db, "users");
-      const userSnapshot = await getDocs(userCollection);
-      setUserCount(userSnapshot.size);
+      try {
+        const userCollection = collection(db, "users");
+        const userSnapshot = await getDocs(userCollection);
+        console.log("User count:", userSnapshot.size);
+        setUserCount(userSnapshot.size);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     };
 
     const fetchOrderCount = async () => {
       try {
         const response = await axios.get("https://wkj.vercel.app/orders");
-        setOrderCount(response.data.length);
+        console.log("Order response data:", response.data);
+        if (response.data && Array.isArray(response.data.data)) {
+          setOrderCount(response.data.data.length);
+        } else {
+          console.error("Invalid order data format:", response.data);
+        }
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -56,6 +73,10 @@ function AdminDashboard() {
         <StatusComponent title="Pengguna" value={userCount} icon="user" onClick={handleUser} />
         <StatusComponent title="Order" value={orderCount} icon="order" onClick={handleOrder} />
         <StatusComponent title="Product" value={productCount} icon="product" onClick={handleProduct} />
+      </div>
+      <div className="flex mt-5 gap-8">
+      <RecentOrder/>
+      <RecentProduct/>
       </div>
     </div>
   );
