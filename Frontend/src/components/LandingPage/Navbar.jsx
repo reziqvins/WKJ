@@ -13,6 +13,7 @@ const Navbar = () => {
   const { currentUser } = useContext(AuthContext);
 
   const handleClick = () => setToggle(!toggle);
+  console.log(`---------------curent${currentUser}`)
 
   const handleLogout = async () => {
     try {
@@ -71,6 +72,14 @@ const Navbar = () => {
                       <button className="flex gap-3">
                         <CgProfile />
                         Profil
+                      </button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/Pemesanan">
+                      <button className="flex gap-3">
+                        <CgProfile />
+                        Pemesanan
                       </button>
                     </Link>
                   </li>
@@ -144,6 +153,14 @@ const Navbar = () => {
                     <button className="flex gap-3">
                       <CgProfile />
                       Profil
+                    </button>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/Pemesanan">
+                    <button className="flex gap-3">
+                      <CgProfile />
+                      Pemesanan
                     </button>
                   </Link>
                 </li>

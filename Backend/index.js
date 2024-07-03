@@ -17,7 +17,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://reziqvins:Rez1qdarusman@wkj.esjs1kv.mongodb.net/?retryWrites=true&w=majority&appName=Wkj', {
+mongoose.connect('mongodb+srv://reziqvins:akjjyglc@cluster0.piaayve.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -36,35 +36,37 @@ const orderSchema = new mongoose.Schema({
         payment_status: { type: String },
         order_Status: { type: String },
         shipping_method: { type: String },
-        resi: { type: String }
-    },
-    item_details: [
-        {
+        resi: { type: String },
+        item_details: [
+            {
+                id: { type: String },
+                img: { type: String },
+                isCheck: { type: Number },
+                totalAmount: { type: Number },
+                price: { type: Number },
+                quantity: { type: Number },
+                name: { type: String }
+            }
+        ],
+        customer_details: {
             id: { type: String },
-            img: { type: String },
-            isCheck: { type: Number },
-            totalAmount: { type: Number },
-            price: { type: Number },
-            quantity: { type: Number },
-            name: { type: String }
+            first_name: { type: String },
+            email: { type: String },
+            alamat: { type: String },
+            imgCheck: { type: String }
         }
-    ],
-    customer_details: {
-        name: { type: String },
-        email: { type: String },
-        alamat: { type: String },
-        imgCheck: { type: String }
-    }
+    },
 });
 
 const Order = mongoose.model('Order', orderSchema);
 
 // Create an order
 app.post('/orders', async (req, res) => {
+    
     const order = new Order({
         transaction_details: req.body.transaction_details,
-        item_details: req.body.item_details,
-        customer_details: req.body.customer_details
+        item_details: req.body.transaction_details.item_details,
+        customer_details: req.body.transaction_details.customer_details
     });
     try {
         try {

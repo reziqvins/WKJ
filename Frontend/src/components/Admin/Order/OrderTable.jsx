@@ -14,7 +14,8 @@ const OrderTable = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('https://wkj.vercel.app/orders');
+        const response = await axios.get('http://localhost:3000/orders');
+        // const response = await axios.get('https://wkj.vercel.app/orders');
         setOrders(response.data.data);
         console.log(orders)
         setLoading(false);

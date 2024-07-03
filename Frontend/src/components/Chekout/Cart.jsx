@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import uploadFile from "../helpers/uploadFile";
 import axios from "axios";
+import { AuthContext } from "../../Context/AuthContext";
 
 const CLIENT_KEY = 'SB-Mid-client-jEtvZoEqwphlbnRo';
 
@@ -23,6 +24,7 @@ const Cart = () => {
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
   const [imgCheck, setImgCheck] = useState(null);
+  const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     dispatch(getTotals());
@@ -79,27 +81,42 @@ const Cart = () => {
 
   const sendOrderToApi = async (orderData) => {
     try {
-      const onPressPay = async () => {
-        console.log(orderData)
-        const data = await axios.post('http://localhost:3000/orders', orderData);
-        const res = await data.data
-        const snapToken = res.token
-        console.log(res);
-        window.snap.pay(snapToken, {
-          onSuccess: () => {
-            console.log('success')
-          },
-          onPending: (result) => {
-            console.log('pending transaction', result)
-          },
-          onError: (result) => {
-            console.log('error transaction', result)
-          },
-          onClose: () => {
-            console.log('customer close the popup window without the finishing the payment')
-          },
-        })
-      }
+const onPressPay = async () => {
+  console.log(orderData);
+  try {
+    const data = await axios.post('http://localhost:3000/orders', orderData);
+    const res = await data.data;
+    const snapToken = res.token;
+    console.log(res);
+
+    window.snap.pay(snapToken, {
+      onSuccess: async (result) => {
+        console.log('success', result);
+        try {
+          await axios.put(`http://localhost:3000/orders/${orderData.transaction_details.order_id}`, {
+            payment_status: "Berhasil",
+            transaction_status: "settlement"
+          });
+          console.log("Order updated to settlement");
+        } catch (updateError) {
+          console.error("Error updating order to settlement:", updateError);
+        }
+      },
+      onPending: (result) => {
+        console.log('pending transaction', result);
+      },
+      onError: (result) => {
+        console.log('error transaction', result);
+      },
+      onClose: () => {
+        console.log('customer close the popup window without finishing the payment');
+      },
+    });
+  } catch (error) {
+    console.error("Error creating order:", error);
+  }
+};
+
 
       onPressPay();
       // const response = await fetch("https://wkj.vercel.app/orders", {
@@ -152,13 +169,14 @@ const Cart = () => {
         order_Status: "Pending",
         shipping_method: shipping,
         resi: "",
-      },
-      item_details: itemData,
-      customer_details: {
-        first_name: name,
-        email: email,
-        alamat: address,
-        imgCheck: imgUrl,
+        item_details: itemData,
+        customer_details: {
+          id: currentUser.uid,
+          first_name: currentUser.displayName,
+          email: email,
+          alamat: address,
+          imgCheck: imgUrl,
+        },
       },
     };
 
