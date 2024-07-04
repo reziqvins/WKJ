@@ -7,7 +7,6 @@ const initialState = {
     : [],
   cartTotalQuantity: 0,
   cartTotalAmount: 0,
-  shippingMethod: 'JNE', // default shipping method
 };
 
 const cartSlice = createSlice({
@@ -87,8 +86,6 @@ const cartSlice = createSlice({
           quantity: 0,
         }
       );
-      const shippingCost = state.shippingMethod === 'JNE' ? 20000 : 25000;
-      total += shippingCost;
       total = parseFloat(total.toFixed(2));
       state.cartTotalQuantity = quantity;
       state.cartTotalAmount = total;
@@ -97,12 +94,6 @@ const cartSlice = createSlice({
       state.cartItems = [];
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
       toast.error("Cart cleared", { position: "bottom-left" });
-    },
-    setShippingMethod(state, action) {
-      state.shippingMethod = action.payload;
-      toast.info(`Shipping method set to ${action.payload}`, {
-        position: "bottom-left",
-      });
     },
   },
 });
@@ -113,7 +104,6 @@ export const {
   removeFromCart,
   getTotals,
   clearCart,
-  setShippingMethod,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

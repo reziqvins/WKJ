@@ -65,7 +65,7 @@ const Navbar = () => {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-28 left-[-10px]"
+                  className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[135px] left-[-10px]"
                 >
                   <li>
                     <Link to="/UserProfile">
