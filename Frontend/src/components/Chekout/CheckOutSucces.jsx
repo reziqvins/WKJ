@@ -1,64 +1,22 @@
-import React from "react";
-import { FaBoxOpen } from "react-icons/fa";
+import React from 'react';
+import { FaCheckCircle } from 'react-icons/fa';
+import { Link } from "react-router-dom";
 
 const CheckOutSucces = () => {
   return (
-    <div className="min-h-screen flex-col p-10">
-      <div className=" w-[80%] items-center justify-center p-12">
-        <h1>yeayyy, Order Berhasil</h1>
-        <FaBoxOpen />
-        <h1>haloo, andre</h1>
-        <p>
-          terima kasih, telah melakukan pemesanan kepada kami, berikut adalah
-          detail pesanan Anda. jika Anda memiliki pertanyaan, jangan ragu untuk
-          menghubungi kami, di konsultasi
-        </p>
-        <div className="flex justify-between">
-          <div className="kiri flex">
-            <div className="kiri">
-              <p>Order ID </p>
-              <p>Order Date </p>
-            </div>
-            <div className="kanan">
-              <p>: #4452384904</p>
-              <p>: #4452384904</p>
-            </div>
-          </div>
-          <div className="kanan">
-            Alamat : Perumahan Tonggara Rt 07 rw 03 kecamatan kedungbanteng
-            kab.tegal
-          </div>
-        </div>
-        <div className="items grid grid-cols-4 gap-2">
-          <div className="header">
-            <div className="">
-              <p>Nama Produk</p>
-            </div>
-            <div className="">
-              <p>Harga</p>
-            </div>
-            <div className="">
-              <p>Jumlah</p>
-            </div>
-            <div className="">
-              <p>Total</p>
-            </div>
-          </div>
-        </div>
-        <div className="items grid grid-cols-4 gap-2">
-          <div className="header">
-            <div className="">
-              <p>Produk Konsultasi</p>
-            </div>
-            <div className="">
-              <p>Rp. 25000</p>
-            </div>
-            <div className="">
-              <p>1</p>
-            </div>
-            <div className="">
-              <p>Rp. 25000</p>
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
+        <div className="text-center">
+          <FaCheckCircle className="mx-auto h-24 w-24 text-green-500" />
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            Pembayaran Berhasil!
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Terima Kasih Atas Pembelian Anda. Transaksi Anda telah berhasil diselesaikan.
+          </p>
+          <div className="mt-6">
+            <Link to="/" className="text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            >Beranda</Link>
           </div>
         </div>
       </div>
