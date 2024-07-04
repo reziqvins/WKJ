@@ -4,9 +4,8 @@ import axios from "axios";
 import { RxUpdate } from "react-icons/rx";
 import Swal from "sweetalert2";
 
-const UpdateOrderStatus = ({ isOpen, onClose }) => {
+const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
   const [status, setStatus] = useState("");
-  const { id } = useParams();
 
   const handleStatusChange = (selectedStatus) => {
     setStatus(selectedStatus);
@@ -17,7 +16,7 @@ const UpdateOrderStatus = ({ isOpen, onClose }) => {
       "transaction_details.order_Status": status,
     };
 
-    axios.put(`http://wkj.vercel.app/orders/${id}`, updatedData)
+    axios.put(`https://wkj.vercel.app/orders/${orderId}`, updatedData)
       .then((response) => {
         console.log("Order status updated successfully:", response);
         Swal.fire({
@@ -27,7 +26,7 @@ const UpdateOrderStatus = ({ isOpen, onClose }) => {
           showConfirmButton: false,
           timer: 1500,
         });
-        onClose();  // Close the modal after successful update
+        onClose(); // Close the modal after successful update
       })
       .catch((error) => {
         Swal.fire({

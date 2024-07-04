@@ -38,10 +38,10 @@ const TransactionDetail = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex justify-between">
             <div className="left">
-            <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction._id}</h2>
-          <p><strong>Nama Pembeli:</strong> {transaction.transaction_details.customer_details.first_name} {transaction.transaction_details.customer_details.last_name}</p>
-          <p><strong>Status Pembayaran:</strong> {transaction.transaction_details.payment_status}</p>
-          <p><strong>Order Status:</strong> {transaction.transaction_details.order_Status}</p>
+              <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction._id}</h2>
+              <p><strong>Nama Pembeli:</strong> {transaction.transaction_details.customer_details.first_name} {transaction.transaction_details.customer_details.last_name}</p>
+              <p><strong>Status Pembayaran:</strong> {transaction.transaction_details.payment_status}</p>
+              <p><strong>Order Status:</strong> {transaction.transaction_details.order_Status}</p>
             </div>
             <div className="right text-[11px] font-semibold">
               <p>{formatDate(transaction.transaction_details.createdAt)}</p>
@@ -58,28 +58,28 @@ const TransactionDetail = () => {
               </tr>
             </thead>
             <tbody>
-              
-          {transaction.transaction_details.item_details.map(item => (
-            <tr key={item.id} className="mt-2">
-              <td><img className="w-20 h-20 object-cover rounded-md" src={item.img} alt="" /></td>
-              <td>{item.name}</td>
-              <td>{item.quantity}</td>
-              <td>{item.price}</td>
-              
-              </tr>
+
+              {transaction.transaction_details.item_details.map(item => (
+                <tr key={item.id} className="mt-2">
+                  <td><img className="w-20 h-20 object-cover rounded-md" src={item.img} alt="" /></td>
+                  <td>{item.name}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.price}</td>
+
+                </tr>
               ))}
-                
-              
+
+
             </tbody>
           </table>
-          <div className="flex justify-between p-5 lg:mr-40 md: mr-20 mr-0">
-<div className="kiri mt-5 ">
-  <p>Resi Pengiriman</p>
-  {transaction.transaction_details.resi}
-</div>
-<div className="kanan">
-  Total : {transaction.transaction_details.gross_amount}
-</div>
+          <div className="flex justify-between p-5 lg:mr-40 md:mr-20 mr-0">
+            <div className="kiri mt-5 ">
+              <p>Resi Pengiriman</p>
+              {transaction.transaction_details.resi}
+            </div>
+            <div className="kanan">
+              Total : {transaction.transaction_details.gross_amount}
+            </div>
           </div>
         </div>
       </div>
