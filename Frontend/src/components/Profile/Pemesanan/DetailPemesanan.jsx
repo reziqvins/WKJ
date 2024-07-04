@@ -14,6 +14,7 @@ const TransactionDetail = () => {
       axios.get(`https://wkj.vercel.app/orders/${id}`)
         .then(response => {
           setTransaction(response.data.data);
+          console.log(response.data.data);
         })
         .catch(error => {
           console.error('Error fetching transaction details:', error);
@@ -36,17 +37,34 @@ const TransactionDetail = () => {
         <h1 className="text-2xl font-bold mb-6">Transaction Details</h1>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction._id}</h2>
-          <p><strong>Customer Name:</strong> {transaction.transaction_details.customer_details.first_name} {transaction.transaction_details.customer_details.last_name}</p>
-          <p><strong>Payment Status:</strong> {transaction.transaction_details.payment_status}</p>
+          <p><strong>Nama Pembeli:</strong> {transaction.transaction_details.customer_details.first_name} {transaction.transaction_details.customer_details.last_name}</p>
+          <p><strong>Status Pembayaran:</strong> {transaction.transaction_details.payment_status}</p>
           <p><strong>Order Status:</strong> {transaction.transaction_details.order_Status}</p>
           <h3 className="text-lg font-bold mt-4">Items:</h3>
+          <table className="table w-full">
+            <thead>
+              <tr>
+                <th>Gambar</th>
+                <th>Produk</th>
+                <th>Jumlah</th>
+                <th>Harga</th>
+              </tr>
+            </thead>
+            <tbody>
+              
           {transaction.transaction_details.item_details.map(item => (
-            <div key={item.id} className="mt-2">
-              <p><strong>Product Name:</strong> {item.name}</p>
-              <p><strong>Price:</strong> {item.price}</p>
-              {item.img && <img src={item.img} alt={item.name} className="w-20 h-20 object-cover rounded-md" />}
-            </div>
+            <tr key={item.id} className="mt-2">
+              <td><img className="w-20 h-20 object-cover rounded-md" src={item.img} alt="" /></td>
+              <td>{item.name}</td>
+              <td>{item.quantity}</td>
+              <td>{item.price}</td>
+              
+              </tr>
           ))}
+                
+              
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

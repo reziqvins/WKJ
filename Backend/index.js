@@ -37,6 +37,7 @@ const orderSchema = new mongoose.Schema({
         order_Status: { type: String },
         shipping_method: { type: String },
         resi: { type: String },
+        createdAt: { type: Date, default: Date.now },
         item_details: [
             {
                 id: { type: String },
@@ -64,7 +65,10 @@ const Order = mongoose.model('Order', orderSchema);
 app.post('/orders', async (req, res) => {
     
     const order = new Order({
-        transaction_details: req.body.transaction_details,
+        transaction_details: {
+        ...req.body.transaction_details,
+        createdAt: new Date() // Ensure createdAt is set
+    },
         item_details: req.body.transaction_details.item_details,
         customer_details: req.body.transaction_details.customer_details
     });
