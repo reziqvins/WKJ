@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import uploadFile from "../helpers/uploadFile";
 import axios from "axios";
 import { AuthContext } from "../../Context/AuthContext";
+import Swal from 'sweetalert2';
 
 const CLIENT_KEY = 'SB-Mid-client-jEtvZoEqwphlbnRo';
 
@@ -141,6 +142,15 @@ const onPressPay = async () => {
   };
 
   const handleCheckout = async () => {
+    if (!currentUser) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Login Diperlukan',
+        text: 'Silahkan Login untuk melakukan Chekout.',
+      });
+      return;
+    }
+
     let imgUrl = null;
     if (file) {
       imgUrl = await handleUploadPhoto();

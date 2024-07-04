@@ -33,30 +33,31 @@ export const AuthContextProvider = ({ children }) => {
 
   const updateUserProfile = async (updates) => {
     if (currentUser) {
-      try {
-        // Handle profile picture update if exists
-        if (updates.photoURL) {
-          await updateProfile(auth.currentUser, { photoURL: updates.photoURL });
+        try {
+            // Handle profile picture update if exists
+            if (updates.photoURL) {
+                await updateProfile(auth.currentUser, { photoURL: updates.photoURL });
+            }
+
+            const userDocRef = doc(db, "users", currentUser.uid);
+            await setDoc(userDocRef, {
+                displayName: updates.displayName,
+                phoneNumber: updates.phoneNumber,
+                address: updates.address,
+                postalCode: updates.postalCode,
+                ...(updates.photoURL && { photoURL: updates.photoURL }), // Only include photoURL if it's defined
+                email: currentUser.email,
+            }, { merge: true });
+
+            const updatedUserDoc = await getDoc(userDocRef);
+            setCurrentUser({ ...auth.currentUser, ...updatedUserDoc.data() });
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            throw error;
         }
-
-        const userDocRef = doc(db, "users", currentUser.uid);
-        await setDoc(userDocRef, {
-          displayName: updates.displayName,
-          phoneNumber: updates.phoneNumber,
-          address: updates.address,
-          postalCode: updates.postalCode,
-          photoURL: updates.photoURL,
-          email: currentUser.email,
-        }, { merge: true });
-
-        const updatedUserDoc = await getDoc(userDocRef);
-        setCurrentUser({ ...auth.currentUser, ...updatedUserDoc.data() });
-      } catch (error) {
-        console.error("Error updating profile:", error);
-        throw error;
-      }
     }
-  };
+};
+
 
   return (
     <AuthContext.Provider value={{ currentUser, updateUserProfile }}>

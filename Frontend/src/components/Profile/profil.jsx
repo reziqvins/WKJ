@@ -35,29 +35,33 @@ function Profil() {
     setLoading(true); // Set loading to true when update starts
 
     const updatedProfile = {
-      displayName: name,
-      phoneNumber: phoneNumber,
-      address: address,
-      postalCode: postalCode,
+        displayName: name,
+        phoneNumber: phoneNumber,
+        address: address,
+        postalCode: postalCode,
     };
 
     try {
-      if (profilePicture) {
-        const storageRef = ref(storage, `profilePictures/${currentUser.uid}`);
-        await uploadBytes(storageRef, profilePicture);
-        const photoURL = await getDownloadURL(storageRef);
-        updatedProfile.photoURL = photoURL;
-      }
+        if (profilePicture) {
+            const storageRef = ref(storage, `profilePictures/${currentUser.uid}`);
+            await uploadBytes(storageRef, profilePicture);
+            const photoURL = await getDownloadURL(storageRef);
+            updatedProfile.photoURL = photoURL;
+        }
 
-      await updateUserProfile(updatedProfile);
-      toast.success("Profile updated successfully!");
+        await updateUserProfile(updatedProfile);
+        toast.success("Profile updated successfully!");
     } catch (error) {
-      toast.error("Failed to update profile. Please try again.");
+        toast.error("Failed to update profile. Please try again.");
     } finally {
-      setLoading(false); // Set loading to false after update process
+        setLoading(false); // Set loading to false after update process
     }
   };
 
+  const truncateText = (text, maxWords) => {
+    const words = text.split(" ");
+    return words.length > maxWords ? words.slice(0, maxWords).join(" ") + "..." : text;
+  };
 
   return (
     <div
@@ -100,7 +104,7 @@ function Profil() {
               <div className="kanan">
                 <p>: {currentUser.email}</p>
                 <p>: {currentUser.phoneNumber}</p>
-                <p>: {currentUser.address}</p>
+                <p>: {truncateText(address, 3)}</p>
                 <p>: {currentUser.postalCode}</p>
               </div>
             </div>
