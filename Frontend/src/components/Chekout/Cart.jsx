@@ -85,8 +85,8 @@ const Cart = () => {
 const onPressPay = async () => {
   console.log(orderData);
   try {
-    const data = await axios.post('http://localhost:3000/orders', orderData);
-    // const data = await axios.post('https://wkj.vercel.app/orders', orderData);
+    // const data = await axios.post('https://localhost:3000/orders', orderData);
+    const data = await axios.post('https://wkj.vercel.app/orders', orderData);
     const res = await data.data;
     const snapToken = res.token;
     console.log(res);

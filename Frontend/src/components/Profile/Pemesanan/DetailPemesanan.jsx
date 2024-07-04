@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Navbar from '../../LandingPage/Navbar';
 import { AuthContext } from '../../../Context/AuthContext';
-
+import formatDate from '../../helpers/utils';
 const TransactionDetail = () => {
   const { id } = useParams();
   const { currentUser } = useContext(AuthContext);
@@ -31,17 +31,24 @@ const TransactionDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 text-[14px] md-text-[16px] lg:text-[16px]">
       <Navbar />
       <div className="container mx-auto py-8">
         <h1 className="text-2xl font-bold mb-6">Transaction Details</h1>
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction._id}</h2>
+          <div className="flex justify-between">
+            <div className="left">
+            <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction._id}</h2>
           <p><strong>Nama Pembeli:</strong> {transaction.transaction_details.customer_details.first_name} {transaction.transaction_details.customer_details.last_name}</p>
           <p><strong>Status Pembayaran:</strong> {transaction.transaction_details.payment_status}</p>
           <p><strong>Order Status:</strong> {transaction.transaction_details.order_Status}</p>
-          <h3 className="text-lg font-bold mt-4">Items:</h3>
-          <table className="table w-full">
+            </div>
+            <div className="right text-[11px] font-semibold">
+              <p>{formatDate(transaction.transaction_details.createdAt)}</p>
+            </div>
+          </div>
+          <h3 className="text-[14px] md-text-[16px] lg:text-[16px] font-bold mt-4">Items:</h3>
+          <table className="table w-full ">
             <thead>
               <tr>
                 <th>Gambar</th>
@@ -60,11 +67,20 @@ const TransactionDetail = () => {
               <td>{item.price}</td>
               
               </tr>
-          ))}
+              ))}
                 
               
             </tbody>
           </table>
+          <div className="flex justify-between p-5 lg:mr-40 md: mr-20 mr-0">
+<div className="kiri mt-5 ">
+  <p>Resi Pengiriman</p>
+  {transaction.transaction_details.resi}
+</div>
+<div className="kanan">
+  Total : {transaction.transaction_details.gross_amount}
+</div>
+          </div>
         </div>
       </div>
     </div>
