@@ -156,7 +156,7 @@ const Cart = () => {
         order_id: generateTransactionID(),
         gross_amount: cart.cartTotalAmount,
         transaction_status: "pending",
-        order_Status: "pending",
+        order_Status: "Package",
         shipping_method: shipping,
         resi: "",
         item_details: itemData,
