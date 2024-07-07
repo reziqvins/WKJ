@@ -52,7 +52,7 @@ function App() {
         <Route path="/ResetPassword" element={<ForgotPassword />} />
         <Route path="/UserProfile" element={<UserProfilePage/>} />
         <Route path="/Cart" element={<CartPage/>} />
-        <Route path="/Succes" element={<CheckoutSuccesPage/>} />
+        <Route path="/Success" element={<CheckoutSuccesPage/>} />
         <Route path="/Pemesanan" element={<Pemesanan/>} />
         <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} />
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />

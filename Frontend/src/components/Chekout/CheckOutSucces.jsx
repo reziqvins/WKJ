@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaCheckCircle } from 'react-icons/fa';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const CheckOutSucces = () => {
+  const { order_id, transaction_status } = useParams();
+  
+  useEffect(() => {
+    if (order_id === undefined || transaction_status === undefined) {
+      console.log(order_id, transaction_status);
+    }
+  }, [])
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">

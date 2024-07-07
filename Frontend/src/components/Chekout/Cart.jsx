@@ -7,7 +7,7 @@ import {
   getTotals,
   removeFromCart,
 } from "../../Redux/CartSlice";
-import { Link } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import uploadFile from "../helpers/uploadFile";
@@ -103,9 +103,11 @@ const Cart = () => {
 
   const sendOrderToApi = async (orderData) => {
     try {
-      const response = await axios.post("https://wkj.vercel.app/orders", orderData);
+      const local = "http://localhost:3000/orders"
+      const prod = "https://wkj.vercel.app/orders"
+      const response = await axios.post(local, orderData);
       console.log("API response:", response);
-  
+
       const data = response.data;
       if (data.status === "ok" && data.token) {
         dispatch(clearCart());
@@ -125,7 +127,7 @@ const Cart = () => {
       throw error;
     }
   };
-  
+
   const handleCheckout = async () => {
     if (!currentUser) {
       Swal.fire({
@@ -135,12 +137,12 @@ const Cart = () => {
       });
       return;
     }
-  
+
     let imgUrl = null;
     if (file) {
       imgUrl = await handleUploadPhoto();
     }
-  
+
     const itemData = cart.cartItems.map((item) => ({
       id: item.id,
       price: item.price,
@@ -148,44 +150,44 @@ const Cart = () => {
       quantity: item.cartQuantity,
       name: item.name,
     }));
-  
+
     const orderData = {
       transaction_details: {
         order_id: generateTransactionID(),
         gross_amount: cart.cartTotalAmount,
-        payment_status: "Pending",
-        order_Status: "Pending",
+        transaction_status: "pending",
+        order_Status: "pending",
         shipping_method: shipping,
         resi: "",
         item_details: itemData,
         customer_details: {
           id: currentUser.uid,
           first_name: name,
+          last_name: name,
           email: email,
           alamat: address,
           imgCheck: imgUrl,
         },
       },
     };
-  
+
     console.log("Order data before sending:", orderData);
-  
+
     try {
       const token = await sendOrderToApi(orderData);
-  
       if (token) {
         console.log('Token received:', token);
         window.snap.pay(token, {
-          onSuccess: function(result) {
+          onSuccess: function (result) {
             console.log('Payment Success:', result);
           },
-          onPending: function(result) {
+          onPending: function (result) {
             console.log('Payment Pending:', result);
           },
-          onError: function(result) {
+          onError: function (result) {
             console.log('Payment Error:', result);
           },
-          onClose: function() {
+          onClose: function () {
             console.log('Payment popup closed');
           }
         });
@@ -196,9 +198,18 @@ const Cart = () => {
       console.error("Error during checkout:", error);
     }
   };
-  
-  
-  
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    if (searchParams.get('transaction_status') === "settlement") {
+      const orderId = searchParams.get('order_id');
+      axios.put(`http://localhost:3000/orders/${orderId}`, {
+        "transaction_details.transaction_status": "settlement",
+      })
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error.response))
+    }
+  }, [])
 
   useEffect(() => {
     const snapSrcUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';

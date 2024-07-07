@@ -111,7 +111,7 @@ const HeaderBottom = () => {
           </div>
 
           {/* User and Cart */}
-          <div className=" z-20">
+          <div className=" z-10">
             {/* User dropdown */}
 
             {/* Cart */}

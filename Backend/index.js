@@ -31,9 +31,9 @@ mongoose.connect('mongodb+srv://reziqvins:akjjyglc@cluster0.piaayve.mongodb.net/
 // Order Schema
 const orderSchema = new mongoose.Schema({
     transaction_details: {
-        Order_id: { type: String },
+        order_id: { type: String },
         gross_amount: { type: Number },
-        payment_status: { type: String },
+        transaction_status: { type: String },
         order_Status: { type: String },
         shipping_method: { type: String },
         resi: { type: String },
@@ -63,15 +63,17 @@ const Order = mongoose.model('Order', orderSchema);
 
 // Create an order
 app.post('/orders', async (req, res) => {
-    
+    const { transaction_details } = req.body;
+
     const order = new Order({
         transaction_details: {
-        ...req.body.transaction_details,
-        createdAt: new Date() // Ensure createdAt is set
-    },
+            ...req.body.transaction_details,
+            createdAt: new Date() // Ensure createdAt is set
+        },
         item_details: req.body.transaction_details.item_details,
         customer_details: req.body.transaction_details.customer_details
     });
+
     try {
         try {
             const requestPaymentToken = await axios({
@@ -86,11 +88,18 @@ app.post('/orders', async (req, res) => {
                         Buffer.from(`SB-Mid-server-PUUdoGz-9cLzYr1JcTc_qZS-`).toString("base64"),
                     // Above is API server key for the Midtrans account, encoded to base64
                 },
-                data: req.body,
+                data: {
+                    transaction_details: {
+                        order_id: transaction_details.order_id,
+                        gross_amount: transaction_details.gross_amount,
+                    },
+                    customer_details: transaction_details.customer_details,
+                    item_details: transaction_details.item_details,
+                },
             });
 
             if (requestPaymentToken) {
-                if (requestPaymentToken.status ===  201) {
+                if (requestPaymentToken.status === 201) {
                     await order.save()
                 }
                 return res.status(200).json({
@@ -107,7 +116,7 @@ app.post('/orders', async (req, res) => {
         }
         // res.status(201).json({
         //     message: 'Order berhasil dibuat',
-        //     data: savedOrder
+        //     data: req.body
         // });
     } catch (error) {
         res.status(400).json({
@@ -159,8 +168,8 @@ app.get('/orders/:id', async (req, res) => {
 // Update an order by ID
 app.put('/orders/:id', async (req, res) => {
     try {
-        const updatedOrder = await Order.findByIdAndUpdate(
-            req.params.id,
+        const updatedOrder = await Order.findOneAndUpdate(
+            { 'transaction_details.order_id' : req.params.id },
             req.body,
             { new: true, runValidators: true }
         );

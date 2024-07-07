@@ -38,9 +38,9 @@ const TransactionDetail = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex justify-between">
             <div className="left">
-              <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction._id}</h2>
+              <h2 className="text-xl font-bold mb-4">Transaction ID: {transaction.transaction_details.order_id}</h2>
               <p><strong>Nama Pembeli:</strong> {transaction.transaction_details.customer_details.first_name} {transaction.transaction_details.customer_details.last_name}</p>
-              <p><strong>Status Pembayaran:</strong> {transaction.transaction_details.payment_status}</p>
+              <p><strong>Status Pembayaran:</strong> {transaction.transaction_details.transaction_status}</p>
               <p><strong>Order Status:</strong> {transaction.transaction_details.order_Status}</p>
             </div>
             <div className="right text-[11px] font-semibold">

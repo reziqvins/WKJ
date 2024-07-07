@@ -28,9 +28,9 @@ const Pemesanan = () => {
       return false;
     }
     if (activeCategory === 'Belum Bayar') {
-      return order.transaction_details.payment_status === 'Pending';
+      return order.transaction_details.transaction_status === 'pending';
     } else if (activeCategory === 'Sudah Bayar') {
-      return order.transaction_details.payment_status === 'Settlement';
+      return order.transaction_details.transaction_status === 'settlement';
     }
     return false;
   });

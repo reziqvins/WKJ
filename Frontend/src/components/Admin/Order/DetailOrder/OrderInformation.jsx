@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { GrCompliance } from "react-icons/gr";
 import { FaShippingFast } from "react-icons/fa";
-import UpdateOrderStatus from "./UpdateOrderStatus";
+import UpdateOrderStatus from "../UpdateOrderStatus";
 import { PropagateLoader } from "react-spinners";
 import Swal from "sweetalert2";
-import formatDate from "../../helpers/utils";
+import formatDate from "../../../helpers/utils";
 
 const OrderInformation = () => {
   const { id } = useParams();
@@ -96,7 +96,7 @@ const OrderInformation = () => {
   return (
     <div className="card bg-white rounded-lg text-sm md:text-base lg:text-base">
       <div className="flex justify-between">
-        <p className="font-bold p-4">Order information {order?._id}</p>
+        <p className="font-bold p-4">Order information {order?.transaction_details.order_id}</p>
         <p className="text-[12px] p-4">
           {formatDate(order?.transaction_details?.createdAt)}
         </p>
@@ -134,14 +134,14 @@ const OrderInformation = () => {
         </div>
         <div className="kolomKanan">
           <p>Rp. {parseInt(order?.transaction_details?.gross_amount)}</p>
-          <p>{order?.transaction_details?.payment_status}</p>
+          <p>{order?.transaction_details?.transaction_status}</p>
         </div>
       </div>
       <div className="paidAmount flex justify-end gap-10 p-4 border-t-[1px] border-slate-200">
         <p>Paid Amount</p>
         <p>Rp. {parseInt(order?.transaction_details?.gross_amount)}</p>
       </div>
-      <div className="invoice flex justify-end px-4">
+      <div className="invoice flex justify-end px-4 mb-7">
         <button className="bg-[#0DCAF0] w-[150px] h-[30px] rounded-lg text-white">
           Download Invoice
         </button>

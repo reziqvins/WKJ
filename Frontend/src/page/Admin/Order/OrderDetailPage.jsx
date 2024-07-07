@@ -1,12 +1,14 @@
 import React from 'react'
-import OrderInformation from '../../../components/Admin/Order/OrderInformation'
+import OrderInformation from '../../../components/Admin/Order/DetailOrder/OrderInformation'
 import TopBar from '../../../components/Admin/TopBar'
 
 const OrderDetailPage = () => {
   return (
     <div className='px-4'>
       <TopBar title="Order"/>
+      <div className="grid sm:grid-cols md:grid-cols-2">
       <OrderInformation/>
+      </div>
     </div>
   )
 }
