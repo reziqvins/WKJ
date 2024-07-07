@@ -16,7 +16,8 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
       "transaction_details.order_Status": status,
     };
 
-    axios.put(`https://wkj.vercel.app/orders/${orderId}`, updatedData)
+    axios.put(`http://localhost:3000/orders/${orderId}`, updatedData)
+    // axios.put(`https://wkj.vercel.app/orders/${orderId}`, updatedData)
       .then((response) => {
         console.log("Order status updated successfully:", response);
         Swal.fire({

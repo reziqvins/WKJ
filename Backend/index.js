@@ -166,7 +166,7 @@ app.get('/orders/:id', async (req, res) => {
 });
 
 // Update an order by ID
-app.put('/orders/:id', async (req, res) => {
+app.put('/transactionStatus/:id', async (req, res) => {
     try {
         const updatedOrder = await Order.findOneAndUpdate(
             { 'transaction_details.order_id' : req.params.id },
@@ -178,6 +178,24 @@ app.put('/orders/:id', async (req, res) => {
                 message: 'Order tidak ditemukan'
             });
         }
+        res.json({
+            message: 'Berhasil memperbarui order',
+            data: updatedOrder
+        });
+    } catch (error) {
+        res.status(400).json({
+            message: 'Gagal memperbarui order',
+            error: error.message
+        });
+    }
+});
+app.put('/orders/:id', async (req, res) => {
+    try {
+        const updatedOrder = await Order.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
         res.json({
             message: 'Berhasil memperbarui order',
             data: updatedOrder

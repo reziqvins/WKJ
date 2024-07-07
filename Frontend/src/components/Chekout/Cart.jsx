@@ -163,7 +163,6 @@ const Cart = () => {
         customer_details: {
           id: currentUser.uid,
           first_name: name,
-          last_name: name,
           email: email,
           alamat: address,
           imgCheck: imgUrl,
@@ -203,7 +202,7 @@ const Cart = () => {
   useEffect(() => {
     if (searchParams.get('transaction_status') === "settlement") {
       const orderId = searchParams.get('order_id');
-      axios.put(`http://localhost:3000/orders/${orderId}`, {
+      axios.put(`http://localhost:3000/transactionStatus/${orderId}`, {
         "transaction_details.transaction_status": "settlement",
       })
         .then(response => console.log(response.data))
