@@ -61,7 +61,7 @@ const RecentOrder = () => {
                                 <td className="px-4 py-2">{order?.transaction_details?.customer_details?.first_name}</td>
                                 <td className="px-4 py-2">{order?.transaction_details?.item_details[0]?.name}</td>
                                 <td className="px-4 py-2">{order?.transaction_details?.gross_amount}</td>
-                                <td className="px-4 py-2">{order?.transaction_details?.payment_status}</td>
+                                <td className="px-4 py-2">{order?.transaction_details?.transaction_status}</td>
                             </tr>
                         ))}
                     </tbody>
