@@ -105,7 +105,7 @@ const Cart = () => {
     try {
       const local = "http://localhost:3000/orders"
       const prod = "https://wkj.vercel.app/orders"
-      const response = await axios.post(local, orderData);
+      const response = await axios.post(prod, orderData);
       console.log("API response:", response);
 
       const data = response.data;
@@ -202,7 +202,7 @@ const Cart = () => {
   useEffect(() => {
     if (searchParams.get('transaction_status') === "settlement") {
       const orderId = searchParams.get('order_id');
-      axios.put(`http://localhost:3000/transactionStatus/${orderId}`, {
+      axios.put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
         "transaction_details.transaction_status": "settlement",
       })
         .then(response => console.log(response.data))

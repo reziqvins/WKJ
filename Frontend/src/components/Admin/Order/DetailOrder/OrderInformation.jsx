@@ -59,8 +59,8 @@ const OrderInformation = () => {
         "transaction_details.resi": resi,
       };
       const response = await axios.put(
-        `http://localhost:3000/orders/${id}`,
-        // `https://wkj.vercel.app/orders/${id}`,
+        // `http://localhost:3000/orders/${id}`,
+        `https://wkj.vercel.app/orders/${id}`,
         updatedData
       );
       console.log("Resi updated successfully:", response);
