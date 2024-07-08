@@ -48,7 +48,7 @@ const Login = () => {
         <div className="flex flex-col lg:flex-row w-10/12 lg:w-8/12  bg-[#E9F8F3B2] rounded-xl mx-auto shadow-lg overflow-hidden">
           <div className="w-full lg:w-1/2 hidden lg:block  flex-col items-center justify-center p-12 ">
             <img
-              src="https://res.cloudinary.com/dap6ohre8/image/upload/v1714874462/Sign_up-pana_h1joxb.png"
+              src="https://res.cloudinary.com/dap6ohre8/image/upload/v1714911314/Account-bro_1_xy3i06.png"
               alt=""
             />
           </div>
