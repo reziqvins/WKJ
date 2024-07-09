@@ -107,7 +107,7 @@ const Cart = () => {
 
   const sendOrderToApi = async (orderData) => {
     try {
-      const response = await axios.post(`${BASE_LOCAL}/orders`, orderData);
+      const response = await axios.post(`${BASE_PROD}/orders`, orderData);
       const data = response.data;
 
       if (data.status === "ok" && data.token) {

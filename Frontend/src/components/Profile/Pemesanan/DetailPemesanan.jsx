@@ -11,13 +11,13 @@ const TransactionDetail = () => {
   const [searchParams, setsetSearchParams] = useSearchParams();
   const { currentUser } = useContext(AuthContext);
   const [transaction, setTransaction] = useState(null);
-  const base_local = "http://localhost:3000";
-  const base_prod = "https://wkj.vercel.app";
+  const BASE_LOCAL = "http://localhost:3000";
+  const BASE_PROD = "https://wkj.vercel.app";
 
   useEffect(() => {
     if (searchParams.get('transaction_status') === "settlement") {
       const orderId = searchParams.get('order_id');
-      axios.put(`${base_local}/transactionStatus/${orderId}`, {
+      axios.put(`${BASE_PROD}/transactionStatus/${orderId}`, {
         "transaction_details.transaction_status": "settlement",
       })
         .then(response => console.log(response.data))
@@ -50,7 +50,7 @@ const TransactionDetail = () => {
 
   useEffect(() => {
     if (currentUser) {
-      axios.get(`${base_local}/orders/${id}`)
+      axios.get(`${BASE_PROD}/orders/${id}`)
         .then(response => {
           setTransaction(response.data.data);
         })
