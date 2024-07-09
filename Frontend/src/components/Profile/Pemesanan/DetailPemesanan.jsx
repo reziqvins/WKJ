@@ -1,20 +1,58 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Navbar from '../../LandingPage/Navbar';
 import { AuthContext } from '../../../Context/AuthContext';
 import formatDate from '../../helpers/utils';
+import { CLIENT_KEY } from '../../Chekout/Cart';
+
 const TransactionDetail = () => {
   const { id } = useParams();
+  const [searchParams, setsetSearchParams] = useSearchParams();
   const { currentUser } = useContext(AuthContext);
   const [transaction, setTransaction] = useState(null);
+  const base_local = "http://localhost:3000";
+  const base_prod = "https://wkj.vercel.app";
+
+  useEffect(() => {
+    if (searchParams.get('transaction_status') === "settlement") {
+      const orderId = searchParams.get('order_id');
+      axios.put(`${base_local}/transactionStatus/${orderId}`, {
+        "transaction_details.transaction_status": "settlement",
+      })
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error.response))
+    }
+  }, []);
+
+  useEffect(() => {
+    const snapSrcUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';
+    const myMidtransClientKey = `${CLIENT_KEY}`;
+    const script = document.createElement('script');
+    script.src = snapSrcUrl;
+    script.setAttribute('data-client-key', myMidtransClientKey);
+    script.async = true;
+
+    script.onload = () => {
+      console.log("Snap script loaded successfully");
+    };
+
+    script.onerror = () => {
+      console.error("Failed to load Snap script");
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   useEffect(() => {
     if (currentUser) {
-      axios.get(`https://wkj.vercel.app/orders/${id}`)
+      axios.get(`${base_local}/orders/${id}`)
         .then(response => {
           setTransaction(response.data.data);
-          console.log(response.data.data);
         })
         .catch(error => {
           console.error('Error fetching transaction details:', error);
@@ -29,6 +67,10 @@ const TransactionDetail = () => {
   if (!transaction) {
     return <div>Loading transaction details...</div>;
   }
+
+  const handleContinue = () => {
+    window.snap.pay(transaction.transaction_details.token)
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 text-[14px] md-text-[16px] lg:text-[16px]">
@@ -61,15 +103,13 @@ const TransactionDetail = () => {
 
               {transaction.transaction_details.item_details.map(item => (
                 <tr key={item.id} className="mt-2">
-                  <td><img className="w-20 h-20 object-cover rounded-md" src={item.img} alt="" /></td>
+                  <td><img className="w-20 h-20 object-cover rounded-md" src={item.img} alt={item.name} /></td>
                   <td>{item.name}</td>
                   <td>{item.quantity}</td>
                   <td>{item.price}</td>
 
                 </tr>
               ))}
-
-
             </tbody>
           </table>
           <div className="flex justify-between p-5 lg:mr-40 md:mr-20 mr-0">
@@ -80,6 +120,9 @@ const TransactionDetail = () => {
             <div className="kanan">
               Total : {transaction.transaction_details.gross_amount}
             </div>
+            {transaction.transaction_details.transaction_status === "pending" && (
+              <button onClick={handleContinue} className="bg-blue-500 hover:bg-blue-600 p-4 rounded-md text-white">Lanjut Pembayaran</button>
+            )}
           </div>
         </div>
       </div>

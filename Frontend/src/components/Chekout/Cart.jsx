@@ -13,7 +13,9 @@ import Swal from "sweetalert2";
 import uploadFile from "../helpers/uploadFile";
 import { AuthContext } from "../../Context/AuthContext";
 
-const CLIENT_KEY = 'SB-Mid-client-jEtvZoEqwphlbnRo';
+export const CLIENT_KEY = 'SB-Mid-client-jEtvZoEqwphlbnRo';
+export const BASE_LOCAL = 'http://localhost:3000';
+export const BASE_PROD = 'https://wkj.vercel.app';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -26,9 +28,11 @@ const Cart = () => {
   const [file, setFile] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [shipping, setShipping] = useState("JNE");
+  const [orderData, setOrderData] = useState(null);
 
   useEffect(() => {
     dispatch(getTotals());
+
     if (currentUser) {
       setName(currentUser.displayName || "");
       setEmail(currentUser.email || "");
@@ -103,12 +107,9 @@ const Cart = () => {
 
   const sendOrderToApi = async (orderData) => {
     try {
-      const local = "http://localhost:3000/orders"
-      const prod = "https://wkj.vercel.app/orders"
-      const response = await axios.post(prod, orderData);
-      console.log("API response:", response);
-
+      const response = await axios.post(`${BASE_LOCAL}/orders`, orderData);
       const data = response.data;
+
       if (data.status === "ok" && data.token) {
         dispatch(clearCart());
         Swal.fire({
@@ -169,13 +170,10 @@ const Cart = () => {
         },
       },
     };
-
-    console.log("Order data before sending:", orderData);
-
+    
     try {
       const token = await sendOrderToApi(orderData);
       if (token) {
-        console.log('Token received:', token);
         window.snap.pay(token, {
           onSuccess: function (result) {
             console.log('Payment Success:', result);
@@ -202,13 +200,23 @@ const Cart = () => {
   useEffect(() => {
     if (searchParams.get('transaction_status') === "settlement") {
       const orderId = searchParams.get('order_id');
+
       axios.put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
         "transaction_details.transaction_status": "settlement",
       })
         .then(response => console.log(response.data))
         .catch(error => console.error(error.response))
     }
-  }, [])
+    if (searchParams.get('transaction_status') === "pending") {
+      const orderId = searchParams.get('order_id');
+      
+      axios.put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
+        "transaction_details.transaction_status": "pending",
+      })
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error.response))
+    }
+  }, []);
 
   useEffect(() => {
     const snapSrcUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';

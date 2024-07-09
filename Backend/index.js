@@ -38,6 +38,8 @@ const orderSchema = new mongoose.Schema({
         shipping_method: { type: String },
         resi: { type: String },
         createdAt: { type: Date, default: Date.now },
+        token: { type: String },
+        redirect_url: { type: String },
         item_details: [
             {
                 id: { type: String },
@@ -61,18 +63,10 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.model('Order', orderSchema);
 
+
 // Create an order
 app.post('/orders', async (req, res) => {
     const { transaction_details } = req.body;
-
-    const order = new Order({
-        transaction_details: {
-            ...req.body.transaction_details,
-            createdAt: new Date() // Ensure createdAt is set
-        },
-        item_details: req.body.transaction_details.item_details,
-        customer_details: req.body.transaction_details.customer_details
-    });
 
     try {
         try {
@@ -86,7 +80,7 @@ app.post('/orders', async (req, res) => {
                     Authorization:
                         "Basic " +
                         Buffer.from(`SB-Mid-server-PUUdoGz-9cLzYr1JcTc_qZS-`).toString("base64"),
-                    // Above is API server key for the Midtrans account, encoded to base64
+
                 },
                 data: {
                     transaction_details: {
@@ -99,7 +93,16 @@ app.post('/orders', async (req, res) => {
             });
 
             if (requestPaymentToken) {
-                if (requestPaymentToken.status === 201) {
+                if (requestPaymentToken.status === 201) {  
+                    const order = new Order({
+                        transaction_details: {
+                            ...req.body.transaction_details,
+                            createdAt: new Date(),
+                            token: requestPaymentToken.data.token,
+                            redirect_url: requestPaymentToken.data.redirect_url,
+                        },
+                    });
+
                     await order.save()
                 }
                 return res.status(200).json({
