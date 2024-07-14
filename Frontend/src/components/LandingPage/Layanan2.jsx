@@ -32,20 +32,17 @@ function Layanan2() {
 
   return (
     <div className="w-full bg-blue-100 lg:p-20 p-7">
-      {layananData &&
-        layananData.map((item) => (
-          <div key={item.id} className="md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px] ">
+          <div className="md:max-w-[1480px] m-auto grid md:grid-cols-2 max-w-[600px]">
             <img
-              src={item.imageUrl}
-              className="md:order-first order-last w-80 h-80 object-cover mx-auto"
+              src="https://res.cloudinary.com/dap6ohre8/image/upload/v1720975312/WKJ/Chat_bot-bro_1_mery4o.png"
+              className="md:order-first order-last  object-cover mx-auto"
               alt="Layanan Image"
             />
-            <div className="content flex flex-col justify-start">
-              {/* Gunakan dangerouslySetInnerHTML untuk merender HTML */}
-              <div dangerouslySetInnerHTML={{ __html: item.content }} />
+            <div className="description content flex flex-col items-center justify-center">
+              <h1 className="font-bold text-3xl text-center">Konsultasi <span className="text-[#20B486]">Mudah</span>, dengan <span className="text-[#20B486]">gawai</span> anda</h1>
+              <p className="text-center mt-5 text-xl">kini tersedia layanan konsultasi bagi anda yang ingin menjaga kesehatan dengan alami. dapatkan rekomendasi produk jamu sesuai dengan kebutuhan anda.</p>
             </div>
           </div>
-        ))}
     </div>
   );
 }

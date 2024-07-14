@@ -81,8 +81,7 @@ const ProdukInovasi = () => {
             Produk <span className="text-[#20B486]">Inovasi</span>
           </h1>
           <p className="text-[#6D737A]">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
+          Solusi terbaru yang dikembangkan untuk mengatasi berbagai masalah kesehatan secara efektif dan praktis
           </p>
         </div>
 
@@ -95,7 +94,7 @@ const ProdukInovasi = () => {
         </Slider>
       </div>
       <div className="md:max-w-[1480px] m-auto max-w-[600px] px-4 md:px-0">
-        <a className="py-3 flex" href="">
+        <a className="py-3 flex" href="/DashboardStore">
           Lihat Selengkatnya..
         </a>
       </div>
