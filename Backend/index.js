@@ -52,7 +52,7 @@ const orderSchema = new mongoose.Schema({
             }
         ],
         customer_details: {
-            id: { type: String },
+            id: { type:     String },
             first_name: { type: String },
             email: { type: String },
             alamat: { type: String },
@@ -94,6 +94,7 @@ app.post('/orders', async (req, res) => {
 
             if (requestPaymentToken) {
                 if (requestPaymentToken.status === 201) {  
+                    console.log(requestPaymentToken)
                     const order = new Order({
                         transaction_details: {
                             ...req.body.transaction_details,
@@ -101,7 +102,9 @@ app.post('/orders', async (req, res) => {
                             token: requestPaymentToken.data.token,
                             redirect_url: requestPaymentToken.data.redirect_url,
                         },
+                        
                     });
+                    
 
                     await order.save()
                 }

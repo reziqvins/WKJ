@@ -138,6 +138,7 @@ const Cart = () => {
       });
       return;
     }
+    
 
     let imgUrl = null;
     if (file) {
@@ -340,6 +341,7 @@ const Cart = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  required
                 />
               </div>
               <div className="mb-2">
@@ -355,6 +357,7 @@ const Cart = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  required
                 />
               </div>
               <div className="mb-2">
@@ -370,6 +373,7 @@ const Cart = () => {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  required
                 />
               </div>
               {cart.cartItems.some((item) => item.isCheck === "1") && (
@@ -381,6 +385,7 @@ const Cart = () => {
                     type="file"
                     onChange={handleFileChange}
                     className="border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
+                    required
                   />
                 </div>
               )}
