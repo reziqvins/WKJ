@@ -58,7 +58,7 @@ function App() {
         <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} />
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />
         <Route path="/transaction/:id" Component={DetailPemesanan} />
-        <Route path="/transaction-expired" component={TransactionExpired} />
+        <Route path="/transaction-expired" element={<TransactionExpired/>} />
 
         {/* Nesting admin routes under Layout */}
         <Route element={<Layout />}>
