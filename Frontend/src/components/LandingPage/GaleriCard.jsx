@@ -7,11 +7,11 @@ const GaleriCard = ({ item }) => {
         <div className="card-body">
           <h5 className="card-title text-xl font-bold mb-2">{item.title}</h5>
           <p className="card-text text-gray-700 mb-4">{item.desc}</p>
-          <div className="embed-responsive embed-responsive-9by16">
+          <div className="embed-responsive  embed-responsive-9by16 h-[300px]">
             {item.mediaType === 'image' ? (
-              <img src={item.media} alt={item.title} className="embed-responsive-item rounded-xl" />
+              <img src={item.media} alt={item.title} className="embed-responsive-item rounded-xl h-full w-full object-fill bg-red-400 " />
             ) : (
-              <video controls className="embed-responsive-item rounded-xl">
+              <video controls className=" rounded-xl">
                 <source src={item.media} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>

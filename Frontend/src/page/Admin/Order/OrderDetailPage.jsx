@@ -6,7 +6,7 @@ const OrderDetailPage = () => {
   return (
     <div className='px-4'>
       <TopBar title="Order"/>
-      <div className="grid sm:grid-cols md:grid-cols-2">
+      <div className="">
       <OrderInformation/>
       </div>
     </div>

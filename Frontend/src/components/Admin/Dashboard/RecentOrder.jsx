@@ -13,7 +13,8 @@ const RecentOrder = () => {
         const fetchOrders = async () => {
             try {
                 const response = await axios.get('https://wkj.vercel.app/orders');
-                setOrders(response.data.data);
+                const sortedOrders = response.data.data.sort((a, b) => new Date(b.transaction_details.createdAt) - new Date(a.transaction_details.createdAt));
+                setOrders(sortedOrders);
                 setLoading(false);
             } catch (error) {
                 setError(error.message);

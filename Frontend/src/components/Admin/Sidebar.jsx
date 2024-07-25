@@ -110,19 +110,7 @@ const Sidebar = () => {
           </Link>
 
           <div className="flex flex-col">
-            <li
-              className={`flex items-center gap-x-4 p-2 cursor-pointer rounded-md hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm mt-2 ${
-                pathname === "/admin/landingpage" ? "text-[#F0B608]" : ""
-              }`}
-              onClick={() => setLandingPageOpen(!landingPageOpen)}
-            >
-              <MdDashboard className="text-2xl" />
-              <span className={`${!open && "hidden"} origin-left duration-200`}>
-                Landing Page
-              </span>
-            </li>
-            {landingPageOpen && (
-              <ul className="pl-8">
+            
                 <Link
                   to="/admin/landingPage/gallery"
                   className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
@@ -138,23 +126,6 @@ const Sidebar = () => {
                     </span>
                   </li>
                 </Link>
-                <Link
-                  to="/admin/landingPage/layanan2"
-                  className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-2"
-                >
-                  <li
-                    className={`flex items-center gap-x-4 ${
-                      pathname === "/admin/landingPage/layanan2" ? "text-[#F0B608]" : ""
-                    }`}
-                  >
-                    <MdHomeRepairService className="text-2xl" />
-                    <span className={`${!open && "hidden"} origin-left duration-200`}>
-                      Layanan 2
-                    </span>
-                  </li>
-                </Link>
-              </ul>
-            )}
           </div>
 
           <Link

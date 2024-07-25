@@ -177,9 +177,10 @@ const OrderInformation = () => {
           <p>Hasil Konsultasi</p>
           <div className="flex justify-center items-center mt-4">
             <img
-              className="h-80"
+              className="h-80 cursor-pointer"
               src={order?.transaction_details.customer_details.imgCheck}
               alt="Customer Check Image"
+              
               onClick={() => handleImageClick(order?.transaction_details.customer_details.imgCheck)}
             />
           </div>

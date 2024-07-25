@@ -138,6 +138,8 @@ const Cart = () => {
       });
       return;
     }
+
+
     
 
     let imgUrl = null;
