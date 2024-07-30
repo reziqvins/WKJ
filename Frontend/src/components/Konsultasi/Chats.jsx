@@ -10,6 +10,7 @@ const AdminChats = () => {
   const { dispatch } = useContext(ChatContext);
   const [chats, setChats] = useState({});
 
+  // Fetch admin users
   useEffect(() => {
     const fetchAdminUsers = async () => {
       try {
@@ -26,19 +27,54 @@ const AdminChats = () => {
     };
 
     fetchAdminUsers();
-  }, []);
+  }, []); // Empty dependency array to run only once
 
+  // Listen for changes in current user's chats
   useEffect(() => {
-    if (currentUser) { // Check if currentUser is not null
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-        setChats(doc.data() || {});
+    if (currentUser) {
+      const chatRef = doc(db, "userChats", currentUser.uid);
+      const unsub = onSnapshot(chatRef, (doc) => {
+        const data = doc.data();
+        console.log("User Chats Data:", data); // Debug log
+        setChats(data || {});
       });
 
       return () => {
         unsub();
       };
     }
-  }, [currentUser]);
+  }, [currentUser.uid]); // Dependency array to run when currentUser.uid changes
+
+  // Fetch messages for all chats when chats data changes
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (Object.keys(chats).length > 0) {
+        try {
+          const chatIds = Object.keys(chats);
+          const chatDocs = await Promise.all(
+            chatIds.map((chatId) => getDoc(doc(db, "chats", chatId)))
+          );
+
+          const newChats = {};
+          chatDocs.forEach((docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              newChats[docSnap.id] = data;
+            }
+          });
+
+          setChats((prevChats) => ({
+            ...prevChats,
+            ...newChats,
+          }));
+        } catch (err) {
+          console.error("Failed to fetch messages:", err);
+        }
+      }
+    };
+
+    fetchMessages();
+  }, [chats]); // Dependency array ensures it runs when chats state updates
 
   const handleSelect = async (user) => {
     const combinedId =
@@ -80,28 +116,34 @@ const AdminChats = () => {
 
   return (
     <div className="chats">
-      {adminUsers.map((user) => (
-        <div
-          key={user.uid}
-          onClick={() => handleSelect(user)}
-          className="userChat flex items-center p-4 gap-4 text-white cursor-pointer hover:bg-indigo-900"
-        >
-          <img
-            className="w-10 h-10 rounded-full object-cover"
-            src={user.photoURL}
-            alt=""
-          />
-          <div className="userChatInfo">
-            <span className="text-sm font-semibold text-yellow-200">
-              {user.displayName}
-            </span>
-            {/* Mendapatkan lastMessage dari state chats */}
-            <p className="text-xs text-gray-300">
-              {chats[user.uid]?.lastMessage?.text || "haloo"}
-            </p>
+      {adminUsers.map((user) => {
+        const chatId =
+          currentUser.uid > user.uid
+            ? currentUser.uid + user.uid
+            : user.uid + currentUser.uid;
+        const lastMessage = chats[chatId]?.messages?.slice(-1)[0];
+        return (
+          <div
+            key={user.uid}
+            onClick={() => handleSelect(user)}
+            className="userChat flex items-center p-4 gap-4 text-white cursor-pointer hover:bg-indigo-900"
+          >
+            <img
+              className="w-10 h-10 rounded-full object-cover"
+              src={user.photoURL}
+              alt=""
+            />
+            <div className="userChatInfo">
+              <span className="text-sm font-semibold text-yellow-200">
+                {user.displayName}
+              </span>
+              <p className="text-xs text-gray-300">
+                {lastMessage ? lastMessage.text : "Mulai Konsultasi"}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

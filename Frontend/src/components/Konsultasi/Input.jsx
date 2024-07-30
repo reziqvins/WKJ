@@ -9,6 +9,7 @@ import {
   serverTimestamp,
   Timestamp,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db, storage } from "../../Firebase";
 import { v4 as uuid } from "uuid";
@@ -22,6 +23,14 @@ const Input = () => {
   const { data } = useContext(ChatContext);
 
   const handleSend = async () => {
+    let isFirstMessage = false;
+    const chatDocRef = doc(db, "chats", data.chatId);
+    const chatDoc = await getDoc(chatDocRef);
+    
+    if (!chatDoc.exists() || !chatDoc.data().messages.length) {
+      isFirstMessage = true;
+    }
+
     if (img) {
       const storageRef = ref(storage, uuid());
 
@@ -29,11 +38,11 @@ const Input = () => {
 
       uploadTask.on(
         (error) => {
-          // Handle Error
+          //TODO:Handle Error
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await updateDoc(doc(db, "chats", data.chatId), {
+            await updateDoc(chatDocRef, {
               messages: arrayUnion({
                 id: uuid(),
                 text,
@@ -42,12 +51,38 @@ const Input = () => {
                 img: downloadURL,
               }),
             });
+
+            if (isFirstMessage) {
+              // Admin sends automated response
+              const adminId = data.user.uid;
+              await updateDoc(chatDocRef, {
+                messages: arrayUnion({
+                  id: uuid(),
+                  text: "pesan anda akan dibalas secepatnya. pastikan anda mengirim pesan pada jam kerja WKJ",
+                  senderId: adminId,
+                  date: Timestamp.now(),
+                }),
+              });
+
+              await updateDoc(doc(db, "userChats", currentUser.uid), {
+                [data.chatId + ".lastMessage"]: {
+                  text: "pesan anda akan dibalas secepatnya. pastikan anda mengirim pesan pada jam kerja WKJ",
+                },
+                [data.chatId + ".date"]: serverTimestamp(),
+              });
+
+              await updateDoc(doc(db, "userChats", adminId), {
+                [data.chatId + ".lastMessage"]: {
+                  text: "pesan anda akan dibalas secepatnya. pastikan anda mengirim pesan pada jam kerja WKJ",
+                },
+                [data.chatId + ".date"]: serverTimestamp(),
+              });
+            }
           });
         }
       );
-
     } else {
-      await updateDoc(doc(db, "chats", data.chatId), {
+      await updateDoc(chatDocRef, {
         messages: arrayUnion({
           id: uuid(),
           text,
@@ -55,6 +90,33 @@ const Input = () => {
           date: Timestamp.now(),
         }),
       });
+
+      if (isFirstMessage) {
+        // Admin sends automated response
+        const adminId = data.user.uid;
+        await updateDoc(chatDocRef, {
+          messages: arrayUnion({
+            id: uuid(),
+            text: "pesan anda akan dibalas secepatnya. pastikan anda mengirim pesan pada jam kerja WKJ -wkjBot-",
+            senderId: adminId,
+            date: Timestamp.now(),
+          }),
+        });
+
+        await updateDoc(doc(db, "userChats", currentUser.uid), {
+          [data.chatId + ".lastMessage"]: {
+            text: "pesan anda akan dibalas secepatnya. pastikan anda mengirim pesan pada jam kerja WKJ -wkjBot-",
+          },
+          [data.chatId + ".date"]: serverTimestamp(),
+        });
+
+        await updateDoc(doc(db, "userChats", adminId), {
+          [data.chatId + ".lastMessage"]: {
+            text: "pesan anda akan dibalas secepatnya. pastikan anda mengirim pesan pada jam kerja WKJ -wkjBot-",
+          },
+          [data.chatId + ".date"]: serverTimestamp(),
+        });
+      }
     }
 
     await updateDoc(doc(db, "userChats", currentUser.uid), {
@@ -72,6 +134,7 @@ const Input = () => {
     });
 
     setText("");
+    setImg(null);
   };
 
   return (

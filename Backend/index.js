@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const axios = require('axios');
 const admin = require('firebase-admin');
+const { Snap } = require('midtrans-client');
 
 // Firebase Admin SDK configuration
 const serviceAccount = {
@@ -42,15 +43,9 @@ app.post('/orders', async (req, res) => {
   const { transaction_details } = req.body;
 
   try {
-    const requestPaymentToken = await axios({
-      url: "https://app.sandbox.midtrans.com/snap/v1/transactions",
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: "Basic " + Buffer.from(`SB-Mid-server-PUUdoGz-9cLzYr1JcTc_qZS-`).toString("base64"),
-      },
-      data: {
+    const requestPaymentToken = await axios.post(
+      "https://app.sandbox.midtrans.com/snap/v1/transactions",
+      {
         transaction_details: {
           order_id: transaction_details.order_id,
           gross_amount: transaction_details.gross_amount,
@@ -58,7 +53,14 @@ app.post('/orders', async (req, res) => {
         customer_details: transaction_details.customer_details,
         item_details: transaction_details.item_details,
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Basic ${Buffer.from(`SB-Mid-server-${process.env.MIDTRANS_SERVER_KEY}`).toString("base64")}`,
+        },
+      }
+    );
 
     if (requestPaymentToken.status === 201) {
       const orderData = {
@@ -87,11 +89,11 @@ app.post('/orders', async (req, res) => {
       });
     }
   } catch (error) {
+    console.error('Error creating order:', error.message);
     res.status(500).json({
       status: "failed",
       message: error.response ? error.response.data : error.message,
     });
-    console.log(error.response ? error.response.data : error.message);
   }
 });
 
@@ -105,6 +107,7 @@ app.get('/orders', async (req, res) => {
       data: orders
     });
   } catch (error) {
+    console.error('Error retrieving orders:', error.message);
     res.status(500).json({
       message: 'Gagal mengambil semua order',
       error: error.message
@@ -127,6 +130,7 @@ app.get('/orders/:id', async (req, res) => {
       data: doc.data()
     });
   } catch (error) {
+    console.error('Error retrieving order:', error.message);
     res.status(500).json({
       message: 'Gagal mengambil order',
       error: error.message
@@ -150,6 +154,7 @@ app.put('/transactionStatus/:id', async (req, res) => {
       data: req.body
     });
   } catch (error) {
+    console.error('Error updating order:', error.message);
     res.status(400).json({
       message: 'Gagal memperbarui order',
       error: error.message
@@ -166,6 +171,7 @@ app.delete('/orders/:id', async (req, res) => {
       message: 'Berhasil menghapus order'
     });
   } catch (error) {
+    console.error('Error deleting order:', error.message);
     res.status(500).json({
       message: 'Gagal menghapus order',
       error: error.message
@@ -176,14 +182,13 @@ app.delete('/orders/:id', async (req, res) => {
 // Handle Midtrans notifications
 app.post('/midtrans-notification', async (req, res) => {
   try {
+    const snap = new Snap({ serverKey: process.env.MIDTRANS_SERVER_KEY, environment: process.env.MIDTRANS_ENVIRONMENT });
     const statusResponse = await snap.transaction.notification(req.body);
-    const orderId = statusResponse.order_id;
-    const transactionStatus = statusResponse.transaction_status;
-    const fraudStatus = statusResponse.fraud_status;
+    const { order_id, transaction_status, fraud_status } = statusResponse;
 
-    console.log(`Transaction notification received. Order ID: ${orderId}, Transaction Status: ${transactionStatus}, Fraud Status: ${fraudStatus}`);
+    console.log(`Transaction notification received. Order ID: ${order_id}, Transaction Status: ${transaction_status}, Fraud Status: ${fraud_status}`);
 
-    const orderRef = db.collection('orders').doc(orderId);
+    const orderRef = db.collection('orders').doc(order_id);
     const doc = await orderRef.get();
     if (!doc.exists) {
       return res.status(404).json({
@@ -192,19 +197,19 @@ app.post('/midtrans-notification', async (req, res) => {
     }
 
     const orderData = doc.data();
-    if (transactionStatus === 'capture') {
-      if (fraudStatus === 'challenge') {
+    if (transaction_status === 'capture') {
+      if (fraud_status === 'challenge') {
         orderData.transaction_details.payment_status = 'challenge';
-      } else if (fraudStatus === 'accept') {
+      } else if (fraud_status === 'accept') {
         orderData.transaction_details.payment_status = 'success';
       }
-    } else if (transactionStatus === 'settlement') {
+    } else if (transaction_status === 'settlement') {
       orderData.transaction_details.payment_status = 'success';
-    } else if (transactionStatus === 'deny') {
+    } else if (transaction_status === 'deny') {
       orderData.transaction_details.payment_status = 'denied';
-    } else if (transactionStatus === 'cancel' || transactionStatus === 'expire') {
+    } else if (transaction_status === 'cancel' || transaction_status === 'expire') {
       orderData.transaction_details.payment_status = 'failed';
-    } else if (transactionStatus === 'pending') {
+    } else if (transaction_status === 'pending') {
       orderData.transaction_details.payment_status = 'pending';
     }
 
@@ -214,6 +219,7 @@ app.post('/midtrans-notification', async (req, res) => {
       message: 'Notification handled successfully'
     });
   } catch (error) {
+    console.error('Error handling notification:', error.message);
     res.status(500).json({
       message: 'Failed to handle notification',
       error: error.message
@@ -233,36 +239,43 @@ app.post('/store-token', async (req, res) => {
     await db.collection('tokens').doc(fcmToken).set({ token: fcmToken });
     res.status(200).json({ message: 'Token stored successfully' });
   } catch (error) {
+    console.error('Error storing token:', error.message);
     res.status(500).json({ error: 'Failed to store token', details: error.message });
   }
 });
 
 // Send Notification
 app.post('/send-notification', async (req, res) => {
-  const { fcmToken, title, body } = req.body;
-
-  if (!fcmToken) {
-    return res.status(400).json({ error: 'FCM token is required' });
-  }
-
-  const message = {
-    notification: {
-      title,
-      body,
-    },
-    token: fcmToken,
-  };
-
-  try {
-    const response = await admin.messaging().send(message);
-    console.log('Successfully sent message:', response);
-    res.status(200).json({ message: 'Notification sent successfully' });
-  } catch (error) {
-    console.error('Error sending notification:', error);
-    res.status(500).json({ error: 'Failed to send notification', details: error.message });
-  }
-});
-
+    const { fcmToken, title, body } = req.body;
+  
+    const message = {
+      to: fcmToken,
+      notification: {
+        title,
+        body,
+      },
+    };
+  
+    try {
+      const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'key=YOUR_SERVER_KEY', // Replace with your server key
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to send notification');
+      }
+  
+      res.status(200).send({ success: true });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ error: 'Failed to send notification' });
+    }
+  });
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

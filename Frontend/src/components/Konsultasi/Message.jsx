@@ -12,19 +12,22 @@ const Message = ({ message }) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
+  // Function to format timestamp to hours and minutes
   const formatTime = (timestamp) => {
-    const date = new Date(timestamp.seconds * 1000);
+    const date = new Date(timestamp.seconds * 1000); // Convert seconds to milliseconds
     const hours = date.getHours().toString().padStart(2, "0");
     const minutes = date.getMinutes().toString().padStart(2, "0");
     return `${hours}:${minutes}`;
   };
 
   const handleImageClick = () => {
+    // Create a temporary anchor element
     const a = document.createElement("a");
     a.href = message.img;
     a.download = "image";
     window.open(message.img, "_blank");
   };
+  
 
   return (
     <div className={`flex ${message.senderId === currentUser.uid ? 'flex-row-reverse' : ''} items-start gap-2.5 mb-4`} ref={ref}>
