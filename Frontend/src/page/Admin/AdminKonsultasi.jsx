@@ -6,8 +6,8 @@ const AdminKonsultasi = () => {
   return (
     <div>
       <TopBar title="Halaman Konsultasi" />
-      <div className="home h-screen flex items-center justify-center mt-[-30px]">
-        <div className="container border border-white rounded-lg w-[65%] h-[80%] flex overflow-hidden">
+      <div className="home h-screen flex items-center  justify-center mt-[-50px]">
+        <div className="container border border-white rounded-lg  flex overflow-hidden">
           <AdminSidebar />
           <AdminChat />
         </div>

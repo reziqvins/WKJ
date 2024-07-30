@@ -95,7 +95,7 @@ const AdminSearch = () => {
           className="userChat cursor-pointer flex items-center gap-5 px-4 py-2"
           onClick={handleSelect}
         >
-          <img src={user.photoURL} alt="" className="h-9 w-9 rounded-full object-cover" />
+          <img src={user.photoURL} alt="" className=" md:h-7 md:w-7 h-9 w-9 rounded-full object-cover" />
           <div className="userChatInfo">
             <span className="text-sm font-semibold text-yellow-200">{user.displayName}</span>
           </div>

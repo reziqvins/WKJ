@@ -40,14 +40,20 @@ function KonsultasiPage() {
 
   return (
     <div
-      style={{ backgroundImage: "linear-gradient(115deg, #b6d7a8, #6aa84f)" }}
+      className="bg-gradient-to-br from-[#b6d7a8] to-[#6aa84f] min-h-screen flex flex-col p-0 m-0 text-sm md:text-base"
     >
       <Navbar />
-      <div className="home h-screen flex items-center justify-center mt-[-30px]">
-        <div className="container border border-white rounded-lg w-[65%] h-[80%] flex overflow-hidden">
-          <Sidebar />
-          <Chat />
-        </div>
+      <div
+        className="container border border-white rounded-lg flex overflow-hidden mx-auto my-0"
+        style={{ 
+          height: 'calc(100vh - 60px)', // Adjust based on Navbar height
+          width: '100vw',
+          maxWidth: '1200px', // Optional, to limit maximum width
+          backgroundColor: 'transparent' // Ensures background gradient shows through
+        }}
+      >
+        <Sidebar />
+        <Chat />
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ const AdminNavbar = () => {
       <div className="user flex items-center gap-2 px-4">
       {currentUser ? (
           <>
-            <img src={currentUser.photoURL} alt="User Avatar" className="h-9 w-9 rounded-full object-cover" />
+            <img src={currentUser.photoURL} alt="User Avatar" className="md:h-7 md:w-7 h-9 w-9 rounded-full object-cover" />
            
           </>
         ) : (
