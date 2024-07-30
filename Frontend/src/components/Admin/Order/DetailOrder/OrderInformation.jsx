@@ -15,13 +15,14 @@ const OrderInformation = () => {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [resi, setResi] = useState("");
+  const BASE_LOCAL = 'http://localhost:3000';
+  const BASE_PROD = 'https://wkj.vercel.app';
 
   useEffect(() => {
     const fetchOrderById = async () => {
       try {
-        const response = await axios.get(`https://wkj.vercel.app/orders/${id}`);
+        const response = await axios.get(`${BASE_LOCAL}/orders/${id}`);
         setOrder(response.data.data);
-        console.log(response.data.data);
         setResi(response.data.data?.transaction_details?.resi);
         setLoading(false);
       } catch (error) {
@@ -59,8 +60,7 @@ const OrderInformation = () => {
         "transaction_details.resi": resi,
       };
       const response = await axios.put(
-        // `http://localhost:3000/orders/${id}`,
-        `https://wkj.vercel.app/orders/${id}`,
+        `${BASE_LOCAL}/transactionStatus/${id}`,
         updatedData
       );
       console.log("Resi updated successfully:", response);

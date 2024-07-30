@@ -8,13 +8,16 @@ const OrderTable = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const BASE_LOCAL = 'http://localhost:3000';
+   const BASE_PROD = 'https://wkj.vercel.app';
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('https://wkj.vercel.app/orders');
+                const response = await axios.get(`${BASE_LOCAL}/orders`); 
                 const sortedOrders = response.data.data.sort((a, b) => new Date(b.transaction_details.createdAt) - new Date(a.transaction_details.createdAt));
-                setOrders(sortedOrders);
+                setOrders(response.data.data);
+                console.log(response.data.data)
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
@@ -27,8 +30,8 @@ const OrderTable = () => {
 
     const handleDeleteOrder = async (orderId) => {
         try {
-            await axios.delete(`https://wkj.vercel.app/orders/${orderId}`);
-            setOrders(orders.filter(order => order._id !== orderId));
+            await axios.delete(`${BASE_LOCAL}/orders/${orderId}`);
+            setOrders(orders.filter(order => order.id !== orderId));
             Swal.fire({
               icon: 'success',
               title: 'Data Berhasil Terhapus!',
@@ -72,7 +75,7 @@ const OrderTable = () => {
                     </thead>
                     <tbody>
                         {orders.map((order) => (
-                            <tr key={order._id} className="hover:bg-gray-100 cursor-pointer">
+                            <tr key={order.id} className="hover:bg-gray-100 cursor-pointer">
                                 <td className="px-4 py-2">{order?.transaction_details?.customer_details?.first_name}</td>
                                 <td className="px-4 py-2">{order?.transaction_details?.item_details[0]?.name}</td>
                                 <td className="px-4 py-2">{order?.transaction_details?.gross_amount}</td>
@@ -80,8 +83,8 @@ const OrderTable = () => {
                                 <td className="px-4 py-2">{order?.transaction_details?.order_Status}</td>
                                 <td className="px-4 py-2">{order?.transaction_details?.shipping_method}</td>
                                 <td className="px-4 py-2">
-                                    <Link to={`/admin/orders/${order._id}`} className="bg-blue-500 text-white px-2 py-1 rounded-md">View</Link>
-                                    <button onClick={() => handleDeleteOrder(order._id)} className="bg-red-500 text-white px-2 py-1 rounded-md ml-2">Delete</button>
+                                    <Link to={`/admin/orders/${order.id}`} className="bg-blue-500 text-white px-2 py-1 rounded-md">View</Link>
+                                    <button onClick={() => handleDeleteOrder(order.id)} className="bg-red-500 text-white px-2 py-1 rounded-md ml-2">Delete</button>
                                 </td>
                             </tr>
                         ))}

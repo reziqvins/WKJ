@@ -8,17 +8,26 @@ import Navbar from '../../LandingPage/Navbar';
 const Pemesanan = () => {
   const [orders, setOrders] = useState([]);
   const [activeCategory, setActiveCategory] = useState('Belum Bayar');
+  const [loading, setLoading] = useState(true);
   const { currentUser } = useContext(AuthContext);
+  
+  const BASE_LOCAL = 'http://localhost:3000';
+  const BASE_PROD = 'https://wkj.vercel.app';
+
 
   useEffect(() => {
     if (currentUser) {
-      axios.get('https://wkj.vercel.app/orders')
+      setLoading(true); // Start loading
+      axios.get(`${BASE_LOCAL}/orders`)
         .then(response => {
           console.log(response.data);
           setOrders(response.data.data);
+          setLoading(false); // Stop loading
+
         })
         .catch(error => {
           console.error('Error fetching orders:', error);
+          setLoading(false); // Stop loading
         });
     }
   }, [currentUser]);
@@ -26,7 +35,9 @@ const Pemesanan = () => {
   const filteredOrders = orders.filter(order => {
     if (!order.transaction_details || !order.transaction_details.customer_details) {
       return false;
+      
     }
+    
     if (activeCategory === 'Belum Bayar') {
       return order.transaction_details.transaction_status === 'pending';
     } else if (activeCategory === 'Sudah Bayar') {
@@ -35,8 +46,12 @@ const Pemesanan = () => {
     return false;
   });
 
-  if (!currentUser) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!currentUser) {
+    return <div>Please log in to view orders.</div>;
   }
 
   return (
@@ -57,12 +72,13 @@ const Pemesanan = () => {
                 <th className="py-2 px-4 bg-gray-200">Product Name</th>
                 <th className="py-2 px-4 bg-gray-200">Price</th>
                 <th className="py-2 px-4 bg-gray-200">Order Status</th>
+                <th className="py-2 px-4 bg-gray-200">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.map(order => (
                 order.transaction_details.customer_details.id === currentUser.uid && (
-                  <tr key={order._id}>
+                  <tr key={order.id}>
                     <td className="py-2 px-4">
                       {order.transaction_details.item_details[0]?.img ? (
                         <img
@@ -81,10 +97,10 @@ const Pemesanan = () => {
                       {order.transaction_details.item_details[0]?.price || 'No Price'}
                     </td>
                     <td className="py-2 px-4">
-                      {order.transaction_details.order_Status}
+                      {order.transaction_details.transaction_status || 'No Status'}
                     </td>
                     <td className="py-2 px-4">
-                      <Link to={`/transaction/${order._id}`}>
+                      <Link to={`/transaction/${order.id}`}>
                         <button className="bg-blue-500 text-white px-4 py-2 rounded">
                           View Details
                         </button>

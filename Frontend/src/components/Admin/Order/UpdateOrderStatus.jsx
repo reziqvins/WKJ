@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 import { RxUpdate } from "react-icons/rx";
 import Swal from "sweetalert2";
 
 const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
   const [status, setStatus] = useState("");
+  const BASE_LOCAL = 'http://localhost:3000';
+  const BASE_PROD = 'https://wkj.vercel.app';
 
   const handleStatusChange = (selectedStatus) => {
     setStatus(selectedStatus);
@@ -16,8 +17,7 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
       "transaction_details.order_Status": status,
     };
 
-    // axios.put(`http://localhost:3000/orders/${orderId}`, updatedData)
-    axios.put(`https://wkj.vercel.app/orders/${orderId}`, updatedData)
+    axios.put(`${BASE_LOCAL}/transactionStatus/${orderId}`, updatedData)
       .then((response) => {
         console.log("Order status updated successfully:", response);
         Swal.fire({
@@ -27,7 +27,7 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
           showConfirmButton: false,
           timer: 1500,
         });
-        onClose(); // Close the modal after successful update
+        onClose();
       })
       .catch((error) => {
         Swal.fire({
@@ -50,9 +50,7 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
       <div className="w-[500px] rounded-lg shadow-md z-20 bg-[#f9f9f9]">
         <div className="header bg-[#0DCAF0] p-2 flex gap-3 rounded-t-lg">
           <RxUpdate className="text-white mt-2 font-bold" />
-          <h2 className="text-white font-semibold mb-4">
-            Update Order Status
-          </h2>
+          <h2 className="text-white font-semibold mb-4">Update Order Status</h2>
         </div>
         <div className="body bg-white p-4 rounded-b-lg">
           <label className="block mb-2 bg-white">Select Status:</label>
@@ -65,7 +63,7 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
               Pilih status
             </option>
             <option value="Delivered">Delivered</option>
-            <option value="Package">Pending</option>
+            <option value="Pending">Pending</option>
             <option value="Arrange-Shipment">Arrange Shipment</option>
           </select>
           <div className="mt-4 flex justify-end">

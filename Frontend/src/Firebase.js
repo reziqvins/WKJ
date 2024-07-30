@@ -7,13 +7,12 @@ import { getAnalytics } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAukarVSE5gPOQspLq_fznMY-1Xug9KLVY",
-  authDomain: "wisatakesehatanjamu1.firebaseapp.com",
-  projectId: "wisatakesehatanjamu1",
-  storageBucket: "wisatakesehatanjamu1.appspot.com",
-  messagingSenderId: "660701546894",
-  appId: "1:660701546894:web:074f5164374890fbb07cdf",
-  measurementId: "G-9ST42NQYW4"
+  apiKey: "AIzaSyDH1xWLVwRFirhLp8ltMm3LcueklYZ-1hA",
+  authDomain: "cobatoko-57725.firebaseapp.com",
+  projectId: "cobatoko-57725",
+  storageBucket: "cobatoko-57725.appspot.com",
+  messagingSenderId: "410394776123",
+  appId: "1:410394776123:web:c746b417cf627ca439821e"
 };
 
 // Initialize Firebase
