@@ -39,7 +39,18 @@ import DetailPemesanan from "./components/Profile/Pemesanan/DetailPemesanan";
 import CheckoutSuccesPage from "./page/CheckoutSuccesPage";
 function App() {
   const { currentUser } = useContext(AuthContext);
-
+  useEffect(() => {
+    // Request notification permission when the app loads
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          console.log('Notification permission granted.');
+        } else {
+          console.log('Notification permission denied.');
+        }
+      });
+    }
+  }, []);
   return (
     <Router>
       <ToastContainer/>
