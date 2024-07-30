@@ -29,7 +29,7 @@ const Input = () => {
 
       uploadTask.on(
         (error) => {
-          //TODO:Handle Error
+          // Handle Error
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -46,8 +46,6 @@ const Input = () => {
         }
       );
 
-      // Setelah pengiriman gambar, kita tidak perlu lagi mengatur img menjadi null
-      // Sehingga pengguna tetap dapat mengirim gambar lagi tanpa harus memilih gambar baru
     } else {
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
@@ -74,7 +72,6 @@ const Input = () => {
     });
 
     setText("");
-    // Kita tidak perlu lagi mengatur img menjadi null di sini
   };
 
   return (
