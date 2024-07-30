@@ -21,7 +21,7 @@ const OrderInformation = () => {
   useEffect(() => {
     const fetchOrderById = async () => {
       try {
-        const response = await axios.get(`${BASE_LOCAL}/orders/${id}`);
+        const response = await axios.get(`${BASE_PROD}/orders/${id}`);
         setOrder(response.data.data);
         setResi(response.data.data?.transaction_details?.resi);
         setLoading(false);
@@ -60,7 +60,7 @@ const OrderInformation = () => {
         "transaction_details.resi": resi,
       };
       const response = await axios.put(
-        `${BASE_LOCAL}/transactionStatus/${id}`,
+        `${BASE_PROD}/transactionStatus/${id}`,
         updatedData
       );
       console.log("Resi updated successfully:", response);

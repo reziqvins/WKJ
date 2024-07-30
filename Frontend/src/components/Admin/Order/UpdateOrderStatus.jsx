@@ -17,7 +17,7 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
       "transaction_details.order_Status": status,
     };
 
-    axios.put(`${BASE_LOCAL}/transactionStatus/${orderId}`, updatedData)
+    axios.put(`${BASE_PROD}/transactionStatus/${orderId}`, updatedData)
       .then((response) => {
         console.log("Order status updated successfully:", response);
         Swal.fire({

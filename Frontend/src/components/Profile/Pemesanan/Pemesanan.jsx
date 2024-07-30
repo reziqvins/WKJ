@@ -18,7 +18,7 @@ const Pemesanan = () => {
   useEffect(() => {
     if (currentUser) {
       setLoading(true); // Start loading
-      axios.get(`${BASE_LOCAL}/orders`)
+      axios.get(`${BASE_PROD}/orders`)
         .then(response => {
           console.log(response.data);
           setOrders(response.data.data);

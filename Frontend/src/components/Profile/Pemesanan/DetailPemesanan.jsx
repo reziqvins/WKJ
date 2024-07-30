@@ -19,7 +19,7 @@ const TransactionDetail = () => {
     if (searchParams.get("transaction_status") === "settlement") {
       const orderId = searchParams.get("order_id");
       axios
-        .put(`${BASE_LOCAL}/transactionStatus/${orderId}`, {
+        .put(`${BASE_PROD}/transactionStatus/${orderId}`, {
           "transaction_details.transaction_status": "settlement",
         })
         .then((response) =>
@@ -55,7 +55,7 @@ const TransactionDetail = () => {
   useEffect(() => {
     if (currentUser) {
       axios
-        .get(`${BASE_LOCAL}/orders/${id}`)
+        .get(`${BASE_PROD}/orders/${id}`)
         .then((response) => {
           setTransaction(response.data.data);
           console.log(response.data.data);

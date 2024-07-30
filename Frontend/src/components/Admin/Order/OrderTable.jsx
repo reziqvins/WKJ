@@ -14,7 +14,7 @@ const OrderTable = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${BASE_LOCAL}/orders`); 
+                const response = await axios.get(`${BASE_PROD}/orders`); 
                 const sortedOrders = response.data.data.sort((a, b) => new Date(b.transaction_details.createdAt) - new Date(a.transaction_details.createdAt));
                 setOrders(response.data.data);
                 console.log(response.data.data)
@@ -30,7 +30,7 @@ const OrderTable = () => {
 
     const handleDeleteOrder = async (orderId) => {
         try {
-            await axios.delete(`${BASE_LOCAL}/orders/${orderId}`);
+            await axios.delete(`${BASE_PROD}/orders/${orderId}`);
             setOrders(orders.filter(order => order.id !== orderId));
             Swal.fire({
               icon: 'success',
