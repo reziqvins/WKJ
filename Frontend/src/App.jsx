@@ -10,7 +10,7 @@ import LoginPage from "./page/LoginPage";
 import KonsultasiPage from "./page/KonsultasiPage";
 import { AuthContext } from "./Context/AuthContext";
 import LoginPrompt from "./components/Auth/Login/LoginPrompt";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import ForgotPassword from "./page/ForgotPasswordPage";
 import Layout from "./components/Admin/Layout/Layout"; // Correct import here
 import Coba from "./components/Coba";
