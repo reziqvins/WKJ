@@ -14,12 +14,29 @@ const Chat = () => {
   const { data, dispatch: chatDispatch } = useContext(ChatContext);
   const [chat, setChat] = useState(null);
   const [chatbotEnabled, setChatbotEnabled] = useState(true);
-
-  // Admin UID you want to chat with
-  const adminUID = "FpIhSeviSoau76x5Cd6GTHovAQ52";
+  const [adminUID, setAdminUID] = useState(null);
 
   useEffect(() => {
-    if (currentUser) {
+    const fetchAdminUID = async () => {
+      try {
+        const docRef = doc(db, "konsultasi", "BGmo4QK9vTc1PdqQgyDZ");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const adminData = docSnap.data();
+          setAdminUID(adminData.uid);
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching admin UID:", error);
+      }
+    };
+
+    fetchAdminUID();
+  }, []);
+
+  useEffect(() => {
+    if (currentUser && adminUID) {
       const chatId =
         currentUser.uid > adminUID
           ? currentUser.uid + adminUID
@@ -73,7 +90,7 @@ const Chat = () => {
 
       fetchChat();
     }
-  }, [currentUser, chatDispatch]);
+  }, [currentUser, adminUID, chatDispatch]);
 
   return (
     <div className="chat flex flex-2 flex-col w-screen">

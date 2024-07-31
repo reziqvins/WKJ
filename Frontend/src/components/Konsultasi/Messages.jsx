@@ -5,6 +5,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import { db } from "../../Firebase";
 import Message from "./Message";
 import { v4 as uuid } from "uuid";
+import { penyakit } from "../helpers/utils"; // Ensure this path is correct
 
 const Messages = ({ setChatbotEnabled }) => {
   const [messages, setMessages] = useState([]);
@@ -29,7 +30,7 @@ const Messages = ({ setChatbotEnabled }) => {
     await updateDoc(chatDocRef, {
       messages: arrayUnion({
         id: uuid(),
-        text: "You are now chatting with a human admin.",
+        text: "Anda sudah terhubung dengan Admin.",
         senderId: adminId,
         date: Timestamp.now(),
       }),
@@ -37,14 +38,14 @@ const Messages = ({ setChatbotEnabled }) => {
 
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [data.chatId + ".lastMessage"]: {
-        text: "You are now chatting with a human admin.",
+        text: "Anda sudah terhubung dengan Admin.",
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
 
     await updateDoc(doc(db, "userChats", adminId), {
       [data.chatId + ".lastMessage"]: {
-        text: "You are now chatting with a human admin.",
+        text: "Anda sudah terhubung dengan Admin.",
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
@@ -52,19 +53,25 @@ const Messages = ({ setChatbotEnabled }) => {
 
   const renderMessage = (text) => {
     if (text.includes("[chatWithAdminButton]")) {
-      const parts = text.split("[chatWithAdminButton]");
-      return (
-        <span key={uuid()}>
-          {parts[0]}
-          <button
-            onClick={handleEscalate}
-            className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            Chat with Admin
-          </button>
-          {parts[1]}
-        </span>
-      );
+      // Check if the message contains relevant data
+      const relevantData = !Object.keys(penyakit).some(keyword => text.toLowerCase().includes(keyword));
+
+      if (relevantData) {
+        const [messageBeforeButton, messageAfterButton] = text.split("[chatWithAdminButton]");
+        return (
+          <span key={uuid()}>
+            {messageBeforeButton}
+            <button
+              onClick={handleEscalate}
+              className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Chat dengan Dokter
+            </button>
+            {messageAfterButton}
+          </span>
+        );
+      }
+      return text.replace("[chatWithAdminButton]", "");
     }
     return text;
   };

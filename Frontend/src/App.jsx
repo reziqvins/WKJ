@@ -38,6 +38,7 @@ import DetailPemesanan from "./components/Profile/Pemesanan/DetailPemesanan";
 import CheckoutSuccesPage from "./page/CheckoutSuccesPage";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./Firebase";
+import EditKonsul from "./page/Admin/editKonsul";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -90,10 +91,10 @@ function App() {
         <Route path="/UserProfile" element={<UserProfilePage />} />
         <Route path="/Cart" element={<CartPage />} />
         <Route path="/Success" element={<CheckoutSuccesPage />} />
-        <Route path="/Pemesanan" element={<Pemesanan />} />
+        <Route path="/Pemesanan" element={currentUser ? <Pemesanan /> : <LoginPrompt />} />
         <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} /> {/* Use the wrapper here */}
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />
-        <Route path="/transaction/:id" element={<DetailPemesanan />} />
+        <Route path="/transaction/:id" element={currentUser ? <DetailPemesanan /> : <LoginPrompt />} />
 
         {/* Nesting admin routes under Layout */}
         <Route element={<Layout />}>
@@ -108,6 +109,7 @@ function App() {
           <Route path="/admin/konsultasi" element={<AdminKonsultasi />} />
           <Route path="/admin/setting" element={<SettingPage />} />
           <Route path="/admin/user" element={<UserPage />} />
+          <Route path="/admin/toKonsul" element={<EditKonsul />} />
           <Route path="/admin/orders" element={<OrderPage />} />
           <Route path="/admin/orders/:id" element={<OrderDetailPage />} />
           <Route path="/admin/editProduct/:id" element={<EditProduct />} />

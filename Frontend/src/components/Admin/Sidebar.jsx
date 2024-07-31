@@ -158,6 +158,21 @@ const Sidebar = () => {
               </span>
             </li>
           </Link>
+          <Link
+            to="/admin/toKonsul"
+            className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-[#166534] text-sm items-center gap-x-4 mt-2"
+          >
+            <li
+              className={`flex items-center gap-x-4 ${
+                pathname === "/admin/toKonsul" ? "text-[#F0B608]" : ""
+              }`}
+            >
+              <MdSettings className="text-2xl" />
+              <span className={`${!open && "hidden"} origin-left duration-200`}>
+                Setting
+              </span>
+            </li>
+          </Link>
         </ul>
       </div>
     </div>

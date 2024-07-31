@@ -129,4 +129,7 @@ export const penyakit = {
     // Return response if keyword is found, otherwise return default message
     return foundKeyword ? responses[foundKeyword] : "I'm sorry, I don't understand. [chatWithAdminButton]";
   };
-  
+  export const truncateText = (text, maxWords) => {
+    const words = text.split(" ");
+    return words.length > maxWords ? words.slice(0, maxWords).join(" ") + "..." : text;
+  };

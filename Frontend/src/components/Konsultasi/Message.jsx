@@ -16,18 +16,22 @@ const Message = ({ message }) => {
   }, [message]);
 
   useEffect(() => {
-    const fetchAdminData = async () => {
+    const fetchAdminUID = async () => {
       try {
-        const adminDoc = await getDoc(doc(db, "users", "FpIhSeviSoau76x5Cd6GTHovAQ52"));
-        if (adminDoc.exists()) {
-          setAdminPhotoURL(adminDoc.data().photoURL);
+        const docRef = doc(db, "konsultasi", "BGmo4QK9vTc1PdqQgyDZ");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const adminData = docSnap.data();
+          setAdminPhotoURL(adminData.photoURL);
+        } else {
+          console.log("No such document!");
         }
-      } catch (err) {
-        console.error("Failed to fetch admin data:", err);
+      } catch (error) {
+        console.error("Error fetching admin UID:", error);
       }
     };
 
-    fetchAdminData();
+    fetchAdminUID();
   }, []);
 
   // Function to format timestamp to hours and minutes

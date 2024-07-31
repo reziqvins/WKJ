@@ -1,5 +1,8 @@
+// cartSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../Firebase"; // Pastikan path ini sesuai dengan konfigurasi Firebase Anda
 
 const initialState = {
   cartItems: localStorage.getItem("cartItems")
@@ -95,6 +98,32 @@ const cartSlice = createSlice({
       localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
       toast.error("Cart cleared", { position: "bottom-left" });
     },
+    async decreaseStock(state, action) {
+      const { id, quantity } = action.payload;
+      const productRef = doc(db, "products", id);
+
+      try {
+        const productSnap = await getDoc(productRef);
+        if (productSnap.exists()) {
+          const currentStock = productSnap.data().stock;
+
+          console.log(`Current stock for product ${id}: ${currentStock}`);
+          
+          // Mengurangi stok
+          const newStock = currentStock - quantity;
+          await updateDoc(productRef, { stock: newStock });
+
+          toast.success("Stock decreased successfully", { position: "bottom-left" });
+          console.log(`Stock updated for product ${id}: ${newStock}`);
+        } else {
+          toast.error("Product not found", { position: "bottom-left" });
+          console.error(`Product with id ${id} not found`);
+        }
+      } catch (error) {
+        toast.error("Error decreasing stock", { position: "bottom-left" });
+        console.error("Error decreasing stock:", error);
+      }
+    }
   },
 });
 
@@ -104,6 +133,7 @@ export const {
   removeFromCart,
   getTotals,
   clearCart,
+  decreaseStock,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

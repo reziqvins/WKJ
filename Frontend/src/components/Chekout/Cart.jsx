@@ -4,6 +4,7 @@ import {
   addToCart,
   clearCart,
   decreaseCart,
+  decreaseStock,
   getTotals,
   removeFromCart,
 } from "../../Redux/CartSlice";
@@ -13,9 +14,9 @@ import Swal from "sweetalert2";
 import uploadFile from "../helpers/uploadFile";
 import { AuthContext } from "../../Context/AuthContext";
 
-export const CLIENT_KEY = "SB-Mid-client-jEtvZoEqwphlbnRo";
-export const BASE_LOCAL = "http://localhost:3000";
-export const BASE_PROD = "https://wkj.vercel.app";
+export const CLIENT_KEY = 'SB-Mid-client-jEtvZoEqwphlbnRo';
+export const BASE_LOCAL = 'http://localhost:3000';
+export const BASE_PROD = 'https://wkj.vercel.app';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -29,130 +30,6 @@ const Cart = () => {
   const [imgUrl, setImgUrl] = useState(null);
   const [shipping, setShipping] = useState("JNE");
   const [orderData, setOrderData] = useState(null);
-  const [provinces, setProvinces] = useState([]);
-  const [filteredProvinces, setFilteredProvinces] = useState([]);
-  const [input, setInput] = useState("");
-  const [cities, setCities] = useState([]);
-  const [filteredCities, setFilteredCities] = useState([]);
-  const [cityInput, setCityInput] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [provinceId, setProvinceId] = useState(null);
-  const [cityId, setCityId] = useState(null);
-  const [origin, setOrigin] = useState("501");
-  const [weight, setWeight] = useState(500); // Set default weight
-  const [shippingCost, setShippingCost] = useState("");
-
-  useEffect(() => {
-    // Fetch cities when the component mounts
-    const fetchCities = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/cities"); // Adjust the URL as needed
-        setCities(response.data.data); // Adjust according to the response structure
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-      }
-    };
-
-    fetchCities();
-  }, []);
-
-  useEffect(() => {
-    // Filter cities based on the input value
-    const filterCities = () => {
-      if (cityInput === "") {
-        setFilteredCities([]);
-        return;
-      }
-
-      const filtered = cities.filter((city) =>
-        city.city_name.toLowerCase().includes(cityInput.toLowerCase())
-      );
-      setFilteredCities(filtered);
-    };
-
-    filterCities();
-  }, [cityInput, cities]);
-
-  const handleCitySelect = (city) => {
-    setSelectedCity(city.city_id);
-    setCityInput(city.city_name);
-    setFilteredCities([]);
-    setCityId(city.city_id); // Set cityId here
-  };
-
-  const handleProvinceSelect = (province) => {
-    setInput(province);
-    setFilteredProvinces([]);
-    // Assuming province object contains `province_id`
-    const selectedProvince = provinces.find((p) => p.province === province);
-    if (selectedProvince) {
-      setProvinceId(selectedProvince.province_id);
-    }
-  };
-
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/provinces"); // Adjust the URL as necessary
-        setProvinces(response.data.data);
-      } catch (error) {
-        console.error("Error fetching provinces:", error.message);
-      }
-    };
-
-    fetchProvinces();
-  }, []);
-
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-    setInput(value);
-
-    // Filter provinces based on input value
-    const filtered = provinces.filter((province) =>
-      province.province.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredProvinces(filtered);
-  };
-
-useEffect(() => {
-    const fetchShippingCost = async () => {
-        // Ensure provinceId, cityId, origin, and shipping are set
-        if (!provinceId || !cityId || !origin || !shipping) return;
-
-        const data = {
-            origin: origin,
-            destination: cityId,  // Use cityId for destination if that's what the API expects
-            weight: weight,
-            courier: shipping.toLowerCase(),
-        };
-
-        console.log("Request Data:", data); // Debugging line to check request payload
-
-        try {
-            const response = await axios.post(`${BASE_LOCAL}/shipping-cost`, data);
-
-            if (response.status === 200) {
-                const result = response.data;
-
-                if (result.status === "ok") {
-                    setShippingCost(result.cost);
-                } else {
-                    console.error("API Error:", result);
-                    setShippingCost(null);
-                }
-            } else {
-                console.error("Unexpected response status:", response.status);
-                setShippingCost(null);
-            }
-        } catch (error) {
-            console.error("Error getting shipping cost:", error.response ? error.response.data : error.message);
-            setShippingCost(null);
-        }
-    };
-
-    fetchShippingCost();
-}, [provinceId, cityId, shipping, weight]);
-
 
   useEffect(() => {
     dispatch(getTotals());
@@ -178,20 +55,20 @@ useEffect(() => {
 
   const handleClearCart = () => {
     Swal.fire({
-      title: "Konfirmasi",
-      text: "Anda yakin ingin mengosongkan keranjang?",
-      icon: "warning",
+      title: 'Konfirmasi',
+      text: 'Anda yakin ingin mengosongkan keranjang?',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: "Ya, kosongkan",
-      cancelButtonText: "Batal",
+      confirmButtonText: 'Ya, kosongkan',
+      cancelButtonText: 'Batal',
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(clearCart());
         Swal.fire({
-          icon: "success",
-          title: "Keranjang berhasil dikosongkan",
+          icon: 'success',
+          title: 'Keranjang berhasil dikosongkan',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1500
         });
       }
     });
@@ -219,19 +96,15 @@ useEffect(() => {
   };
 
   const generateTransactionID = () => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const prefix = "WKJ";
     const length = 10;
     let transactionID = prefix;
     for (let i = 0; i < length - prefix.length; i++) {
-      transactionID += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
+      transactionID += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return transactionID;
   };
-
 
   const sendOrderToApi = async (orderData) => {
     try {
@@ -241,10 +114,10 @@ useEffect(() => {
       if (data.status === "ok" && data.token) {
         dispatch(clearCart());
         Swal.fire({
-          icon: "success",
-          title: "Pesanan berhasil dibuat",
+          icon: 'success',
+          title: 'Pesanan berhasil dibuat',
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1500
         });
         return data.token;
       } else {
@@ -257,103 +130,119 @@ useEffect(() => {
     }
   };
 
-  const handleCheckout = async () => {
-    if (!currentUser) {
-      Swal.fire({
-        icon: "warning",
-        title: "Login Diperlukan",
-        text: "Silahkan Login untuk melakukan Checkout.",
-      });
-      return;
-    }
+const handleCheckout = async (e) => {
+  e.preventDefault();
+  if (!currentUser) {
+    Swal.fire({
+      icon: "warning",
+      title: "Login Diperlukan",
+      text: "Silahkan Login untuk melakukan Checkout.",
+    });
+    return;
+  }
 
-    let imgUrl = null;
-    if (file) {
-      imgUrl = await handleUploadPhoto();
-    }
+  let imgUrl = null;
+  if (file) {
+    imgUrl = await handleUploadPhoto();
+  }
 
-    const itemData = cart.cartItems.map((item) => ({
-      id: item.id,
-      price: item.price,
-      img: item.img,
-      quantity: item.cartQuantity,
-      name: item.name,
-    }));
+  const itemData = cart.cartItems.map((item) => ({
+    id: item.id,
+    price: item.price,
+    img: item.img,
+    quantity: item.cartQuantity,
+    name: item.name,
+  }));
 
-    const orderData = {
-      transaction_details: {
-        order_id: generateTransactionID(),
-        gross_amount: cart.cartTotalAmount,
-        transaction_status: "pending",
-        order_Status: "Package",
-        shipping_method: shipping,
-        resi: "",
-        item_details: itemData,
-        customer_details: {
-          id: currentUser.uid,
-          first_name: name,
-          email: email,
-          alamat: address,
-          imgCheck: imgUrl,
-        },
+  const orderData = {
+    transaction_details: {
+      order_id: generateTransactionID(),
+      gross_amount: cart.cartTotalAmount,
+      transaction_status: "pending",
+      order_Status: "Package",
+      shipping_method: shipping,
+      resi: "",
+      item_details: itemData,
+      customer_details: {
+        id: currentUser.uid,
+        first_name: name,
+        email: email,
+        alamat: address,
+        imgCheck: imgUrl,
       },
-    };
-
-    try {
-      const token = await sendOrderToApi(orderData);
-      if (token) {
-        window.snap.pay(token, {
-          onSuccess: function (result) {
-            console.log("Payment Success:", result);
-          },
-          onPending: function (result) {
-            console.log("Payment Pending:", result);
-          },
-          onError: function (result) {
-            console.log("Payment Error:", result);
-          },
-          onClose: function () {
-            console.log("Payment popup closed");
-          },
-        });
-      } else {
-        console.error("Token not received");
-      }
-    } catch (error) {
-      console.error("Error during checkout:", error);
-    }
+    },
   };
+
+  try {
+    const token = await sendOrderToApi(orderData);
+    if (token) {
+      window.snap.pay(token, {
+        onSuccess: function (result) {
+          console.log("Payment Success:", result);
+          saveLog(`Payment Success: ${JSON.stringify(result)}`);
+          // Decrease stock after successful payment
+          cart.cartItems.forEach(item => {
+            console.log(`Decreasing stock for item ${item.id}`);
+            saveLog(`Decreasing stock for item ${item.id}`);
+            dispatch(decreaseStock({ id: item.id, quantity: item.cartQuantity }));
+          });
+        },
+        onPending: function (result) {
+          console.log("Payment Pending:", result);
+          saveLog(`Payment Pending: ${JSON.stringify(result)}`);
+        },
+        onError: function (result) {
+          console.log("Payment Error:", result);
+          saveLog(`Payment Error: ${JSON.stringify(result)}`);
+        },
+        onClose: function () {
+          console.log("Payment popup closed");
+          saveLog("Payment popup closed");
+        },
+      });
+    } else {
+      console.error("Token not received");
+      saveLog("Token not received");
+    }
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    saveLog(`Error during checkout: ${error}`);
+  }
+};
+
+
+
+
+
 
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    if (searchParams.get("transaction_status") === "settlement") {
-      const orderId = searchParams.get("order_id");
+    if (searchParams.get('transaction_status') === "settlement") {
+      const orderId = searchParams.get('order_id');
 
-      axios
-        .put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
-          "transaction_details.transaction_status": "settlement",
-        })
-        .then((response) => console.log(response.data))
-        .catch((error) => console.error(error.response));
+      axios.put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
+        "transaction_details.transaction_status": "settlement",
+      })
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error.response))
     }
-    if (searchParams.get("transaction_status") === "pending") {
-      const orderId = searchParams.get("order_id");
-
-      axios
-        .put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
-          "transaction_details.transaction_status": "pending",
-        })
-        .then((response) => console.log(response.data))
-        .catch((error) => console.error(error.response));
+    if (searchParams.get('transaction_status') === "pending") {
+      const orderId = searchParams.get('order_id');
+      
+      axios.put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
+        "transaction_details.transaction_status": "pending",
+      })
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error.response))
     }
   }, []);
 
   useEffect(() => {
-    const snapSrcUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+    const snapSrcUrl = 'https://app.sandbox.midtrans.com/snap/snap.js';
     const myMidtransClientKey = `${CLIENT_KEY}`;
-    const script = document.createElement("script");
+    const script = document.createElement('script');
     script.src = snapSrcUrl;
-    script.setAttribute("data-client-key", myMidtransClientKey);
+    script.setAttribute('data-client-key', myMidtransClientKey);
     script.async = true;
 
     script.onload = () => {
@@ -384,10 +273,7 @@ useEffect(() => {
         <div className="text-center mt-8">
           <p>Your cart is currently empty</p>
           <div className="mt-4">
-            <Link
-              to="/DashboardStore"
-              className="flex items-center text-gray-500"
-            >
+            <Link to="/DashboardStore" className="flex items-center text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -521,73 +407,6 @@ useEffect(() => {
                   />
                 </div>
               )}
-              <div className="mb-2">
-                <label
-                  htmlFor="address"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  Provinsi
-                </label>
-                <input
-                  type="text"
-                  value={input}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  onChange={handleInputChange}
-                  placeholder="Type to search provinces"
-                />
-                {filteredProvinces.length > 0 && (
-                  <ul>
-                    {filteredProvinces.map((province) => (
-                      <li
-                        key={province.province_id}
-                        onClick={() => handleProvinceSelect(province.province)}
-                      >
-                        {province.province}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <div className="mb-2">
-                  <div>
-                    <label
-                      htmlFor="address"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Kota
-                    </label>
-                    <input
-                      id="city"
-                      type="text"
-                      className="w-full p-2 border border-gray-300 rounded"
-                      value={cityInput}
-                      onChange={(e) => setCityInput(e.target.value)}
-                      placeholder="Type to search for cities"
-                    />
-                    {cityInput && filteredCities.length > 0 && (
-                      <ul
-                        style={{
-                          border: "1px solid #ccc",
-                          maxHeight: "150px",
-                          overflowY: "auto",
-                          padding: 0,
-                          margin: 0,
-                        }}
-                      >
-                        {filteredCities.map((city) => (
-                          <li
-                            key={city.city_id}
-                            onClick={() => handleCitySelect(city)}
-                            style={{ padding: "8px", cursor: "pointer" }}
-                          >
-                            {city.city_name}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {selectedCity && <p>Selected City ID: {selectedCity}</p>}
-                  </div>
-                </div>
-              </div>
             </form>
             <div className="w-full md:w-1/2 mt-8 md:mt-0">
               <h1 className="font-bold text-xl mb-4">Metode Pengiriman</h1>
@@ -605,16 +424,8 @@ useEffect(() => {
               </div>
               <div className="text-sm">
                 <div className="flex justify-between mb-4">
-                  <span>Ongkos Kirim</span>
-                  <span className="font-medium">
-                    Rp. {shippingCost}
-                  </span>
-                </div>
-                <div className="flex justify-between mb-4">
                   <span>Total</span>
-                  <span className="font-medium">
-                    Rp. {cart.cartTotalAmount}
-                  </span>
+                  <span className="font-medium">Rp. {cart.cartTotalAmount}</span>
                 </div>
                 <p className="mt-1 text-gray-600">
                   Pajak dan pengiriman dihitung di checkout
@@ -626,10 +437,7 @@ useEffect(() => {
                   Checkout
                 </button>
                 <div className="mt-4">
-                  <Link
-                    to="/DashboardStore"
-                    className="flex items-center text-gray-500"
-                  >
+                  <Link to="/DashboardStore" className="flex items-center text-gray-500">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"

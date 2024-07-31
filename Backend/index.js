@@ -57,7 +57,7 @@ app.post('/orders', async (req, res) => {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Basic ${Buffer.from(`SB-Mid-server-${process.env.MIDTRANS_SERVER_KEY}`).toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(process.env.MIDTRANS_SERVER_KEY).toString("base64")}`,
         },
       }
     );

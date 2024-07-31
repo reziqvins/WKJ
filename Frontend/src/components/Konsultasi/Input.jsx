@@ -33,7 +33,7 @@ const getChatbotResponse = async (text) => {
   // Return response if keyword is found, otherwise return default message
   return foundKeyword
     ? responses[foundKeyword]
-    : "I'm sorry, I don't understand. [chatWithAdminButton]";
+    : "Maaf, pertanyaan anda tidak ada di database kami. Silahkan bertan [chatWithAdminButton]";
 };
 
 const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
@@ -147,7 +147,7 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
     await updateDoc(chatDocRef, {
       messages: arrayUnion({
         id: uuid(),
-        text: "You are now chatting with a human admin.",
+        text: "Kamu sudah terhubung dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
         senderId: adminId,
         date: Timestamp.now(),
       }),
@@ -155,14 +155,14 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
 
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [data.chatId + ".lastMessage"]: {
-        text: "You are now chatting with a human admin.",
+        text: "Kamu sudah terhubung dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
 
     await updateDoc(doc(db, "userChats", adminId), {
       [data.chatId + ".lastMessage"]: {
-        text: "You are now chatting with a human admin.",
+        text: "Kamu sudah terhubung dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
@@ -197,13 +197,13 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
   return (
     <div className="input bg-white h-16 flex items-center justify-between px-4">
       <input
-        className="w-[90%] border-none outline-none text-gray-800 text-lg"
+        className="w-full flex-1 border-none outline-none text-gray-800 text-lg"
         type="text"
         onChange={(e) => setText(e.target.value)}
         value={text}
         placeholder="Ceritakan keluhan anda"
       />
-      <div className="send w-[23%] flex items-center gap-4">
+      <div className="send  flex items-center gap-4">
         <label htmlFor="file" className="cursor-pointer">
           <img src={Img} alt="" className="h-6" />
           <input
