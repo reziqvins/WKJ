@@ -130,6 +130,11 @@ export const penyakit = {
     return foundKeyword ? responses[foundKeyword] : "I'm sorry, I don't understand. [chatWithAdminButton]";
   };
   export const truncateText = (text, maxWords) => {
+    if (!text) return ""; // Return an empty string if text is undefined or null
     const words = text.split(" ");
-    return words.length > maxWords ? words.slice(0, maxWords).join(" ") + "..." : text;
+    if (words.length <= maxWords) return text; // Return the original text if it's shorter than maxWords
+    
+    // Return truncated text with ellipsis
+    return words.slice(0, maxWords).join(" ") + "...";
   };
+  
