@@ -1,19 +1,20 @@
-import React from 'react'
+import React from 'react';
 import TopBar from '../../components/Admin/TopBar';
-import AdminSidebar from '../../components/Admin/Konsultasi/AdminSidebar';
 import AdminChat from '../../components/Admin/Konsultasi/AdminChat';
+import AdminSidebar from '../../components/Admin/Konsultasi/AdminSidebar';
+
 const AdminKonsultasi = () => {
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <TopBar title="Halaman Konsultasi" />
-      <div className="home h-screen flex items-center  justify-center mt-[-50px]">
-        <div className="container border border-white rounded-lg  flex overflow-hidden">
+      <div className="flex ">
+        <div className="flex flex-1 border border-white rounded-lg overflow-hidden">
           <AdminSidebar />
           <AdminChat />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminKonsultasi
+export default AdminKonsultasi;

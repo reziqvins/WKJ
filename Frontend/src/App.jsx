@@ -25,7 +25,6 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditUserPage from "./page/Admin/User/EditUserPage";
 import SettingPage from "./page/SettingPage";
-import Inbox from "./page/Admin/Inbox";
 import OrderPage from "./page/Admin/Order/OrderPage";
 import AdminKonsultasi from "./page/Admin/AdminKonsultasi";
 import OrderDetailPage from "./page/Admin/Order/OrderDetailPage";
@@ -39,7 +38,6 @@ import DetailPemesanan from "./components/Profile/Pemesanan/DetailPemesanan";
 import CheckoutSuccesPage from "./page/CheckoutSuccesPage";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./Firebase";
-import KonsultasiPageWrapper from "./components/Konsultasi/JamKonsultasi";
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -93,7 +91,7 @@ function App() {
         <Route path="/Cart" element={<CartPage />} />
         <Route path="/Success" element={<CheckoutSuccesPage />} />
         <Route path="/Pemesanan" element={<Pemesanan />} />
-        <Route path="/Konsultasi" element={<KonsultasiPageWrapper />} /> {/* Use the wrapper here */}
+        <Route path="/Konsultasi" element={currentUser ? <KonsultasiPage /> : <LoginPrompt />} /> {/* Use the wrapper here */}
         <Route path="/DashboardStore/product/:id" element={<ProductDetail products={produkInovasi} />} />
         <Route path="/transaction/:id" element={<DetailPemesanan />} />
 

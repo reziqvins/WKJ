@@ -1,16 +1,34 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { ChatContext } from "../../Context/ChatContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../Firebase";
 
 const Message = ({ message }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
-
+  const [adminPhotoURL, setAdminPhotoURL] = useState(null);
+  
   const ref = useRef();
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
+
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      try {
+        const adminDoc = await getDoc(doc(db, "users", "FpIhSeviSoau76x5Cd6GTHovAQ52"));
+        if (adminDoc.exists()) {
+          setAdminPhotoURL(adminDoc.data().photoURL);
+        }
+      } catch (err) {
+        console.error("Failed to fetch admin data:", err);
+      }
+    };
+
+    fetchAdminData();
+  }, []);
 
   // Function to format timestamp to hours and minutes
   const formatTime = (timestamp) => {
@@ -27,32 +45,31 @@ const Message = ({ message }) => {
     a.download = "image";
     window.open(message.img, "_blank");
   };
-  
 
   return (
     <div className={`flex ${message.senderId === currentUser.uid ? 'flex-row-reverse' : ''} items-start gap-2.5 mb-4`} ref={ref}>
       <img
         className="w-8 h-8 rounded-full"
-        src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
+        src={message.senderId === currentUser.uid ? currentUser.photoURL : adminPhotoURL || data.user.photoURL}
         alt=""
       />
       <div className="flex flex-col gap-1">
-        <div className={`flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-white ${message.senderId === currentUser.uid? 'rounded-br-xl rounded-tl-xl rounded-bl-xl':'rounded-br-xl rounded-tr-xl rounded-bl-xl'}`}>
+        <div className={`flex flex-col w-full max-w-[326px] leading-1.5 p-4 border-gray-200 bg-white ${message.senderId === currentUser.uid ? 'rounded-br-xl rounded-tl-xl rounded-bl-xl' : 'rounded-br-xl rounded-tr-xl rounded-bl-xl'}`}>
           <div className="flex items-center space-x-2 rtl:space-x-reverse mb-2">
             <span className="text-sm font-semibold text-gray-900">
               {message.senderId === currentUser.uid ? currentUser.displayName : data.user.displayName}
             </span>
-            <span className="text-sm font-normal text-gray-500 ">
+            <span className="text-sm font-normal text-gray-500">
               {formatTime(message.date)}
             </span>
           </div>
-          <p className="text-sm font-normal text-gray-900  ">{message.text}</p>
+          <p className="text-sm font-normal text-gray-900">{message.text}</p>
           {message.img && (
             <div className="group relative my-2.5">
               <div className="absolute w-full h-full bg-gray-900/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
                 <button
                   data-tooltip-target="download-image"
-                  className="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none   focus:ring-gray-50"
+                  className="inline-flex items-center justify-center rounded-full h-10 w-10 bg-white/30 hover:bg-white/50 focus:ring-4 focus:outline-none focus:ring-gray-50"
                   onClick={handleImageClick}
                 >
                   <svg

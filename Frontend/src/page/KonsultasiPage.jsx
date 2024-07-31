@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Sidebar from "../components/Konsultasi/Sidebar";
 import Chat from "../components/Konsultasi/Chat";
 import Navbar from "../components/LandingPage/Navbar";
 import Swal from 'sweetalert2';
@@ -52,7 +51,6 @@ function KonsultasiPage() {
           backgroundColor: 'transparent' // Ensures background gradient shows through
         }}
       >
-        <Sidebar />
         <Chat />
       </div>
     </div>

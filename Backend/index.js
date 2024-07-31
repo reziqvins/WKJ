@@ -276,6 +276,93 @@ app.post('/send-notification', async (req, res) => {
       res.status(500).send({ error: 'Failed to send notification' });
     }
   });
+
+  app.get('/provinces', async (req, res) => {
+    try {
+      const response = await axios.get('https://api.rajaongkir.com/starter/province', {
+        headers: {
+          'key': process.env.RAJAONGKIR_API_KEY
+        }
+      });
+  
+      res.status(200).json({
+        message: 'Provinces retrieved successfully',
+        data: response.data.rajaongkir.results
+      });
+    } catch (error) {
+      console.error('Error fetching provinces:', error.message);
+      res.status(500).json({
+        message: 'Failed to fetch provinces',
+        error: error.message
+      });
+    }
+  });
+  app.get('/cities', async (req, res) => {
+    const apiKey = process.env.RAJAONGKIR_API_KEY;
+    
+    if (!apiKey) {
+      return res.status(500).json({
+        message: 'RAJAONGKIR_API_KEY is not set'
+      });
+    }
+  
+    try {
+      const response = await axios.get('https://api.rajaongkir.com/starter/city', {
+        headers: {
+          'key': apiKey
+        }
+      });
+  
+      res.status(200).json({
+        message: 'Cities retrieved successfully',
+        data: response.data.rajaongkir.results
+      });
+    } catch (error) {
+      console.error('Error fetching cities:', error.message);
+      res.status(500).json({
+        message: 'Failed to fetch cities',
+        error: error.message
+      });
+    }
+  });
+  // Endpoint to fetch shipping cost
+app.post('/shipping-cost', async (req, res) => {
+  const { province_id, city_id,weight } = req.body;
+
+  if (!province_id || !city_id) {
+    return res.status(400).json({
+      message: 'Province ID and City ID are required'
+    });
+  }
+
+  try {
+    // Make the request to the Raja Ongkir API
+    const response = await axios.post('https://api.rajaongkir.com/starter/cost', {
+      origin: province_id,
+      destination: city_id,
+      weight: weight, // Example weight in grams
+      courier: 'jne', // Example courier
+    }, {
+      headers: {
+        'key': process.env.RAJAONGKIR_API_KEY
+      }
+    });
+
+    // Extract and format the response data
+    const shippingData = response.data.rajaongkir.results;
+
+    res.status(200).json({
+      message: 'Shipping cost fetched successfully',
+      data: shippingData
+    });
+  } catch (error) {
+    console.error('Error fetching shipping cost:', error.message);
+    res.status(500).json({
+      message: 'Failed to fetch shipping cost',
+      error: error.message
+    });
+  }
+});
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -8,10 +8,12 @@ import Layanan2 from "../components/LandingPage/Layanan2";
 import Galeri from "../components/LandingPage/Galeri";
 import IklanRegister from "../components/LandingPage/IklanRegister";
 import Footer from "../components/LandingPage/Footer";
+import FloatingButton from "../components/floatingButton";
 
 function LandingPage() {
   return (
     <div>
+      <FloatingButton/>
       <Navbar />
       <Hero />
       <Rating />
