@@ -15,24 +15,19 @@ import { db, storage } from "../../Firebase";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { penyakit } from "../helpers/utils";
-import addNotification from "react-push-notification";
+import addNotification from 'react-push-notification';
 
-// Predefined chatbot responses with special keyword
 const responses = penyakit;
 
 const getChatbotResponse = async (text) => {
-  // Simulating a delay for response
   await new Promise((resolve) => setTimeout(resolve, 500));
 
-  // Convert text to lowercase for case insensitive matching
   const lowerText = text.toLowerCase();
 
-  // Find keyword in the text
   const foundKeyword = Object.keys(responses).find((keyword) =>
     lowerText.includes(keyword)
   );
 
-  // Return response if keyword is found, otherwise return default message
   return foundKeyword
     ? responses[foundKeyword]
     : "Maaf, pertanyaan anda tidak ada di database kami. Silahkan bertan [chatWithAdminButton]";
@@ -45,35 +40,47 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
-  useEffect(() => {
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission().then((permission) => {
-        if (permission !== "granted") {
-          console.log("Notification permission denied.");
-        }
-      });
-    }
-
-    const chatDocRef = doc(db, "chats", data.chatId);
-
-    const unsubscribe = onSnapshot(chatDocRef, (doc) => {
-      const data = doc.data();
-      if (data) {
-        const lastMessage = data.messages[data.messages.length - 1];
-        if (lastMessage && lastMessage.senderId !== currentUser.uid) {
-          console.log("New message received:", lastMessage.text);
-          addNotification({
-            title: "New Message",
-            message: lastMessage.text,
-            duration: 5000,
-            native: true, // native browser notification
-          });
-        }
-      }
+  function successNotification() {
+    addNotification({
+      title: "Success",
+      subtitle: "You have successfully submitted",
+      message: "Welcome to GeeksforGeeks",
+      theme: "light",
+      closeButton: "X",
+      backgroundTop: "green",
+      backgroundBottom: "yellowgreen",
     });
+  }
 
-    return () => unsubscribe();
-  }, [currentUser.uid, data.chatId]);
+  // useEffect(() => {
+  //   if (Notification.permission !== "granted") {
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission !== "granted") {
+  //         console.log("Notification permission denied.");
+  //       }
+  //     });
+  //   }
+
+  //   const chatDocRef = doc(db, "chats", data.chatId);
+
+  //   const unsubscribe = onSnapshot(chatDocRef, (doc) => {
+  //     const data = doc.data();
+  //     if (data) {
+  //       const lastMessage = data.messages[data.messages.length - 1];
+  //       if (lastMessage && lastMessage.senderId !== currentUser.uid) {
+  //         console.log("New message received:", lastMessage.text);
+  //         successNotification();
+  //       }
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, [currentUser.uid, data.chatId]);
+
+  const handleNotifications = () => {
+    console.log("Notification button clicked");
+    successNotification();
+  };
 
   const handleSend = async () => {
     let isFirstMessage = false;
@@ -223,6 +230,12 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
         >
           Kirim
+        </button>
+        <button
+          onClick={handleNotifications}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
+        >
+          Notif Test
         </button>
       </div>
     </div>
