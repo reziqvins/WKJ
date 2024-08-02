@@ -91,13 +91,13 @@ const AdminInput = () => {
     <div className="bg-white p-4 flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <input
-          className="w-[90%] border-none outline-none text-gray-800 text-lg"
+          className="w-full flex-1 border-none outline-none text-gray-800 text-lg"
           type="text"
           onChange={(e) => setText(e.target.value)}
           value={text}
           placeholder="Ceritakan keluhan anda"
         />
-        <div className="send w-[23%] flex items-center gap-4">
+        <div className="send flex items-center gap-4">
           <label htmlFor="file" className="cursor-pointer">
             <img src={Img} alt="" className="h-6" />
             <input

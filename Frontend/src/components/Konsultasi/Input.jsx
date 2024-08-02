@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Img from "../../img/img.png";
 import { AuthContext } from "../../Context/AuthContext";
 import { ChatContext } from "../../Context/ChatContext";
@@ -9,11 +9,13 @@ import {
   Timestamp,
   updateDoc,
   getDoc,
+  onSnapshot,
 } from "firebase/firestore";
 import { db, storage } from "../../Firebase";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { penyakit } from "../helpers/utils";
+import addNotification from "react-push-notification";
 
 // Predefined chatbot responses with special keyword
 const responses = penyakit;
@@ -43,6 +45,36 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
+  useEffect(() => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission().then((permission) => {
+        if (permission !== "granted") {
+          console.log("Notification permission denied.");
+        }
+      });
+    }
+
+    const chatDocRef = doc(db, "chats", data.chatId);
+
+    const unsubscribe = onSnapshot(chatDocRef, (doc) => {
+      const data = doc.data();
+      if (data) {
+        const lastMessage = data.messages[data.messages.length - 1];
+        if (lastMessage && lastMessage.senderId !== currentUser.uid) {
+          console.log("New message received:", lastMessage.text);
+          addNotification({
+            title: "New Message",
+            message: lastMessage.text,
+            duration: 5000,
+            native: true, // native browser notification
+          });
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, [currentUser.uid, data.chatId]);
+
   const handleSend = async () => {
     let isFirstMessage = false;
     const chatDocRef = doc(db, "chats", data.chatId);
@@ -57,8 +89,10 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
       const uploadTask = uploadBytesResumable(storageRef, img);
 
       uploadTask.on(
+        "state_changed",
+        null,
         (error) => {
-          // Handle error
+          console.error("Upload error:", error);
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -139,35 +173,6 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
     setImg(null);
   };
 
-  const handleEscalate = async () => {
-    setChatbotEnabled(false); // Disable the chatbot
-    const chatDocRef = doc(db, "chats", data.chatId);
-    const adminId = data.user.uid;
-
-    await updateDoc(chatDocRef, {
-      messages: arrayUnion({
-        id: uuid(),
-        text: "Kamu sudah terhubung dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
-        senderId: adminId,
-        date: Timestamp.now(),
-      }),
-    });
-
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [data.chatId + ".lastMessage"]: {
-        text: "Kamu sudah terhubung dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
-
-    await updateDoc(doc(db, "userChats", adminId), {
-      [data.chatId + ".lastMessage"]: {
-        text: "Kamu sudah terhubung dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
-      },
-      [data.chatId + ".date"]: serverTimestamp(),
-    });
-  };
-
   const sendAutomatedResponse = async (chatDocRef) => {
     const adminId = data.user.uid;
     await updateDoc(chatDocRef, {
@@ -203,7 +208,7 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
         value={text}
         placeholder="Ceritakan keluhan anda"
       />
-      <div className="send  flex items-center gap-4">
+      <div className="send flex items-center gap-4">
         <label htmlFor="file" className="cursor-pointer">
           <img src={Img} alt="" className="h-6" />
           <input

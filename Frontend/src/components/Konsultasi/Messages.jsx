@@ -30,7 +30,7 @@ const Messages = ({ setChatbotEnabled }) => {
     await updateDoc(chatDocRef, {
       messages: arrayUnion({
         id: uuid(),
-        text: "Anda sudah terhubung dengan Admin.",
+        text: "Sedang menghbungkan dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
         senderId: adminId,
         date: Timestamp.now(),
       }),
@@ -38,14 +38,14 @@ const Messages = ({ setChatbotEnabled }) => {
 
     await updateDoc(doc(db, "userChats", currentUser.uid), {
       [data.chatId + ".lastMessage"]: {
-        text: "Anda sudah terhubung dengan Admin.",
+        text: "Sedang menghbungkan dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });
 
     await updateDoc(doc(db, "userChats", adminId), {
       [data.chatId + ".lastMessage"]: {
-        text: "Anda sudah terhubung dengan Admin.",
+        text: "Sedang menghbungkan dengan dokter. Silahkan jelaskan data diri anda, dan keluhan yang anda rasakan.",
       },
       [data.chatId + ".date"]: serverTimestamp(),
     });

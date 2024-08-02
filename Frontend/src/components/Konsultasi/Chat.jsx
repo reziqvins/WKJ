@@ -1,16 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
-import Cam from "../../img/cam.png";
-import Add from "../../img/add.png";
-import More from "../../img/more.png";
 import Messages from "./Messages";
 import Input from "./Input";
 import { ChatContext } from "../../Context/ChatContext";
 import { AuthContext } from "../../Context/AuthContext";
-import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { db } from "../../Firebase";
+import addNotification from "react-push-notification";
 
 const Chat = () => {
-  const { currentUser, dispatch } = useContext(AuthContext);
+  const { currentUser } = useContext(AuthContext);
   const { data, dispatch: chatDispatch } = useContext(ChatContext);
   const [chat, setChat] = useState(null);
   const [chatbotEnabled, setChatbotEnabled] = useState(true);
@@ -89,6 +87,23 @@ const Chat = () => {
       };
 
       fetchChat();
+
+      const unsubscribe = onSnapshot(doc(db, "chats", chatId), (doc) => {
+        const data = doc.data();
+        if (data) {
+          const lastMessage = data.messages[data.messages.length - 1];
+          if (lastMessage && lastMessage.senderId !== currentUser.uid) {
+            addNotification({
+              title: "New Message",
+              message: lastMessage.text,
+              duration: 5000,
+              native: true, // native browser notification
+            });
+          }
+        }
+      });
+
+      return () => unsubscribe();
     }
   }, [currentUser, adminUID, chatDispatch]);
 
