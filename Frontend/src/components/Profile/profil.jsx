@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../Context/AuthContext";
 import { toast } from "react-toastify";
-import { storage } from "../../Firebase"; // Import Firebase Storage
+import { storage } from "../../Firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaEdit } from "react-icons/fa";
 import { PropagateLoader } from "react-spinners";
+import axios from "axios";
+import Select from "react-select";
 
 function Profil() {
   const { currentUser, updateUserProfile } = useContext(AuthContext);
@@ -13,7 +15,14 @@ function Profil() {
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
-  const [loading, setLoading] = useState(false); // Set initial loading state to false
+  const [loading, setLoading] = useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  
+  const BASE_LOCAL = 'http://localhost:3000';
+  const BASE_PROD = 'https://wkj.vercel.app';
 
   useEffect(() => {
     if (currentUser) {
@@ -24,6 +33,47 @@ function Profil() {
     }
   }, [currentUser]);
 
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await axios.get(`${BASE_LOCAL}/provinces`);
+        const provincesData = response.data.data.map((province) => ({
+          value: province.province_id,
+          label: province.province,
+        }));
+        setProvinces(provincesData);
+      } catch (error) {
+        console.error("Error fetching provinces:", error.message);
+      }
+    };
+
+    fetchProvinces();
+  }, []);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get(`${BASE_LOCAL}/cities`);
+        const citiesData = response.data.data.map((city) => ({
+          value: city.city_id,
+          label: `${city.type} ${city.city_name}`,
+          provinceId: city.province_id, // Include provinceId for filtering
+        }));
+        setCities(citiesData);
+      } catch (error) {
+        console.error("Error fetching cities:", error.message);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
+  useEffect(() => {
+    if (selectedProvince) {
+      setSelectedCity(null); // Reset selected city when province changes
+    }
+  }, [selectedProvince]);
+
   const handleFileChange = (e) => {
     if (e.target.files[0]) {
       setProfilePicture(e.target.files[0]);
@@ -32,29 +82,33 @@ function Profil() {
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true when update starts
+    setLoading(true);
 
     const updatedProfile = {
-        displayName: name,
-        phoneNumber: phoneNumber,
-        address: address,
-        postalCode: postalCode,
+      displayName: name,
+      phoneNumber: phoneNumber,
+      address: address,
+      postalCode: postalCode,
+      province: selectedProvince?.label || "",
+      id_provinsi: selectedProvince?.value || "",
+      city: selectedCity?.label || "",
+      id_city: selectedCity?.value || ""
     };
 
     try {
-        if (profilePicture) {
-            const storageRef = ref(storage, `profilePictures/${currentUser.uid}`);
-            await uploadBytes(storageRef, profilePicture);
-            const photoURL = await getDownloadURL(storageRef);
-            updatedProfile.photoURL = photoURL;
-        }
+      if (profilePicture) {
+        const storageRef = ref(storage, `profilePictures/${currentUser.uid}`);
+        await uploadBytes(storageRef, profilePicture);
+        const photoURL = await getDownloadURL(storageRef);
+        updatedProfile.photoURL = photoURL;
+      }
 
-        await updateUserProfile(updatedProfile);
-        toast.success("Profile updated successfully!");
+      await updateUserProfile(updatedProfile);
+      toast.success("Profile updated successfully!");
     } catch (error) {
-        toast.error("Failed to update profile. Please try again.");
+      toast.error("Failed to update profile. Please try again.");
     } finally {
-        setLoading(false); // Set loading to false after update process
+      setLoading(false);
     }
   };
 
@@ -62,6 +116,8 @@ function Profil() {
     const words = text.split(" ");
     return words.length > maxWords ? words.slice(0, maxWords).join(" ") + "..." : text;
   };
+
+  const filteredCities = cities.filter(city => city.provinceId === selectedProvince?.value);
 
   return (
     <div
@@ -132,6 +188,27 @@ function Profil() {
                     className="w-full border rounded-lg p-2"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-600">Provinsi</label>
+                  <Select
+                    options={provinces}
+                    onChange={setSelectedProvince}
+                    value={selectedProvince}
+                    placeholder="Pilih Provinsi"
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-600">Kota</label>
+                  <Select
+                    options={filteredCities}
+                    onChange={setSelectedCity}
+                    value={selectedCity}
+                    placeholder="Pilih Kota"
+                    className="w-full"
+                    isDisabled={!selectedProvince} // Disable city selection if no province is selected
                   />
                 </div>
               </div>

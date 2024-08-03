@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import TabNavigation from '../../Store/DashboardStore/TabNavigation';
 import { AuthContext } from '../../../Context/AuthContext';
 import Navbar from '../../LandingPage/Navbar';
+import { getPaymentStatus } from '../../../data/Utils';
 
 const Pemesanan = () => {
   const [orders, setOrders] = useState([]);
@@ -68,10 +69,10 @@ const Pemesanan = () => {
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead>
               <tr>
-                <th className="py-2 px-4 bg-gray-200">Image</th>
-                <th className="py-2 px-4 bg-gray-200">Product Name</th>
-                <th className="py-2 px-4 bg-gray-200">Price</th>
-                <th className="py-2 px-4 bg-gray-200">Order Status</th>
+                <th className="py-2 px-4 bg-gray-200">Gambar</th>
+                <th className="py-2 px-4 bg-gray-200">Nama produk</th>
+                <th className="py-2 px-4 bg-gray-200">Harga</th>
+                <th className="py-2 px-4 bg-gray-200">Pembayaran</th>
                 <th className="py-2 px-4 bg-gray-200">Actions</th>
               </tr>
             </thead>
@@ -94,10 +95,10 @@ const Pemesanan = () => {
                       {order.transaction_details.item_details[0]?.name || 'No Name'}
                     </td>
                     <td className="py-2 px-4">
-                      {order.transaction_details.item_details[0]?.price || 'No Price'}
+                      Rp. {order.transaction_details.item_details[0]?.price || 'No Price'}
                     </td>
-                    <td className="py-2 px-4">
-                      {order.transaction_details.transaction_status || 'No Status'}
+                    <td className="py-2 px-4 flex mt-7 justify-center">
+                      {getPaymentStatus(order.transaction_details.transaction_status) || 'No Status'}
                     </td>
                     <td className="py-2 px-4">
                       <Link to={`/transaction/${order.id}`}>

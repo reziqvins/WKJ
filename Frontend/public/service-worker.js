@@ -4,8 +4,11 @@ self.addEventListener("push", (event) => {
 
   const options = {
     body: data.body,
-    icon: "https://res.cloudinary.com/dap6ohre8/image/upload/v1711775648/WKJ/icons1_zxidth.png",  // Absolute path
+    icon: "/logo.png",  // Absolute path
     badge: "/badge.png", // Absolute path
+    data: {
+      url: "http://localhost:5174/Konsultasi"  // Add URL to notification data
+    }
   };
 
   event.waitUntil(
@@ -16,6 +19,6 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
-    clients.openWindow(event.notification.data.url)
+    clients.openWindow(event.notification.data.url)  // Use the URL from notification data
   );
 });

@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { auth, db, storage } from "../Firebase"; // Ensure storage is imported
+import { auth, db, storage } from "../Firebase";
 import { onAuthStateChanged, updateProfile } from "firebase/auth";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -34,7 +34,6 @@ export const AuthContextProvider = ({ children }) => {
   const updateUserProfile = async (updates) => {
     if (currentUser) {
       try {
-        // Handle profile picture update if exists
         if (updates.photoURL) {
           await updateProfile(auth.currentUser, { photoURL: updates.photoURL });
         }
@@ -45,7 +44,11 @@ export const AuthContextProvider = ({ children }) => {
           phoneNumber: updates.phoneNumber,
           address: updates.address,
           postalCode: updates.postalCode,
-          ...(updates.photoURL && { photoURL: updates.photoURL }), // Only include photoURL if it's defined
+          province: updates.province,
+          id_provinsi: updates.id_provinsi,
+          city: updates.city,
+          id_city: updates.id_city,
+          ...(updates.photoURL && { photoURL: updates.photoURL }),
           email: currentUser.email,
         }, { merge: true });
 

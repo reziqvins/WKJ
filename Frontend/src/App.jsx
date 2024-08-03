@@ -58,7 +58,7 @@ function App() {
           console.error("Service Worker registration failed:", error);
         });
     }
-
+  
     if (Notification.permission !== "granted") {
       Notification.requestPermission().then((permission) => {
         if (permission !== "granted") {
@@ -66,10 +66,10 @@ function App() {
         }
       });
     }
-
+  
     if (currentUser && data.chatId) {
       const chatDocRef = doc(db, "chats", data.chatId);
-
+  
       const unsubscribe = onSnapshot(chatDocRef, (doc) => {
         const chatData = doc.data();
         if (chatData && chatData.messages && chatData.messages.length > 0) {
@@ -80,11 +80,11 @@ function App() {
           }
         }
       });
-
+  
       return () => unsubscribe();
     }
   }, [currentUser, data.chatId]);
-
+  
   function successNotification(message) {
     addNotification({
       title: "New Message",
@@ -95,13 +95,16 @@ function App() {
       backgroundTop: "green",
       backgroundBottom: "yellowgreen",
     });
-
+  
     if (Notification.permission === "granted") {
       navigator.serviceWorker.ready.then((registration) => {
-        registration.showNotification("New Message", {
+        registration.showNotification("Konsultasi Wisata Kesehatan Jamu", {
           body: message,
           icon: "/icon.png",
           badge: "/badge.png",
+          data: {
+            url: "http://localhost:5174/Konsultasi"  // Add URL to notification data
+          }
         });
       });
     }
@@ -111,7 +114,7 @@ function App() {
     <div>
       <Notifications />
       <Router>
-        <ToastContainer />
+        
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/DashboardStore" element={<DashboardStore />} />

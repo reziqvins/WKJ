@@ -39,6 +39,8 @@ app.use(cors({
 app.use(bodyParser.json());
 
 
+
+
 // Create an order
 app.post('/orders', async (req, res) => {
   const { transaction_details } = req.body;
@@ -68,7 +70,7 @@ app.post('/orders', async (req, res) => {
         transaction_details: {
           order_id: transaction_details.order_id,
           gross_amount: transaction_details.gross_amount,
-          transaction_status: transaction_details.transaction_status,
+          transaction_status: 'pending',  // Initially set status to pending
           order_Status: transaction_details.order_Status,
           shipping_method: transaction_details.shipping_method,
           resi: transaction_details.resi,
@@ -82,6 +84,11 @@ app.post('/orders', async (req, res) => {
 
       const orderRef = db.collection('orders').doc(transaction_details.order_id);
       await orderRef.set(orderData);
+
+      // Update product stock
+      for (const item of transaction_details.item_details) {
+        await decreaseStock(item.id, item.quantity);
+      }
 
       return res.status(200).json({
         status: "ok",
@@ -97,6 +104,67 @@ app.post('/orders', async (req, res) => {
     });
   }
 });
+
+// Helper Functions
+const decreaseStock = async (productId, quantity) => {
+  const productRef = db.collection('products').doc(productId);
+  const productDoc = await productRef.get();
+
+  if (productDoc.exists) {
+    const productData = productDoc.data();
+    const newStock = productData.stock - quantity;
+    await productRef.update({ stock: newStock });
+  }
+};
+
+const increaseStock = async (productId, quantity) => {
+  const productRef = db.collection('products').doc(productId);
+  const productDoc = await productRef.get();
+
+  if (productDoc.exists) {
+    const productData = productDoc.data();
+    const newStock = productData.stock + quantity;
+    await productRef.update({ stock: newStock });
+  }
+};
+
+app.post('/webhook', async (req, res) => {
+  const { order_id, transaction_status } = req.body;
+
+  try {
+    const orderRef = db.collection('orders').doc(order_id);
+    const orderDoc = await orderRef.get();
+
+    if (!orderDoc.exists) {
+      return res.status(404).json({ status: 'failed', message: 'Order not found' });
+    }
+
+    const orderData = orderDoc.data();
+    
+    if (transaction_status === 'cancel' || transaction_status === 'expire') {
+      // Restore stock
+      for (const item of orderData.transaction_details.item_details) {
+        await increaseStock(item.id, item.quantity);
+      }
+
+      // Update order status
+      await orderRef.update({
+        'transaction_details.transaction_status': transaction_status
+      });
+
+      return res.status(200).json({ status: 'ok', message: 'Stock restored and order status updated' });
+    }
+
+    res.status(200).json({ status: 'ok', message: 'Webhook received' });
+  } catch (error) {
+    console.error('Error processing webhook:', error.message);
+    res.status(500).json({
+      status: "failed",
+      message: error.message,
+    });
+  }
+});
+
 
 // Read all orders
 app.get('/orders', async (req, res) => {
@@ -138,6 +206,34 @@ app.get('/orders/:id', async (req, res) => {
     });
   }
 });
+
+// Update order status to delivered (only once)
+app.put('/orders/:id/deliver', async (req, res) => {
+  try {
+    const orderRef = db.collection('orders').doc(req.params.id);
+    const orderDoc = await orderRef.get();
+
+    if (!orderDoc.exists) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const orderData = orderDoc.data();
+
+    if (orderData.transaction_details.order_Status === 'delivered') {
+      return res.status(400).json({ message: 'Order is already delivered' });
+    }
+
+    await orderRef.update({
+      'transaction_details.order_Status': 'delivered'
+    });
+
+    res.status(200).json({ message: 'Order status updated to delivered' });
+  } catch (error) {
+    console.error('Error updating order status:', error.message);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
 
 // Update an order by ID
 app.put('/transactionStatus/:id', async (req, res) => {
@@ -327,43 +423,43 @@ app.post('/send-notification', async (req, res) => {
     }
   });
   // Endpoint to fetch shipping cost
-app.post('/shipping-cost', async (req, res) => {
-  const { province_id, city_id,weight } = req.body;
-
-  if (!province_id || !city_id) {
-    return res.status(400).json({
-      message: 'Province ID and City ID are required'
-    });
-  }
-
-  try {
-    // Make the request to the Raja Ongkir API
-    const response = await axios.post('https://api.rajaongkir.com/starter/cost', {
-      origin: province_id,
-      destination: city_id,
-      weight: weight, // Example weight in grams
-      courier: 'jne', // Example courier
-    }, {
-      headers: {
-        'key': process.env.RAJAONGKIR_API_KEY
-      }
-    });
-
-    // Extract and format the response data
-    const shippingData = response.data.rajaongkir.results;
-
-    res.status(200).json({
-      message: 'Shipping cost fetched successfully',
-      data: shippingData
-    });
-  } catch (error) {
-    console.error('Error fetching shipping cost:', error.message);
-    res.status(500).json({
-      message: 'Failed to fetch shipping cost',
-      error: error.message
-    });
-  }
-});
+  app.post('/shipping-cost', async (req, res) => {
+    const { province_id } = req.body;
+  
+    if (!province_id ) {
+      return res.status(400).json({
+        message: 'Province ID are required'
+      });
+    }
+  
+    try {
+      // Make the request to the Raja Ongkir API
+      const response = await axios.post('https://api.rajaongkir.com/starter/cost', {
+        origin: '10',
+        destination: id_province,
+        weight: '500', // Example weight in grams
+        courier: 'jne', // Example courier
+      }, {
+        headers: {
+          'key': process.env.RAJAONGKIR_API_KEY
+        }
+      });
+  
+      // Extract and format the response data
+      const shippingData = response.data.rajaongkir.results;
+  
+      res.status(200).json({
+        message: 'Shipping cost fetched successfully',
+        data: shippingData
+      });
+    } catch (error) {
+      console.error('Error fetching shipping cost:', error.message);
+      res.status(500).json({
+        message: 'Failed to fetch shipping cost',
+        error: error.message
+      });
+    }
+  });
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

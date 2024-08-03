@@ -1,13 +1,13 @@
 export const getPaymentStatus = (PaymentStatus) => {
-    if (PaymentStatus === "Completed")
+    if (PaymentStatus === "settlement")
       return (
-        <div className="card rounded-md bg-green-400 text-center text-xs font-semibold">
-          Completed
+        <div className="card rounded-md bg-green-400 text-center text-xs font-semibold w-16">
+          Berhasil
         </div>
       );
-    if (PaymentStatus === "Pending")
+    if (PaymentStatus === "pending")
       return (
-        <div className="card rounded-md bg-yellow-400 text-center text-xs font-semibold">
+        <div className="card rounded-md bg-yellow-400 text-center  text-xs font-semibold w-16">
           Pending
         </div>
       );
@@ -15,21 +15,21 @@ export const getPaymentStatus = (PaymentStatus) => {
   };
   
   export const getStatus = (Status) => {
-    if (Status === "Completed")
+    if (Status === "delivered")
       return (
-        <div className="card rounded-md bg-green-400 text-center text-xs font-semibold">
-          {Status}
+        <div className="card rounded-md bg-green-400 text-center text-xs font-semibold m-auto px-1">
+          Delivered
         </div>
       );
-    if (Status === "Processing")
+    if (Status === "Arrange-Shipment")
       return (
-        <div className="card rounded-md bg-blue-400 text-center text-xs font-semibold">
-          {Status}
+        <div className="card rounded-md bg-blue-400 text-center text-xs font-semibold w-16">
+          Sedang dalam pengiriman
         </div>
       );
-    if (Status === "Pending")
+    if (Status === "Package")
       return (
-        <div className="card rounded-md bg-yellow-400 text-center text-xs font-semibold">
+        <div className="card rounded-md bg-yellow-400 text-center text-xs font-semibold w-16">
           {Status}
         </div>
       );

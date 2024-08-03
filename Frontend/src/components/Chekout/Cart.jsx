@@ -14,9 +14,9 @@ import Swal from "sweetalert2";
 import uploadFile from "../helpers/uploadFile";
 import { AuthContext } from "../../Context/AuthContext";
 
-export const CLIENT_KEY = "SB-Mid-client-jEtvZoEqwphlbnRo";
-export const BASE_LOCAL = "http://localhost:3000";
-export const BASE_PROD = "https://wkj.vercel.app";
+export const CLIENT_KEY = import.meta.env.VITE_MIDTRANS_CLIENT_KEY;
+export const BASE_LOCAL = import.meta.env.VITE_BASE_LOCAL;
+export const BASE_PROD = import.meta.env.VITE_BASE_PROD;
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -24,11 +24,13 @@ const Cart = () => {
   const { currentUser } = useContext(AuthContext);
 
   const [name, setName] = useState(currentUser?.displayName || "");
-  const [email, setEmail] = useState(currentUser?.email || "");
+  const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber || "");
   const [address, setAddress] = useState(currentUser?.address || "");
+  const [id_provinsi, setId_Provinsi] = useState(currentUser?.id_provinsi || "");
   const [file, setFile] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [shipping, setShipping] = useState("JNE");
+  const [shippingCost, setShippingCost] = useState("");
   const [orderData, setOrderData] = useState(null);
 
   useEffect(() => {
@@ -36,8 +38,9 @@ const Cart = () => {
 
     if (currentUser) {
       setName(currentUser.displayName || "");
-      setEmail(currentUser.email || "");
+      setPhoneNumber(currentUser.phoneNumber || "");
       setAddress(currentUser.address || "");
+      setId_Provinsi(currentUser.id_provinsi || "");
     }
   }, [cart, dispatch, currentUser]);
 
@@ -109,9 +112,66 @@ const Cart = () => {
     return transactionID;
   };
 
+  useEffect(() => {
+    if (currentUser && currentUser.id_provinsi) {
+      setId_Provinsi(currentUser.id_provinsi);
+      console.log('ID Provinsi dari currentUser:', currentUser.id_provinsi);
+    }
+  }, [currentUser]);
+  
+  useEffect(() => {
+    if (id_provinsi) {
+      calculateShippingCost();
+    }
+  }, [id_provinsi]);
+  
+  const calculateShippingCost = async () => {
+    console.log("Memulai perhitungan ongkos kirim...");
+    console.log("ID Provinsi:", id_provinsi);
+  
+    if (!id_provinsi) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Error',
+        text: 'Destination province not selected',
+      });
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        'https://api.rajaongkir.com/starter/cost',
+        {
+          origin: '10', // ID kota/kabupaten asal
+          destination: id_provinsi,
+          weight: 500, // Berat dalam gram
+          courier: 'jne',
+        },
+        {
+          headers: {
+            key: import.meta.env.VITE_RAJAONGKIR_API_KEY,
+          },
+        }
+      );
+  
+      const cost = response.data.rajaongkir.results[0].costs[0].cost[0].value;
+      setShippingCost(cost);
+      console.log("Shipping cost successfully calculated:", cost);
+    } catch (error) {
+      console.error("Error calculating shipping cost:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to calculate shipping cost',
+      });
+    }
+  };
+  
+  
+
   const sendOrderToApi = async (orderData) => {
     try {
-      const response = await axios.post(`${BASE_PROD}/orders`, orderData);
+      const response = await axios.post(`${BASE_LOCAL}/orders`, orderData);
       const data = response.data;
 
       if (data.status === "ok" && data.token) {
@@ -134,11 +194,11 @@ const Cart = () => {
   };
 
   const handleCheckout = async (e) => {
-    if (!name || !email || !address) {
+    if (!name || !phoneNumber || !address || !id_provinsi) {
       Swal.fire({
         icon: "warning",
-        title: "Form tidak lengkap",
-        text: "Silahkan lengkapi semua form.",
+        title: "Alamat tidak lengkap",
+        text: "Silahkan lengkapi alamat anda.",
       });
       return;
     }
@@ -185,8 +245,9 @@ const Cart = () => {
         customer_details: {
           id: currentUser.uid,
           first_name: name,
-          email: email,
+          noHp: phoneNumber,
           alamat: address,
+          provinsi: id_provinsi,
           imgCheck: imgUrl,
         },
       },
@@ -230,7 +291,7 @@ const Cart = () => {
       const orderId = searchParams.get("order_id");
 
       axios
-        .put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
+        .put(`${BASE_PROD}/transactionStatus/${orderId}`, {
           "transaction_details.transaction_status": "settlement",
         })
         .then((response) => console.log(response.data))
@@ -240,7 +301,7 @@ const Cart = () => {
       const orderId = searchParams.get("order_id");
 
       axios
-        .put(`https://wkj.vercel.app/transactionStatus/${orderId}`, {
+        .put(`${BASE_PROD}/transactionStatus/${orderId}`, {
           "transaction_details.transaction_status": "pending",
         })
         .then((response) => console.log(response.data))
@@ -358,70 +419,48 @@ const Cart = () => {
             ))}
           </div>
           <div className="flex flex-col md:flex-row justify-between border-t border-gray-200 pt-8">
-            <form className="w-full md:w-1/2 md:pr-4">
-              <h1 className="font-bold text-xl mb-4">Detail Pelanggan</h1>
-              <div className="mb-2">
-                <label
-                  htmlFor="name"
-                  className="block text-gray-700 text-sm font-bold mb-2"
+            <div className="flex flex-col rounded-lg px-3 hover:shadow-lg transition-shadow duration-300">
+              <div>
+                <Link
+                  className="hover:shadow-lg border border-red-200"
+                  to="/UserProfile"
                 >
-                  Nama:
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
+                  {currentUser && (
+                    <div className="mt-8 text-left">
+                      <h3 className="text-lg font-bold mb-4">Alamat</h3>
+                      <div className="flex mb-2">
+                        <span>Nama</span>
+                        <span> : {currentUser.displayName}</span>
+                      </div>
+                      <div className="flex mb-2">
+                        <span>NoHp</span>
+                        <span> : {currentUser.phoneNumber}</span>
+                      </div>
+                      <div className="flex mb-2">
+                        <span>Address</span>
+                        <span> : {currentUser.address}</span>
+                      </div>
+                    </div>
+                  )}
+                </Link>
               </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="email"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  Email:
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="address"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  Alamat:
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  required
-                />
-              </div>
-              {cart.cartItems.some((item) => item.isCheck === "1") && (
-                <div className="mb-4 flex flex-col">
-                  <label htmlFor="image" className="mb-2 font-medium">
-                    Upload Image
-                  </label>
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    className="border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
-                    required
-                  />
-                </div>
-              )}
-            </form>
+              <form className="w-full md:w-1/2 md:pr-4">
+                {cart.cartItems.some((item) => item.isCheck === "1") && (
+                  <div className="mb-4 flex flex-col">
+                    <label htmlFor="image" className="mb-2 font-medium">
+                      Upload Image
+                    </label>
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
+                      required
+                    />
+                  </div>
+                )}
+              </form>
+            </div>
+
             <div className="w-full md:w-1/2 mt-8 md:mt-0">
               <h1 className="font-bold text-xl mb-4">Metode Pengiriman</h1>
               <div className="mb-4">
@@ -437,11 +476,19 @@ const Cart = () => {
                 </label>
               </div>
               <div className="text-sm">
-                <div className="flex justify-between mb-4">
+                <div className="flex flex-col mb-4">
+
+                  <div className="flex justify-between">
+                    <div className="kiri flex flex-col">
+
+                  <span>Ongkos Kirim</span>
                   <span>Total</span>
-                  <span className="font-medium">
-                    Rp. {cart.cartTotalAmount}
-                  </span>
+                    </div>
+                  <div className=" kanan font-medium flex flex-col">
+                    <span>Rp. {shippingCost}</span>
+                    <span>Rp. {cart.cartTotalAmount}</span>
+                  </div>
+                  </div>
                 </div>
                 <p className="mt-1 text-gray-600">
                   Pajak dan pengiriman dihitung di checkout
