@@ -5,7 +5,7 @@ import { ChatContext } from "../../Context/ChatContext";
 import { AuthContext } from "../../Context/AuthContext";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
 import { db } from "../../Firebase";
-import addNotification from "react-push-notification";
+// import addNotification from "react-push-notification";
 
 const Chat = () => {
   const { currentUser } = useContext(AuthContext);
@@ -88,22 +88,22 @@ const Chat = () => {
 
       fetchChat();
 
-      const unsubscribe = onSnapshot(doc(db, "chats", chatId), (doc) => {
-        const data = doc.data();
-        if (data) {
-          const lastMessage = data.messages[data.messages.length - 1];
-          if (lastMessage && lastMessage.senderId !== currentUser.uid) {
-            addNotification({
-              title: "New Message",
-              message: lastMessage.text,
-              duration: 5000,
-              native: true, // native browser notification
-            });
-          }
-        }
-      });
+      // const unsubscribe = onSnapshot(doc(db, "chats", chatId), (doc) => {
+      //   const data = doc.data();
+      //   if (data) {
+      //     const lastMessage = data.messages[data.messages.length - 1];
+      //     if (lastMessage && lastMessage.senderId !== currentUser.uid) {
+      //       addNotification({
+      //         title: "New Message",
+      //         message: lastMessage.text,
+      //         duration: 5000,
+      //         native: true, // native browser notification
+      //       });
+      //     }
+      //   }
+      // });
 
-      return () => unsubscribe();
+      // return () => unsubscribe();
     }
   }, [currentUser, adminUID, chatDispatch]);
 

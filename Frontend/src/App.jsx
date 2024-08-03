@@ -40,8 +40,8 @@ import { doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./Firebase";
 import EditKonsul from "./page/Admin/editKonsul";
 
-import { Notifications } from "react-push-notification";
-import addNotification from "react-push-notification";
+// import { Notifications } from "react-push-notification";
+// import addNotification from "react-push-notification";
 import { ChatContext } from "./Context/ChatContext";
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -86,15 +86,15 @@ function App() {
   }, [currentUser, data.chatId]);
   
   function successNotification(message) {
-    addNotification({
-      title: "New Message",
-      subtitle: "You have a new message",
-      message: message,
-      theme: "light",
-      closeButton: "X",
-      backgroundTop: "green",
-      backgroundBottom: "yellowgreen",
-    });
+    // addNotification({
+    //   title: "New Message",
+    //   subtitle: "You have a new message",
+    //   message: message,
+    //   theme: "light",
+    //   closeButton: "X",
+    //   backgroundTop: "green",
+    //   backgroundBottom: "yellowgreen",
+    // });
   
     if (Notification.permission === "granted") {
       navigator.serviceWorker.ready.then((registration) => {
@@ -112,7 +112,7 @@ function App() {
 
   return (
     <div>
-      <Notifications />
+      {/* <Notifications /> */}
       <Router>
         
         <Routes>

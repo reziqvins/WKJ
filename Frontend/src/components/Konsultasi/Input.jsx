@@ -15,7 +15,7 @@ import { db, storage } from "../../Firebase";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { penyakit } from "../helpers/utils";
-import addNotification from 'react-push-notification';
+// import addNotification from 'react-push-notification';
 
 const responses = penyakit;
 
@@ -40,17 +40,17 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
-  function successNotification() {
-    addNotification({
-      title: "Success",
-      subtitle: "You have successfully submitted",
-      message: "Welcome to GeeksforGeeks",
-      theme: "light",
-      closeButton: "X",
-      backgroundTop: "green",
-      backgroundBottom: "yellowgreen",
-    });
-  }
+  // function successNotification() {
+  //   addNotification({
+  //     title: "Success",
+  //     subtitle: "You have successfully submitted",
+  //     message: "Welcome to GeeksforGeeks",
+  //     theme: "light",
+  //     closeButton: "X",
+  //     backgroundTop: "green",
+  //     backgroundBottom: "yellowgreen",
+  //   });
+  // }
 
   // useEffect(() => {
   //   if (Notification.permission !== "granted") {
@@ -77,10 +77,10 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
   //   return () => unsubscribe();
   // }, [currentUser.uid, data.chatId]);
 
-  const handleNotifications = () => {
-    console.log("Notification button clicked");
-    successNotification();
-  };
+  // const handleNotifications = () => {
+  //   console.log("Notification button clicked");
+  //   successNotification();
+  // };
 
   const handleSend = async () => {
     let isFirstMessage = false;
@@ -231,12 +231,12 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
         >
           Kirim
         </button>
-        <button
+        {/* <button
           onClick={handleNotifications}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
         >
           Notif Test
-        </button>
+        </button> */}
       </div>
     </div>
   );
