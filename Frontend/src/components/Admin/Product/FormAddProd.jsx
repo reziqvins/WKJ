@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { storage, db, ref } from "../../../Firebase"; // Sesuaikan path jika perlu
-import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { storage, db } from "../../../Firebase"; 
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
 
 function FormAddProd() {
@@ -12,9 +12,27 @@ function FormAddProd() {
   const [imgPreview, setImgPreview] = useState(null); 
   const [productCateg, setProductCateg] = useState("");
   const [productStock, setProductStock] = useState("");
-  const [isCheck, setisCheck] = useState(0);
+  const [isCheck, setIsCheck] = useState(0);
   const [error, setError] = useState("");
-  const types = ["image/png", "image/jpeg"];
+  const [categories, setCategories] = useState([]); 
+
+  useEffect(() => {
+   
+    const fetchCategories = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "etalase"));
+        const categoryData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setCategories(categoryData);
+      } catch (error) {
+        console.error("Error fetching categories: ", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -29,19 +47,6 @@ function FormAddProd() {
     };
     reader.readAsDataURL(file);
   };
-
-
-  // const productImgHandler = (e) => {
-  //   let selectedFile = e.target.files[0];
-  //   if (selectedFile && types.includes(selectedFile.type)) {
-  //     setProductImg(selectedFile);
-  //     setError("");
-  //     console.log("File selected successfully");
-  //   } else {
-  //     setProductImg(null);
-  //     setError("File must be in jpg/png format");
-  //   }
-  // };
 
   const addProduct = async (e) => {
     e.preventDefault();
@@ -84,7 +89,7 @@ function FormAddProd() {
           setProductImg(null);
           setProductCateg("");
           setProductStock("");
-          setisCheck(0);
+          setIsCheck(0);
           setError("");
           document.getElementById("file").value = "";
 
@@ -158,14 +163,17 @@ function FormAddProd() {
           </label>
           <select
             id="product-categ"
-            requiredx
+            required
             onChange={(e) => setProductCateg(e.target.value)}
             value={productCateg}
             className="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
           >
             <option value="">Pilih Kategori</option>
-            <option value="Produk Inovasi">Produk Inovasi</option>
-            <option value="Produk Konsultasi">Produk Konsultasi</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.category}>
+                {category.category}
+              </option>
+            ))}
           </select>
         </div>
         <div className="mb-4">
@@ -173,7 +181,7 @@ function FormAddProd() {
             htmlFor="product-stock"
             className="block text-gray-700 font-bold mb-2"
           >
-            Stok Produk{" "}
+            Stok Produk
           </label>
           <input
             type="text"
@@ -192,8 +200,8 @@ function FormAddProd() {
           </label>
           <select
             id="product-ischeck"
-            requiredx
-            onChange={(e) => setisCheck(e.target.value)}
+            required
+            onChange={(e) => setIsCheck(e.target.value)}
             value={isCheck}
             className="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
           >
@@ -216,7 +224,7 @@ function FormAddProd() {
               alt="Product Preview"
               className="mt-2 max-w-xs"
             />
-          )}{" "}
+          )}
         </div>
         <button
           type="submit"

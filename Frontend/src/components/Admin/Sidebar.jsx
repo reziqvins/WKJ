@@ -5,11 +5,14 @@ import {
   MdInbox,
   MdAccountCircle,
   MdSettings,
+  MdOutlineCategory,
 } from "react-icons/md";
 import { IoIosArrowDropleftCircle, IoMdArrowDropdown } from "react-icons/io";
 import { FaBox, FaCartArrowDown } from "react-icons/fa";
 import { GrGallery } from "react-icons/gr";
 import { MdHomeRepairService } from "react-icons/md";
+import { RiDashboard2Line } from "react-icons/ri";
+import { BiPackage } from "react-icons/bi";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
@@ -57,7 +60,7 @@ const Sidebar = () => {
                   : ""
               }`}
             >
-              <MdDashboard className="text-2xl" />
+              <RiDashboard2Line  className="text-2xl" />
               <span className={`${!open && "hidden"} origin-left duration-200`}>
                 Dashboard
               </span>
@@ -79,15 +82,30 @@ const Sidebar = () => {
             </li>
           </Link>
           <Link
-            to="/admin/products"
+            to="/admin/etalase"
             className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 mt-9"
+          >
+            <li
+              className={`flex items-center gap-x-4 ${
+                pathname === "/admin/etalase" ? "text-[#F0B608]" : ""
+              }`}
+            >
+              <MdOutlineCategory className="text-2xl" />
+              <span className={`${!open && "hidden"} origin-left duration-200`}>
+                Etalase
+              </span>
+            </li>
+          </Link>
+          <Link
+            to="/admin/products"
+            className="flex rounded-md p-2 cursor-pointer hover:bg-light-white hover:text-[#F0B608] text-gray-300 text-sm items-center gap-x-4 "
           >
             <li
               className={`flex items-center gap-x-4 ${
                 pathname === "/admin/products" ? "text-[#F0B608]" : ""
               }`}
             >
-              <FaBox className="text-2xl" />
+              <BiPackage className="text-2xl" />
               <span className={`${!open && "hidden"} origin-left duration-200`}>
                 Produk
               </span>

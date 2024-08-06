@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { getToken } from "firebase/messaging";
-import { messaging } from "./Firebase"; // Make sure you import the initialized messaging instance
+import { messaging } from "./Firebase"; 
 import { AuthContext } from "./Context/AuthContext";
 import LandingPage from "./page/LandingPage";
 import DashboardStore from "./page/DashboardStore";
@@ -43,6 +43,7 @@ import EditKonsul from "./page/Admin/editKonsul";
 // import { Notifications } from "react-push-notification";
 // import addNotification from "react-push-notification";
 import { ChatContext } from "./Context/ChatContext";
+import EtalasePage from "./page/Admin/EtalasePage";
 function App() {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
@@ -154,6 +155,7 @@ function App() {
             <Route path="/admin/user" element={<UserPage />} />
             <Route path="/admin/toKonsul" element={<EditKonsul />} />
             <Route path="/admin/orders" element={<OrderPage />} />
+            <Route path="/admin/etalase" element={<EtalasePage />} />
             <Route path="/admin/orders/:id" element={<OrderDetailPage />} />
             <Route path="/admin/editProduct/:id" element={<EditProduct />} />
           </Route>
