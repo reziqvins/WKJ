@@ -122,7 +122,7 @@ function App() {
           <Route path="/SignIn" element={<LoginPage />} />
           <Route path="/ResetPassword" element={<ForgotPassword />} />
           <Route path="/UserProfile" element={<UserProfilePage />} />
-          <Route path="/Cart" element={<CartPage />} />
+          <Route path="/Cart" element={currentUser ? <CartPage /> : <LoginPrompt />} />
           <Route path="/Success" element={<CheckoutSuccesPage />} />
           <Route
             path="/Pemesanan"

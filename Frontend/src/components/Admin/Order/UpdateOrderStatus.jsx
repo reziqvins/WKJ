@@ -62,9 +62,9 @@ const UpdateOrderStatus = ({ isOpen, onClose, orderId }) => {
             <option value="" disabled>
               Pilih status
             </option>
-            <option value="Delivered">Delivered</option>
-            <option value="Pending">Pending</option>
-            <option value="Arrange-Shipment">Arrange Shipment</option>
+            <option value="Delivered">Terkirim</option>
+            <option value="package">Dikemas</option>
+            <option value="Arrange-Shipment">Sedang Dalam Pengiriman</option>
           </select>
           <div className="mt-4 flex justify-end">
             <button

@@ -1,13 +1,13 @@
 export const getPaymentStatus = (PaymentStatus) => {
     if (PaymentStatus === "settlement")
       return (
-        <div className="card rounded-md bg-green-400 text-center text-xs font-semibold w-16">
+        <div className="card rounded-md bg-green-400 text-center text-xs font-semibold px-1">
           Berhasil
         </div>
       );
     if (PaymentStatus === "pending")
       return (
-        <div className="card rounded-md bg-yellow-400 text-center  text-xs font-semibold w-16">
+        <div className="card rounded-md bg-yellow-400 text-center  text-xs font-semibold px-1">
           Pending
         </div>
       );
@@ -15,22 +15,22 @@ export const getPaymentStatus = (PaymentStatus) => {
   };
   
   export const getStatus = (Status) => {
-    if (Status === "delivered")
+    if (Status === "Delivered")
       return (
         <div className="card rounded-md bg-green-400 text-center text-xs font-semibold m-auto px-1">
-          Delivered
+          Kirim Sukses
         </div>
       );
     if (Status === "Arrange-Shipment")
       return (
-        <div className="card rounded-md bg-blue-400 text-center text-xs font-semibold w-16">
+        <div className="card rounded-md bg-blue-400 text-center text-xs font-semibold px-1">
           Sedang dalam pengiriman
         </div>
       );
     if (Status === "Package")
       return (
-        <div className="card rounded-md bg-yellow-400 text-center text-xs font-semibold w-16">
-          {Status}
+        <div className="card rounded-md bg-yellow-400 text-center text-xs font-semibold px-1">
+          Pengemasan
         </div>
       );
   };

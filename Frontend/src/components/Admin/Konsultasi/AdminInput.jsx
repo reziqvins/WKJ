@@ -22,6 +22,9 @@ const AdminInput = () => {
   const { data } = useContext(ChatContext);
 
   const handleSend = async () => {
+    if (!text.trim()) {
+      return;
+    }
     if (img) {
       const storageRef = ref(storage, uuid());
 
@@ -87,6 +90,12 @@ const AdminInput = () => {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <div className="bg-white p-4 flex flex-col">
       <div className="flex items-center justify-between mb-2">
@@ -96,6 +105,7 @@ const AdminInput = () => {
           onChange={(e) => setText(e.target.value)}
           value={text}
           placeholder="Ceritakan keluhan anda"
+          onKeyDown={handleKeyPress}
         />
         <div className="send flex items-center gap-4">
           <label htmlFor="file" className="cursor-pointer">

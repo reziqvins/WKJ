@@ -39,9 +39,11 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
 
-
-
   const handleSend = async () => {
+    if (!text.trim()) {
+      return;
+    }
+
     let isFirstMessage = false;
     const chatDocRef = doc(db, "chats", data.chatId);
     const chatDoc = await getDoc(chatDocRef);
@@ -165,6 +167,12 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
     });
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <div className="input bg-white h-16 flex items-center justify-between px-4">
       <input
@@ -173,6 +181,7 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
         onChange={(e) => setText(e.target.value)}
         value={text}
         placeholder="Ceritakan keluhan anda"
+        onKeyDown={handleKeyPress}
       />
       <div className="send flex items-center gap-4">
         <label htmlFor="file" className="cursor-pointer">
@@ -190,12 +199,6 @@ const Input = ({ chatbotEnabled, setChatbotEnabled }) => {
         >
           Kirim
         </button>
-        {/* <button
-          onClick={handleNotifications}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer"
-        >
-          Notif Test
-        </button> */}
       </div>
     </div>
   );

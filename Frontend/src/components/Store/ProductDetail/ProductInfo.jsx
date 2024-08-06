@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../../Redux/CartSlice"; 
+import { addToCart } from "../../../Redux/CartSlice";
+import { AuthContext } from "../../../Context/AuthContext"; 
+import Swal from "sweetalert2";
 
 const ProductInfo = ({ productInfo }) => {
   const dispatch = useDispatch();
+  const { currentUser } = useContext(AuthContext);
 
   const handleAddToCart = (product) => {
+    if (!currentUser) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Login Diperlukan',
+        text: 'Silahkan Login Untuk menambah ke keranjang',
+      });
+      return;
+    }
+
     const { createdAt, updatedAt, ...productWithoutTimestamps } = product;
   
     if (productWithoutTimestamps.stock > 0) {
-      dispatch(addToCart(productWithoutTimestamps)); // Panggil aksi addToCart dari Redux
+      dispatch(addToCart(productWithoutTimestamps));
     } else {
-      alert("Product is out of stock");
+      alert("Produk telah habis");
     }
   };
 
@@ -29,7 +41,7 @@ const ProductInfo = ({ productInfo }) => {
         onClick={() => handleAddToCart(productInfo)}
         className="w-full py-4 bg-blue-500 hover:bg-blue-600 duration-300 text-white text-lg font-titleFont"
       >
-        Add to Cart
+        Tambah Ke keranjang
       </button>
     </div>
   );

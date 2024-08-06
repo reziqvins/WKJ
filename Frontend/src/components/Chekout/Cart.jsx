@@ -27,6 +27,11 @@ const Cart = () => {
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber || "");
   const [address, setAddress] = useState(currentUser?.address || "");
   const [id_provinsi, setId_Provinsi] = useState(currentUser?.id_provinsi || "");
+  const [city, setCity] = useState(currentUser?.city || "");
+  const [postalCode, setPostalCode] = useState(currentUser?.postalCode || "");
+  const [photoURL, setPhotoURL] = useState(currentUser?.photoURL || "");
+  const [email, setEmail] = useState(currentUser?.email || "");
+  const [province, setprovince] = useState(currentUser?.province || "");
   const [file, setFile] = useState(null);
   const [imgUrl, setImgUrl] = useState(null);
   const [shipping, setShipping] = useState("JNE");
@@ -41,6 +46,11 @@ const Cart = () => {
       setPhoneNumber(currentUser.phoneNumber || "");
       setAddress(currentUser.address || "");
       setId_Provinsi(currentUser.id_provinsi || "");
+      setCity(currentUser?.city || "");
+      setPostalCode(currentUser?.postalCode || "");
+      setPhotoURL(currentUser?.photoURL || "");
+      setEmail(currentUser?.email || "");
+      setprovince(currentUser?.province || "");
     }
   }, [cart, dispatch, currentUser]);
 
@@ -171,7 +181,7 @@ const Cart = () => {
 
   const sendOrderToApi = async (orderData) => {
     try {
-      const response = await axios.post(`${BASE_LOCAL}/orders`, orderData);
+      const response = await axios.post(`${BASE_PROD}/orders`, orderData);
       const data = response.data;
 
       if (data.status === "ok" && data.token) {
@@ -194,6 +204,14 @@ const Cart = () => {
   };
 
   const handleCheckout = async (e) => {
+    if (!currentUser) {
+      Swal.fire({
+        icon: "warning",
+        title: "Login Diperlukan",
+        text: "Silahkan Login untuk melakukan Checkout.",
+      });
+      return;
+    }
     if (!name || !phoneNumber || !address || !id_provinsi) {
       Swal.fire({
         icon: "warning",
@@ -249,6 +267,11 @@ const Cart = () => {
           alamat: address,
           provinsi: id_provinsi,
           imgCheck: imgUrl,
+          city: city,
+          postalCode: postalCode,
+          photoURL: photoURL,
+          email: email,
+          province: province,
         },
       },
     };

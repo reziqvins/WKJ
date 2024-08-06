@@ -1,23 +1,39 @@
-import React, { useContext } from 'react'
-import { AuthContext } from '../../../Context/AuthContext'
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../../../Context/AuthContext';
+import FormPemeriksaan from '../Pemeriksaan Digital/formPemeriksaan';
+import { FaWpforms } from 'react-icons/fa';
 
 const AdminNavbar = () => {
-  const {currentUser} = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className='navbar flex items-center justify-between bg-[#32584c] p-2 text-white'>
       <span className="logo font-bold">Konsultasi</span>
-      <div className="user flex items-center gap-2 px-4">
-      {currentUser ? (
-          <>
-            <img src={currentUser.photoURL} alt="User Avatar" className="md:h-7 md:w-7 h-9 w-9 rounded-full object-cover" />
-           
-          </>
-        ) : (
-          <span>Loading...</span>
-        )}</div>
+      <div className="tooltip tooltip-left" data-tip="Form Pemeriksaan Digital">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-white text-[#32584c] py-1 px-3 rounded-md hover:bg-[#ebebeb] transition-colors"
+        >
+          <FaWpforms />
+        </button>
+      </div>
+      {isModalOpen && (
+        <div className="modal modal-open text-black">
+          <div className="modal-box">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+            >
+              ✕
+            </button>
+            <FormPemeriksaan closeModal={() => setIsModalOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default AdminNavbar
+export default AdminNavbar;

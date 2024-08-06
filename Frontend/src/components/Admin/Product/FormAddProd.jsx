@@ -9,23 +9,39 @@ function FormAddProd() {
   const [productPrice, setProductPrice] = useState(0);
   const [productDesc, setProductDesc] = useState("");
   const [productImg, setProductImg] = useState(null);
+  const [imgPreview, setImgPreview] = useState(null); 
   const [productCateg, setProductCateg] = useState("");
   const [productStock, setProductStock] = useState("");
   const [isCheck, setisCheck] = useState(0);
   const [error, setError] = useState("");
   const types = ["image/png", "image/jpeg"];
 
-  const productImgHandler = (e) => {
-    let selectedFile = e.target.files[0];
-    if (selectedFile && types.includes(selectedFile.type)) {
-      setProductImg(selectedFile);
-      setError("");
-      console.log("File selected successfully");
-    } else {
-      setProductImg(null);
-      setError("File must be in jpg/png format");
-    }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setProductImg(file);
+
+    // Buat pratinjau gambar
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setImgPreview(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
   };
+
+
+  // const productImgHandler = (e) => {
+  //   let selectedFile = e.target.files[0];
+  //   if (selectedFile && types.includes(selectedFile.type)) {
+  //     setProductImg(selectedFile);
+  //     setError("");
+  //     console.log("File selected successfully");
+  //   } else {
+  //     setProductImg(null);
+  //     setError("File must be in jpg/png format");
+  //   }
+  // };
 
   const addProduct = async (e) => {
     e.preventDefault();
@@ -190,10 +206,17 @@ function FormAddProd() {
           <input
             type="file"
             id="file"
-            onChange={productImgHandler}
+            onChange={handleFileChange}
             className="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-indigo-500"
           />
           {error && <span style={{ color: "red" }}>{error}</span>}
+          {imgPreview && (
+            <img
+              src={imgPreview}
+              alt="Product Preview"
+              className="mt-2 max-w-xs"
+            />
+          )}{" "}
         </div>
         <button
           type="submit"

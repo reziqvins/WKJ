@@ -7,6 +7,7 @@ import { AuthContext } from "../../Context/AuthContext";
 import { VscSignOut } from "react-icons/vsc";
 import { CgProfile } from "react-icons/cg";
 import Swal from "sweetalert2";
+import { MdOutlineShoppingBag } from "react-icons/md";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
@@ -78,7 +79,7 @@ const Navbar = () => {
                   <li>
                     <Link to="/Pemesanan">
                       <button className="flex gap-3">
-                        <CgProfile />
+                        <MdOutlineShoppingBag  />
                         Pemesanan
                       </button>
                     </Link>
@@ -159,7 +160,7 @@ const Navbar = () => {
                 <li>
                   <Link to="/Pemesanan">
                     <button className="flex gap-3">
-                      <CgProfile />
+                      <MdOutlineShoppingBag />
                       Pemesanan
                     </button>
                   </Link>

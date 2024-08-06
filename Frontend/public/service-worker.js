@@ -2,23 +2,20 @@ const CACHE_NAME = 'my-pwa-cache-v1';
 const urlsToCache = [
   '/',
   '/index.html',
-  '/styles.css',
-  '/script.js',
-  '/apple-icon-57x57.png',
-  '/apple-icon-60x60.png',
-  '/apple-icon-72x72.png',
-  '/apple-icon-76x76.png',
-  '/apple-icon-114x114.png',
-  '/apple-icon-120x120.png',
-  '/apple-icon-144x144.png',
-  '/apple-icon-152x152.png',
-  '/apple-icon-180x180.png',
-  '/android-icon-192x192.png',
-  '/favicon-32x32.png',
-  '/favicon-96x96.png',
-  '/favicon-16x16.png',
-  '/logo.png',    // Include the icons used for notifications
-  '/badge.png'
+  '/pwa/apple-icon-57x57.png',
+  '/pwa/apple-icon-60x60.png',
+  '/pwa/apple-icon-72x72.png',
+  '/pwa/apple-icon-76x76.png',
+  '/pwa/apple-icon-114x114.png',
+  '/pwa/apple-icon-120x120.png',
+  '/pwa/apple-icon-144x144.png',
+  '/pwa/apple-icon-152x152.png',
+  '/pwa/apple-icon-180x180.png',
+  '/pwa/android-icon-192x192.png',
+  '/pwa/favicon-32x32.png',
+  '/pwa/favicon-96x96.png',
+  '/pwa/favicon-16x16.png',
+  '/logo.png', 
 ];
 
 // Install event: caching static assets
@@ -26,7 +23,20 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        return cache.addAll(urlsToCache);
+        return Promise.all(
+          urlsToCache.map(url => {
+            return fetch(url)
+              .then(response => {
+                if (!response.ok) {
+                  throw new TypeError('Failed to fetch ' + url);
+                }
+                return cache.put(url, response);
+              })
+              .catch(error => {
+                console.error('Failed to cache', url, error);
+              });
+          })
+        );
       })
   );
 });
