@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PemeriksaanDigital from './PemeriksaanDigital'; // Adjust the path
 
-const FormPemeriksaan = ({ closeModal }) => {
+const FormPriksa = ({ closeModal }) => {
   const [formData, setFormData] = useState({
     date: "",
     complaint: "",
@@ -130,4 +130,4 @@ const FormPemeriksaan = ({ closeModal }) => {
   );
 };
 
-export default FormPemeriksaan;
+export default FormPriksa;

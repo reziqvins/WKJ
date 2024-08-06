@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../../Context/AuthContext';
-import FormPemeriksaan from '../PemeriksaanDigital/formPemeriksaan';
+import FormPriksa from '../PemeriksaanDigital/FormPriksa';
 
 import { FaWpforms } from 'react-icons/fa';
 
@@ -29,7 +29,7 @@ const AdminNavbar = () => {
             >
               ✕
             </button>
-            <FormPemeriksaan closeModal={() => setIsModalOpen(false)} />
+            <FormPriksa closeModal={() => setIsModalOpen(false)} />
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { toPng } from "html-to-image";
 import { saveAs } from "file-saver";
 import logo from "../../../../public/logo.png"; // Adjust the path
-import "./PemeriksaanDigital.css";
+import "./StylePemeriksaanDigital.css";
 
 const PemeriksaanDigital = ({ data }) => {
   const PemeriksaanDigitalRef = useRef();
