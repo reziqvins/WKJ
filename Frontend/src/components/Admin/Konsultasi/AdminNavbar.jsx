@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../../Context/AuthContext';
-import FormPemeriksaan from '../Pemeriksaan Digital/formPemeriksaan';
+import FormPemeriksaan from '../PemeriksaanDigital/formPemeriksaan';
+
 import { FaWpforms } from 'react-icons/fa';
 
 const AdminNavbar = () => {
